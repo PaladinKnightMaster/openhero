@@ -22,10 +22,6 @@ const DEMO_VIDEOS: HeroVideo[] = [
 
   { slug: "mountain-peaks-golden-hour", name: "Mountain Peaks Golden Hour", category: "nature", videoSrc: "https://www.w3schools.com/html/mov_bbb.mp4", hasDownloads: false },
 
-  { slug: "city-lights-neon-rain", name: "City Lights Neon Rain", category: "urban", videoSrc: "https://www.w3schools.com/html/movie.mp4", hasDownloads: false },
-
-  { slug: "downtown-aerial-dusk", name: "Downtown Aerial Dusk", category: "urban", videoSrc: "https://www.w3schools.com/html/mov_bbb.mp4", hasDownloads: false },
-
   { slug: "deep-space-nebula-cosmic", name: "Deep Space Nebula Cosmic", category: "abstract", videoSrc: "https://www.w3schools.com/html/movie.mp4", hasDownloads: false },
 
   { slug: "underground-cave-cinematic", name: "Underground Cave Cinematic", category: "abstract", videoSrc: "https://www.w3schools.com/html/mov_bbb.mp4", hasDownloads: false },

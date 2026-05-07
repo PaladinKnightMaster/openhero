@@ -17,7 +17,7 @@ export function Footer() {
                 className="text-accent"
               />
               <span className="text-lg font-black uppercase tracking-tighter text-foreground">
-                openheros
+                openhero
               </span>
             </div>
             <p className="max-w-xs text-sm leading-relaxed text-muted">
@@ -90,7 +90,7 @@ export function Footer() {
 
         <div className="flex flex-col items-center justify-between border-t border-border pt-8 text-xs text-muted md:flex-row">
           <p>
-            Copyright &copy; {currentYear} openheros. All rights reserved.
+            Copyright &copy; {currentYear} openhero. All rights reserved.
           </p>
           <div className="mt-4 flex items-center gap-4 md:mt-0">
             <a

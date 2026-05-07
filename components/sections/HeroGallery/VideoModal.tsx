@@ -84,12 +84,20 @@ function CopyButton({ code }: { code: string }) {
 }
 
 function DownloadZipButton({ video, format }: { video: HeroVideo; format: string }) {
+  const handleDownload = () => {
+    const url = `/api/download?category=${encodeURIComponent(video.category)}&slug=${encodeURIComponent(video.slug)}&format=${encodeURIComponent(format)}`;
+    
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `${video.slug}.zip`); 
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <button
-      onClick={() => {
-        const url = `/api/download?category=${encodeURIComponent(video.category)}&slug=${encodeURIComponent(video.slug)}&format=${encodeURIComponent(format)}`;
-        window.open(url, "_blank", "noopener,noreferrer");
-      }}
+      onClick={handleDownload}
       className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white transition-colors hover:bg-white/10"
     >
       <Icon icon="solar:archive-down-minimlistic-linear" width="12" />
@@ -97,6 +105,7 @@ function DownloadZipButton({ video, format }: { video: HeroVideo; format: string
     </button>
   );
 }
+
 
 function FrameworkDropdown({ active, onChange }: { active: Framework; onChange: (fw: Framework) => void }) {
   const [open, setOpen] = useState(false);
@@ -162,7 +171,7 @@ function TabCodeContent({ code, lang, loading, video, format }: { code: string; 
       <div className="mt-3 flex shrink-0 items-center gap-2 border-t border-white/5 pt-3">
         <CopyButton code={code} />
         <DownloadZipButton video={video} format={format} />
-        <a href={video.videoSrc} download={`${video.slug}.mp4`} className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs text-white transition-colors hover:bg-white/10 w-fit">
+        <a href={`/downloads/${video.category}/${video.slug}/video.mp4`} download="video.mp4" className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs text-white transition-colors hover:bg-white/10 w-fit">
           <Icon icon="solar:download-minimalistic-linear" width="13" /> Download Video
         </a>
       </div>
@@ -302,7 +311,7 @@ export function VideoModal({ video, onClose }: VideoModalProps) {
 
                 <CopyButton code={codes[mobileTab]} />
                 <DownloadZipButton video={video} format={FW_CONFIG[mobileTab].format} />
-                <a href={video.videoSrc} download={`${video.slug}.mp4`} className="flex items-center gap-2 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs text-white transition-colors hover:bg-white/10 sm:w-fit">
+                <a href={`/downloads/${video.category}/${video.slug}/video.mp4`} download="video.mp4" className="flex items-center gap-2 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs text-white transition-colors hover:bg-white/10 sm:w-fit">
                   <Icon icon="solar:download-minimalistic-linear" width="13" /> Download Video
                 </a>
               </div>

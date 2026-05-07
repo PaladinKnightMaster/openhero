@@ -6,7 +6,6 @@ import { capitalize } from "@/lib/utils";
 const CATEGORY_ICONS: Record<string, string> = {
   all: "solar:apps-linear",
   nature: "pajamas:nature",
-  urban: "solar:city-linear",
   abstract: "gg:abstract",
   tech: "solar:cpu-linear",
   enterprise: "mdi:company",

@@ -12,12 +12,8 @@ export default function Hero() {
             />
             <section className="mx-auto max-w-7xl px-6 pt-28 pb-14 sm:pt-34 sm:pb-16 lg:px-8">
                 <div className="mx-auto max-w-3xl text-center">
-                    <h1 className="text-5xl font-black tracking-tight text-white sm:text-6xl z-20 lg:text-7xl drop-shadow-[1.2px_1.2px_100.2px_rgba(183,203,248,1)]">
-                        Stunning {" "}
-                        <span className="relative inline-block ">
-                            Hero
-                            
-                        </span>
+                    <h1 className="text-5xl font-black tracking-tight text-white sm:text-6xl z-20 lg:text-7xl leading-[0.9] drop-shadow-[1.2px_1.2px_100.2px_rgba(183,203,248,1)]">
+                        Stunning Hero
                         <br />
                         <span className="text-neutral-500 drop-shadow-[0_0_15px_rgba(0,0,0,0.2)] ">
                             <MetallicPaint
@@ -30,12 +26,12 @@ export default function Hero() {
                                 brightness={1.8}
                             /></span>
                     </h1>
-                    <p className="mt-6 text-lg leading-8 text-neutral-300 drop-shadow-[1.2px_1.2px_100.2px_rgba(183,203,248,1)]">
+                    <p className="text-lg leading-8 text-neutral-300 drop-shadow-[1.2px_1.2px_100.2px_rgba(183,203,248,1)]">
                         Browse cinematic video backgrounds paired with polished hero layouts. Preview in real-time, and download in <span className="font-medium text-neutral-200">HTML</span>,{" "}
                         <span className="font-medium text-neutral-200">React</span>, or{" "}
                         <span className="font-medium text-neutral-200">Next.js</span> - zero dependencies.
                     </p>
-                    <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+                    <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
                         <a href="#gallery" className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-semibold text-neutral-950 shadow-lg transition-colors hover:bg-neutral-100">
                             <Icon icon="solar:play-circle-bold" width="16" />
                             Browse Gallery
