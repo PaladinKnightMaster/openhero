@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en" class="dark antialiased">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apple Vision Pro - Spatial Computing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --bg-void: oklch(0.12 0.02 250);
+            --text-luma: oklch(0.98 0.01 250);
+            --accent-photon: oklch(0.85 0.1 240);
+            --surface-glass: rgba(255, 255, 255, 0.03);
+            background-color: var(--bg-void);
+            color: var(--text-luma);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            overflow-x: hidden;
+            background-image:
+                radial-gradient(circle at 50% 0%, oklch(0.2 0.05 250 / 0.5), transparent 70%),
+                linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 4rem 4rem, 4rem 4rem;
+            background-position: center top;
+        }
+
+        .kinetic-breach {
+            mask-image: radial-gradient(circle at center, black 20%, transparent 80%);
+            -webkit-mask-image: radial-gradient(circle at center, black 20%, transparent 80%);
+            filter: saturate(1.2) brightness(0.8);
+        }
+
+        .glass-anodized {
+            background: var(--surface-glass);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(40px) saturate(150%);
+            -webkit-backdrop-filter: blur(40px) saturate(150%);
+        }
+
+        .photon-glow {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.03) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .photon-glow:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--accent-photon);
+            box-shadow: 0 0 30px oklch(0.85 0.1 240 / 0.3), inset 0 0 10px oklch(0.85 0.1 240 / 0.2);
+            transform: scale(1.02);
+        }
+
+        .text-gradient {
+            background: linear-gradient(180deg, #ffffff 0%, oklch(0.6 0.02 250) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .text-refraction {
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.5);
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.1));
+            -webkit-background-clip: text;
+            background-size: 200% auto;
+            animation: shine 4s linear infinite;
+        }
+
+        @keyframes shine {
+            to {
+                background-position: 200% center;
+            }
+        }
+
+        @keyframes atomic-assemble {
+            0% {
+                opacity: 0;
+                filter: blur(10px);
+                transform: translateY(60px);
+            }
+
+            100% {
+                opacity: 1;
+                filter: blur(0);
+                transform: translateY(0);
+            }
+        }
+
+        .scroll-driven {
+            animation: atomic-assemble linear both;
+            animation-timeline: view();
+            animation-range: entry 5% cover 25%;
+        }
+
+        ::selection {
+            background: var(--accent-photon);
+            color: #000;
+        }
+    </style>
+</head>
+
+<body class="selection:bg-white/30">
+
+    <nav class="fixed top-6 inset-x-0 z-50 px-6">
+        <div
+            class="max-w-5xl mx-auto flex items-center justify-between px-6 py-3 rounded-full glass-anodized border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
+
+            <div class="flex items-center gap-2">
+                <div class="text-lg font-bold tracking-tight text-white italic">Vision<span
+                        class="font-light opacity-50">Pro</span></div>
+            </div>
+
+            <div class="hidden md:flex items-center gap-2">
+                <a href="#"
+                    class="px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest text-white/50 hover:text-white hover:bg-white/5 transition-all">Overview</a>
+                <a href="#"
+                    class="px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest text-white/50 hover:text-white hover:bg-white/5 transition-all">Neural
+                    Engine</a>
+                <a href="#"
+                    class="px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest text-white/50 hover:text-white hover:bg-white/5 transition-all">Specs</a>
+            </div>
+
+            <button
+                class="relative group overflow-hidden px-6 py-2 rounded-full bg-white text-black text-[10px] font-black uppercase tracking-widest transition-transform hover:scale-105 active:scale-95">
+                <span class="relative z-10">Pre-order</span>
+                <div
+                    class="absolute inset-0 bg-gradient-to-r from-cyan-400 to-fuchsia-500 opacity-0 group-hover:opacity-20 transition-opacity">
+                </div>
+            </button>
+        </div>
+    </nav>
+
+    <main class="relative w-full min-h-screen pt-32 pb-32 @container flex flex-col items-center">
+
+        <section
+            class="relative z-10 w-full max-w-6xl mx-auto px-6 flex flex-col items-center justify-center min-h-[70vh]">
+
+            <div class="absolute inset-0 z-[-1] flex items-center justify-center overflow-hidden pointer-events-none">
+                <div class="w-full h-full kinetic-breach">
+                    <video autoplay loop muted playsinline class="w-full h-full object-cover">
+                        <source src="./video.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+
+            <h1
+                class="text-[clamp(3.5rem,8vw,9rem)] font-bold tracking-tighter leading-[0.9] text-center flex flex-col items-center drop-shadow-[0_10px_30px_rgba(0,0,0,1)] drop-shadow-[0_20px_70px_rgba(0,0,0,1)]">
+                <span class="text-gradient">Spatial</span>
+                <span class="text-refraction">Computing</span>
+            </h1>
+
+            <p
+                class="mt-10 text-lg md:text-xl text-white/50 font-light max-w-2xl text-center tracking-wide leading-relaxed drop-shadow-[0_4px_12px_rgba(0,0,0,1)]">
+                Welcome to the era of absolute immersion. Powered by a dual-chip neural architecture, delivering
+                latency-free volumetric rendering.
+            </p>
+
+        </section>
+
+        <section class="relative z-10 w-full max-w-6xl mx-auto px-6 mt-32 grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div
+                class="scroll-driven lg:col-span-5 glass-anodized p-10 rounded-[2rem] flex flex-col justify-between min-h-[400px]">
+                <div>
+                    <h3 class="text-2xl font-semibold tracking-tight text-white">Photonic Processing</h3>
+                    <p class="mt-4 text-sm text-white/50 leading-relaxed font-light">
+                        The dedicated R1 hardware subsystem streams real-time environmental data with unprecedented
+                        accuracy, mapping physical space in milliseconds.
+                    </p>
+                </div>
+                <div>
+                    <div class="h-px w-full bg-gradient-to-r from-white/20 to-transparent my-6"></div>
+                    <div class="flex items-end justify-between">
+                        <span class="text-xs font-mono text-white/40 uppercase tracking-widest">Photon Latency</span>
+                        <span class="text-3xl font-light text-white">12<span
+                                class="text-lg text-white/40">ms</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="scroll-driven lg:col-span-7 h-[400px] w-full rounded-[2rem] overflow-hidden relative glass-anodized p-2">
+                <div class="w-full h-full rounded-[1.5rem] overflow-hidden relative">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10">
+                    </div>
+                    <video autoplay loop muted playsinline
+                        class="w-full h-full object-cover opacity-80 mix-blend-screen">
+                        <source src="https://assets.codepen.io/3364143/7btrrd.mp4" type="video/mp4">
+                    </video>
+                    <div class="absolute bottom-6 left-6 z-20">
+                        <div class="text-xs font-mono text-white/50 mb-1 uppercase tracking-widest">Micro-OLED Display
+                        </div>
+                        <div class="text-2xl font-medium text-white tracking-tight">23 Million Pixels</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="relative z-10 w-full max-w-6xl mx-auto px-6 mt-16">
+            <div class="scroll-driven grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-anodized p-8 rounded-[2rem] transition-all duration-500 hover:bg-white/[0.05]">
+                    <div
+                        class="w-10 h-10 rounded-xl border border-white/20 flex items-center justify-center mb-8 bg-white/5">
+                        <svg class="w-5 h-5 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </div>
+                    <h4 class="text-lg font-medium text-white">Eye Tracking</h4>
+                    <p class="mt-3 text-white/40 font-light text-sm leading-relaxed">High-performance LEDs project
+                        invisible light patterns for ultra-precise optical input without physical controllers.</p>
+                </div>
+
+                <div class="glass-anodized p-8 rounded-[2rem] transition-all duration-500 hover:bg-white/[0.05]">
+                    <div
+                        class="w-10 h-10 rounded-xl border border-white/20 flex items-center justify-center mb-8 bg-white/5">
+                        <svg class="w-5 h-5 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                        </svg>
+                    </div>
+                    <h4 class="text-lg font-medium text-white">Spatial Audio</h4>
+                    <p class="mt-3 text-white/40 font-light text-sm leading-relaxed">Acoustic ray tracing calculates
+                        physical properties of your environment to match sound precisely to the room.</p>
+                </div>
+
+                <div class="glass-anodized p-8 rounded-[2rem] transition-all duration-500 hover:bg-white/[0.05]">
+                    <div
+                        class="w-10 h-10 rounded-xl border border-white/20 flex items-center justify-center mb-8 bg-white/5">
+                        <svg class="w-5 h-5 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                        </svg>
+                    </div>
+                    <h4 class="text-lg font-medium text-white">Infinite Canvas</h4>
+                    <p class="mt-3 text-white/40 font-light text-sm leading-relaxed">Free your workflow from the
+                        physical boundaries of a traditional display with an unlimited spatial workspace.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!CSS.supports('animation-timeline', 'view()')) {
+                const elements = document.querySelectorAll('.scroll-driven');
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.style.animation = 'atomic-assemble 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.1, rootMargin: '50px' });
+
+                elements.forEach(el => {
+                    el.style.animation = 'none';
+                    el.style.opacity = '0';
+                    observer.observe(el);
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

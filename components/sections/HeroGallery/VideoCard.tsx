@@ -44,19 +44,42 @@ export default function VideoCard({ video }: { video: HeroVideo }) {
 
         </div>
 
-        <div className="flex items-center justify-between px-0.5">
-          <div className="flex items-baseline gap-1.5">
-            <span className="text-[13px] font-semibold leading-none text-white">
+        <div className="p-3 bg-white/5 dark:bg-black/50 backdrop-blur-md mt-auto rounded-b-[2rem] border-t border-white/10">
+          <div className="flex items-center gap-2">
+            <p className="text-[13px] font-semibold leading-none text-white truncate flex-1 drop-shadow-md">
               {video.name}
-            </span>
+            </p>
           </div>
 
-          <div className="flex items-center gap-1">
-            <span className="rounded-full bg-black/50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-white/80 backdrop-blur-sm border border-white/15">
-              {capitalize(video.category)}
-            </span>
+          <div className="flex items-center justify-between mt-2.5">
+            <div className="flex items-center">
+              <span className="flex items-center px-2 py-1 rounded-full bg-white/10 border border-white/10 text-[8px] uppercase tracking-[0.15em] text-white/60">
+                {video.category}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <button className="flex items-center group transition-all">
+                <Icon
+                  icon="solar:heart-linear"
+                  className="text-[16px] text-neutral-400 group-hover:text-pink-500 group-hover:icon-[solar:heart-bold] transition-colors"
+                ></Icon>
+              </button>
+
+              <span className="text-[8px] text-neutral-700 opacity-50">•</span>
+
+              <div className="flex items-center gap-1.5">
+                <Icon
+                  icon="solar:eye-linear"
+                  className="text-[16px] text-neutral-400"
+                ></Icon>
+                <span className="text-[10px] font-medium text-neutral-400">336</span>
+              </div>
+            </div>
           </div>
         </div>
+
+
       </article>
 
       {showModal && (
