@@ -65,24 +65,6 @@ function CodeBlock({ code, lang }: { code: string; lang: Language }) {
   );
 }
 
-function CopyButton({ code }: { code: string }) {
-  const [copied, setCopied] = useState(false);
-  return (
-    <button
-      onClick={async () => {
-        if (!code) return;
-        await navigator.clipboard.writeText(code);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-      }}
-      className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white transition-colors hover:bg-white/10"
-    >
-      <Icon icon={copied ? "solar:check-read-linear" : "solar:copy-linear"} width="12" />
-      {copied ? "Copied!" : "Copy"}
-    </button>
-  );
-}
-
 function DownloadZipButton({ video, format }: { video: HeroVideo; format: string }) {
   const handleDownload = () => {
     const url = `/api/download?category=${encodeURIComponent(video.category)}&slug=${encodeURIComponent(video.slug)}&format=${encodeURIComponent(format)}`;
@@ -182,7 +164,6 @@ function TabCodeContent({ code, lang, loading, video, format }: { code: string; 
 
   return (
     <div className="flex h-full min-h-0 flex-col relative">
-      {/* Sticky action buttons */}
       <div className="absolute top-3 right-3 z-10 flex items-center gap-2 sticky">
         <button
           onClick={handleCopyCode}
@@ -194,10 +175,10 @@ function TabCodeContent({ code, lang, loading, video, format }: { code: string; 
         </button>
         <button
           onClick={handleDownloadCode}
-          className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-black/80 backdrop-blur-sm px-3 py-1.5 text-xs text-white transition-colors hover:bg-white/10"
+          className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-black/80 backdrop-blur-sm px-3 py-2 text-xs text-white transition-colors hover:bg-white/10"
           title="Download code file"
         >
-          <Icon icon="solar:file-download-linear" width="12" />
+          <Icon icon="heroicons-solid:download" width="12" />
         </button>
       </div>
 
@@ -332,7 +313,7 @@ export function VideoModal({ video, onClose }: VideoModalProps) {
               </a>
               <DownloadZipButton video={video} format={mobileTab} />
               <a
-                href={`/preview/${video.category}/${video.slug}/${mobileTab}`}
+                href={`/preview/${video.category}/${video.slug}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white transition-colors hover:bg-white/10"
