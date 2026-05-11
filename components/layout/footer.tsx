@@ -1,6 +1,7 @@
 "use client";
 
 import { Icon } from "@iconify/react";
+import Link from "next/link";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -10,16 +11,20 @@ export function Footer() {
       <div className="mx-auto max-w-[1440px]">
         <div className="mb-16 grid grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-5">
           <div className="col-span-2 lg:col-span-2">
-            <div className="mb-4 flex items-center gap-2">
-              <Icon
-                icon="solar:play-circle-bold"
-                width="22"
-                className="text-accent"
-              />
-              <span className="text-lg font-black uppercase tracking-tighter text-foreground">
-                openhero
-              </span>
-            </div>
+            <Link href="/" className="group mb-6 flex items-center">
+              <div className="h-8 transition-transform group-hover:scale-105 filter drop-shadow-[0_0_12px_rgba(255,255,255,0.8)] drop-shadow-[0_0_20px_rgba(183,203,248,0.4)]">
+                <img
+                  src="/svg/logo-openhero.svg"
+                  alt="OpenHero Logo"
+                  className="hidden sm:flex h-full w-auto object-contain"
+                />
+                <img
+                  src="/svg/icon-openhero.svg"
+                  alt="OpenHero Logo"
+                  className="flex sm:hidden h-full w-auto object-contain"
+                />
+              </div>
+            </Link>
             <p className="max-w-xs text-sm leading-relaxed text-muted">
               A free, open-source gallery of cinematic video hero sections.
               Preview, download the video, and grab source code in HTML, React,
@@ -42,6 +47,11 @@ export function Footer() {
                   Submit a Hero
                 </a>
               </li>
+              <li>
+                <a href="/assets" target="_blank" className="transition-colors hover:text-foreground">
+                  Assets Library
+                </a>
+              </li>
             </ul>
           </div>
 
@@ -52,12 +62,23 @@ export function Footer() {
             <ul className="space-y-3 text-sm text-muted">
               <li>
                 <a
-                  href="https://github.com"
+                  href="https://github.com/CristianOlivera1/openhero"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="transition-colors hover:text-foreground"
                 >
                   GitHub
+                </a>
+              </li>
+
+              <li>
+                <a
+                  href="https://mail.google.com/mail/?view=cm&fs=1&to=oliverachavezcristian@gmail.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-colors hover:text-foreground"
+                >
+                  Contact
                 </a>
               </li>
             </ul>

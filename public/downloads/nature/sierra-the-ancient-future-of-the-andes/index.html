@@ -145,7 +145,7 @@
   <div class="flex items-center gap-3 cursor-pointer group">
     <iconify-icon icon="ph:mountains-light" class="text-3xl text-glacier group-hover:text-inkagold transition-colors duration-500"></iconify-icon>
     <div class="flex flex-col">
-      <span class="font-sans text-[10px] tracking-[0.3em] uppercase text-glacier/50">PROMPERÚ</span>
+      <span class="font-sans text-[10px] tracking-[0.3em] uppercase text-white/50">PROMPERÚ</span>
       <span class="font-serif italic text-[14px] text-glacier/90">Sanctuaries</span>
     </div>
   </div>
@@ -179,7 +179,7 @@
         <i class="not-italic text-glacier/90">Sanctuaries</i>
       </h1>
 
-      <p class="mt-10 font-sans text-sm text-glacier/50 max-w-md font-light leading-relaxed tracking-wide reveal-up active delay-200">
+      <p class="mt-10 font-sans text-sm text-white/50 max-w-md font-light leading-relaxed tracking-wide reveal-up active delay-200">
         Experience extreme Andean orography where tectonic levitation meets cloud-forest biodiversity. A luxury archeo-tourism expedition bridging the ancient stone with infinite light.
       </p>
 
@@ -202,15 +202,15 @@
 
     <div class="relative h-[60vh] lg:h-full w-full flex items-center justify-center lg:justify-end z-10 pointer-events-none">
       <div class="absolute inset-0 w-[140%] h-[140%] -top-[20%] -left-[20%] radial-portal" id="portal-container">
-        <video id="portal-video" autoPlay loop muted playsInline class="w-full h-full object-cover filter contrast-[1.1] saturate-110 sepia-[0.1] opacity-90 scale-[1.02]">
-          <source src="https://cdn.pixabay.com/video/2021/08/04/83907-584742306_large.mp4" type="video/mp4" />
+        <video id="portal-video" autoPlay loop muted playsInline class="w-full h-full object-contain filter contrast-[1.1] saturate-110 sepia-[0.1]">
+          <source src="./video.mp4" type="video/mp4" />
         </video>
         <div class="absolute inset-0 bg-obsidian/20 mix-blend-multiply"></div>
       </div>
     </div>
   </section>
 
-  <section class="py-40 px-8 md:px-16 w-full max-w-[1800px] mx-auto border-t border-glacier/5 relative z-20">
+  <section class="py-40 px-8 md:px-16 w-full max-w-[1800px] mx-auto border-t border-white/5 relative z-20">
     <div class="flex flex-col md:flex-row justify-between items-end mb-24 reveal-up">
       <h2 class="font-serif text-4xl md:text-6xl text-glacier tracking-tight leading-[1.1]">
         Tectonic <br> <i class="text-inkagold not-italic font-light">Levitation</i>
@@ -254,7 +254,7 @@
   </section>
 </main>
 
-<footer class="relative z-20 py-24 px-8 md:px-16 w-full border-t border-glacier/5 bg-obsidian/80 backdrop-blur-xl overflow-hidden">
+<footer class="relative z-20 py-24 px-8 md:px-16 w-full border-t border-white/5 bg-obsidian/80 backdrop-blur-xl overflow-hidden">
   <div class="max-w-[1800px] mx-auto flex flex-col md:flex-row items-start md:items-end justify-between gap-12">
     
     <div class="reveal-up">
@@ -294,7 +294,6 @@
         const lightCorridor = document.getElementById('light-corridor');
         const parallaxCards = document.querySelectorAll('.parallax-card');
         
-        // Light corridor hue rotation (Amber to Deep Blue)
         if (lightCorridor) {
           const hueRotate = Math.min(scrolled * 0.15, 180); 
           lightCorridor.style.filter = `hue-rotate(${hueRotate}deg)`;

@@ -21,15 +21,9 @@
                         serif: ['"Playfair Display"', 'serif'],
                     },
                     colors: {
-                        amber: {
-                            glow: 'lch(70% 0.15 45)',
-                        },
-                        pink: {
-                            petal: 'lch(60% 0.20 330)',
-                        },
-                        dark: {
-                            organic: 'lch(15% 0.05 240)',
-                        }
+                        amber: { glow: 'lch(70% 0.15 45)', },
+                        pink: { petal: 'lch(60% 0.20 330)', },
+                        dark: { organic: 'black', }
                     }
                 }
             }
@@ -39,80 +33,29 @@
         :root {
             --amber-light: lch(70% 0.15 45);
             --pink-accent: lch(60% 0.20 330);
-            --dark-base: lch(15% 0.05 240);
             --glass-border: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.02));
             --glass-bg: linear-gradient(145deg, rgba(20, 20, 25, 0.4), rgba(10, 10, 15, 0.1));
         }
 
         html {
             scroll-behavior: smooth;
-            background-color: var(--dark-base);
+            background-color: black;
         }
 
         body {
             margin: 0;
             overflow-x: hidden;
             color: white;
-            background: radial-gradient(circle at 50% 0%, lch(25% 0.1 240), var(--dark-base) 60%, black 100%);
+            background: black;
             min-height: 100vh;
         }
 
-        .bokeh-bg {
-            position: fixed;
-            inset: 0;
-            z-index: -2;
-            background-image:
-                radial-gradient(circle at 15% 30%, lch(70% 0.15 45 / 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 85% 60%, lch(60% 0.20 330 / 0.05) 0%, transparent 35%),
-                radial-gradient(circle at 50% 80%, lch(70% 0.15 45 / 0.06) 0%, transparent 50%);
-            filter: blur(60px);
-            pointer-events: none;
-        }
-
-        .vignette {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            background: radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.8) 100%);
-            pointer-events: none;
-        }
-
-        @keyframes morph {
-            0% {
-                border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
-            }
-
-            50% {
-                border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
-            }
-
-            100% {
-                border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
-            }
-        }
-
-        .flower-lens {
-            animation: morph 12s ease-in-out infinite;
-            overflow: hidden;
-            position: relative;
-            box-shadow: 0 0 60px lch(70% 0.15 45 / 0.15), inset 0 0 40px rgba(255, 255, 255, 0.1);
-            background: var(--glass-bg);
-            backdrop-filter: blur(40px) brightness(1.1);
-            -webkit-backdrop-filter: blur(40px) brightness(1.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .flower-lens video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            position: absolute;
-            top: 0;
-            left: 0;
+        /* Máscara radial aplicada al video a pantalla completa */
+        .radial-mask-video {
+            -webkit-mask-image: radial-gradient(circle at center, black 30%, transparent 90%);
+            mask-image: radial-gradient(circle at center, black 30%, transparent 90%);
             mix-blend-mode: screen;
-            opacity: 0.85;
+            opacity: 0.9;
         }
 
         .lab-glass {
@@ -211,50 +154,53 @@
 </head>
 
 <body class="antialiased selection:bg-amber-glow/20 selection:text-amber-glow">
-
-    <div class="bokeh-bg"></div>
-    <div class="vignette"></div>
     <div class="golden-thread" id="scrollThread"></div>
 
-    <nav class="fixed top-6 inset-x-0 z-50 flex justify-center w-full px-6 mix-blend-screen">
-        <div
-            class="lab-glass rounded-full px-8 py-4 flex items-center gap-12 text-sm tracking-wide font-medium bg-white/5">
-            <a href="#vision" class="hover:text-amber-glow transition-colors duration-300">Vision</a>
-            <a href="#engineering" class="hover:text-amber-glow transition-colors duration-300">Engineering</a>
+    <nav class="fixed top-6 inset-x-0 z-50 flex justify-center w-full px-6">
+        <div class="rounded-full px-8 py-4 flex items-center gap-12 text-sm tracking-wide font-medium bg-white/5 backdrop-blur-lg border border-white/20 shadow-2xl">
+            <a href="#vision"
+                class="hover:text-amber-glow transition-colors duration-300 mix-blend-plus-lighter">Vision</a>
+            <a href="#engineering"
+                class="hover:text-amber-glow transition-colors duration-300 mix-blend-plus-lighter">Engineering</a>
+
             <div class="w-1.5 h-1.5 rounded-full bg-amber-glow shadow-[0_0_10px_lch(70%_0.15_45)]"></div>
-            <a href="#methodology" class="hover:text-amber-glow transition-colors duration-300">Methodology</a>
-            <a href="#contact" class="hover:text-amber-glow transition-colors duration-300">Initiate</a>
+
+            <a href="#methodology"
+                class="hover:text-amber-glow transition-colors duration-300 mix-blend-plus-lighter">Methodology</a>
+            <a href="#contact"
+                class="hover:text-amber-glow transition-colors duration-300 mix-blend-plus-lighter">Initiate</a>
         </div>
     </nav>
-
     <main>
-        <section class="min-h-screen relative flex items-center justify-center px-6 pt-24 overflow-hidden">
-            <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-60">
-                <div class="w-[110vw] h-[110vw] max-w-[1100px] max-h-[1100px] flower-lens">
-                    <video autoPlay loop muted playsInline class="absolute inset-0 w-full h-full object-cover">
-                        <source src="./video.mp4" type="video/mp4" />
-                    </video>
-                </div>
+        <section class="min-h-screen relative flex items-center justify-center px-6 pt-24">
+            <div class="absolute inset-0 pointer-events-none overflow-hidden z-0">
+                <video autoPlay loop muted playsInline class="radial-mask-video w-full h-full object-cover">
+                    <source src="./video.mp4" type="video/mp4" />
+                </video>
             </div>
 
             <div class="relative z-10 text-center max-w-5xl mx-auto flex flex-col items-center">
-                <span
-                    class="font-serif italic text-pink-petal text-xl md:text-2xl mb-6 tracking-wide reveal floating-element">The
-                    Living Field</span>
-                <h1
-                    class="font-serif text-6xl md:text-8xl lg:text-[7rem] leading-[1.1] mb-8 light-bleed reveal delay-[100ms]">
+                <span class="font-serif italic text-pink-petal text-xl md:text-2xl mb-6 tracking-wide reveal floating-element text-white 
+             filter [filter:drop-shadow(0_2px_10px_rgba(0,0,0,1))]">
+                    The Living Field
+                </span>
+
+                <h1 class="font-serif text-6xl md:text-8xl lg:text-[7rem] leading-[1.1] mb-8 light-bleed reveal delay-[100ms] 
+           filter [filter:drop-shadow(0_10px_30px_rgba(0,0,0,1))_drop-shadow(0_0_10px_rgba(0,0,0,0.8))]">
                     Resilient Flora <br />
                     <span class="font-sans font-light tracking-tighter opacity-90">Engineering.</span>
                 </h1>
+
                 <p
-                    class="text-white/60 text-lg md:text-xl font-light max-w-2xl leading-relaxed mb-12 reveal delay-[200ms]">
+                    class="text-white/60 text-lg md:text-xl font-light max-w-2xl leading-relaxed mb-12 reveal delay-[200ms] 
+          filter [filter:drop-shadow(0_4px_10px_rgba(0,0,0,1))_drop-shadow(0_10px_30px_rgba(0,0,0,1))_drop-shadow(0_0_50px_rgba(0,0,0,0.8))]">
                     We synthesize nature and computational architecture. Cultivating environments where organic
                     structures and digital logic flourish synchronously through spectral optimization.
                 </p>
+
                 <button
                     class="bioluminescent-btn px-10 py-5 text-white tracking-widest text-sm uppercase reveal delay-[300ms] flex items-center gap-3">
-                    Enter the Laboratory
-                    <iconify-icon icon="ph:arrow-right-light" width="20"></iconify-icon>
+                    Enter the Laboratory <iconify-icon icon="ph:arrow-right-light" width="20"></iconify-icon>
                 </button>
             </div>
         </section>
@@ -267,14 +213,14 @@
                 </div>
 
                 <div class="grid md:grid-cols-2 gap-8 md:gap-12">
-
                     <div class="lab-glass p-10 md:p-14 group hover:bg-white/[0.03] reveal">
                         <div
                             class="w-14 h-14 rounded-full bg-amber-glow/10 flex items-center justify-center text-amber-glow mb-8 shadow-[inset_0_0_20px_lch(70%_0.15_45/0.2)] group-hover:scale-110 transition-transform duration-700">
                             <iconify-icon icon="ph:plant-light" width="28"></iconify-icon>
                         </div>
                         <h3 class="font-serif text-3xl mb-4 group-hover:text-amber-glow transition-colors duration-500">
-                            Phytoholography</h3>
+                            Phytoholography
+                        </h3>
                         <p class="text-white/50 font-light leading-relaxed mb-6">
                             Mapping cellular structures using advanced light-field captures. We record the vibrance of
                             botanical life to recreate its structural integrity within digital membranes.
@@ -290,7 +236,8 @@
                             <iconify-icon icon="ph:drop-light" width="28"></iconify-icon>
                         </div>
                         <h3 class="font-serif text-3xl mb-4 group-hover:text-pink-petal transition-colors duration-500">
-                            Ethylene Management</h3>
+                            Ethylene Management
+                        </h3>
                         <p class="text-white/50 font-light leading-relaxed mb-6">
                             Controlling the algorithmic decay of interfaces. Through dynamic state management, our
                             environments age gracefully, shedding unused nodes like autumn leaves.
@@ -306,7 +253,8 @@
                             <iconify-icon icon="ph:sun-light" width="28"></iconify-icon>
                         </div>
                         <h3 class="font-serif text-3xl mb-4 group-hover:text-amber-glow transition-colors duration-500">
-                            Spectral Optimization</h3>
+                            Spectral Optimization
+                        </h3>
                         <p class="text-white/50 font-light leading-relaxed mb-6">
                             Calibrating the exact wavelength of pixel emission to mimic the golden hour. Reducing
                             digital eye strain by simulating the ambient scatter of natural sunlight.
@@ -322,7 +270,8 @@
                             <iconify-icon icon="ph:dna-light" width="28"></iconify-icon>
                         </div>
                         <h3 class="font-serif text-3xl mb-4 group-hover:text-amber-glow transition-colors duration-500">
-                            Genetic Vibrance</h3>
+                            Genetic Vibrance
+                        </h3>
                         <p class="text-white/50 font-light leading-relaxed mb-6">
                             Embedding adaptive color spaces that shift based on user circadian rhythms. The interface
                             breathes, expanding and contracting its typography naturally.
@@ -331,17 +280,14 @@
                             class="h-0.5 w-0 bg-amber-glow group-hover:w-full transition-all duration-700 ease-in-out opacity-50 rounded-full">
                         </div>
                     </div>
-
                 </div>
             </div>
         </section>
 
         <section class="py-40 px-6 relative z-10 flex justify-center">
             <div class="lab-glass max-w-4xl w-full p-12 md:p-20 text-center reveal">
-                <div class="w-24 h-24 mx-auto flower-lens mb-10 flex items-center justify-center">
-                    <div
-                        class="w-full h-full bg-gradient-to-br from-amber-glow/40 to-pink-petal/40 mix-blend-overlay rounded-full">
-                    </div>
+                <div
+                    class="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-amber-glow/20 to-pink-petal/20 border border-white/10 mb-10 shadow-[inset_0_0_20px_rgba(255,255,255,0.05)] flex items-center justify-center">
                 </div>
                 <h2 class="font-serif text-4xl md:text-6xl mb-8 light-bleed">Cultivate with Us</h2>
                 <p class="text-white/60 font-light text-lg max-w-xl mx-auto mb-12">
@@ -353,7 +299,6 @@
                 </button>
             </div>
         </section>
-
     </main>
 
     <footer class="py-12 px-6 text-center text-white/30 font-light text-sm relative z-10">
@@ -387,7 +332,6 @@
             observer.observe(el);
         });
     </script>
-
 </body>
 
 </html>

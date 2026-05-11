@@ -1,305 +1,361 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UNESCO | World Heritage: Memphis and its Necropolis</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          sandstone: "oklch(94% 0.04 70)",
-          amber: "oklch(70% 0.15 45)",
-          basalt: "oklch(25% 0.05 50)",
-        },
-        fontFamily: {
-          sans: ['"Inter"', 'sans-serif'],
-          serif: ['"Playfair Display"', 'serif'],
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNESCO | World Heritage: Memphis and its Necropolis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@100;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sandstone: "oklch(94% 0.04 70)",
+                        amber: "oklch(70% 0.15 45)",
+                        basalt: "oklch(25% 0.05 50)",
+                    },
+                    fontFamily: {
+                        sans: ['"Inter"', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    }
+                }
+            }
         }
-      }
-    }
-  }
-</script>
-<style>
-  html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    min-height: 100vh;
-    background-color: oklch(94% 0.04 70);
-    color: oklch(25% 0.05 50);
-    scroll-behavior: smooth;
-    overflow-x: hidden;
-  }
+    </script>
+    <style>
+        html, body {
+            margin: 0; padding: 0; width: 100%; min-height: 100vh;
+            background-color: oklch(94% 0.04 70); color: oklch(25% 0.05 50);
+            scroll-behavior: smooth; overflow-x: hidden;
+        }
 
-  .vercel-grain {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    opacity: 0.04;
-    mix-blend-mode: multiply;
-  }
+        .vercel-grain {
+            position: fixed; inset: 0; z-index: 9999; pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.04; mix-blend-mode: multiply;
+        }
 
-  .radial-portal {
-    -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 85%);
-    mask-image: radial-gradient(circle at center, black 40%, transparent 85%);
-    will-change: transform;
-  }
+        .stone-btn {
+            position: relative; overflow: hidden;
+            background: oklch(94% 0.04 70 / 0.6);
+            border-radius: 9999px;
+            box-shadow: inset 0 0 10px oklch(100% 0 0 / 0.3), 0 4px 20px rgba(0, 0, 0, 0.03);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 0.5px solid oklch(70% 0.15 45 / 0.2);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
 
-  .desert-dust {
-    backdrop-filter: contrast(1.1) sepia(0.2);
-    -webkit-backdrop-filter: contrast(1.1) sepia(0.2);
-  }
+        .stone-btn:hover {
+            background: oklch(94% 0.04 70 / 0.9);
+            border-color: oklch(70% 0.15 45 / 0.5);
+            box-shadow: inset 0 0 15px oklch(100% 0 0 / 0.4), 0 8px 30px rgba(0, 0, 0, 0.05);
+            transform: translateY(-1px);
+        }
 
-  .stone-btn {
-    position: relative;
-    overflow: hidden;
-    background: oklch(94% 0.04 70 / 0.6);
-    border-radius: 9999px;
-    box-shadow: inset 0 0 10px oklch(100% 0 0 / 0.3), 0 4px 20px rgba(0,0,0,0.03);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border: 0.5px solid oklch(70% 0.15 45 / 0.2);
-    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  }
+        .stone-panel {
+            position: relative; overflow: hidden;
+            background: oklch(94% 0.04 70 / 0.6);
+            border-radius: 24px;
+            box-shadow: inset 0 0 10px oklch(100% 0 0 / 0.3), 0 4px 20px rgba(0, 0, 0, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 0.5px solid oklch(70% 0.15 45 / 0.2);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
 
-  .stone-btn:hover {
-    background: oklch(94% 0.04 70 / 0.9);
-    border-color: oklch(70% 0.15 45 / 0.5);
-    box-shadow: inset 0 0 15px oklch(100% 0 0 / 0.4), 0 8px 30px rgba(0,0,0,0.05);
-    transform: translateY(-1px);
-  }
+        .stone-panel:hover {
+            background: oklch(94% 0.04 70 / 0.9);
+            border-color: oklch(70% 0.15 45 / 0.5);
+            box-shadow: inset 0 0 15px oklch(100% 0 0 / 0.4), 0 8px 30px rgba(0, 0, 0, 0.05);
+        }
 
-  .sun-bleed {
-    background: linear-gradient(180deg, oklch(35% 0.1 50) 0%, oklch(70% 0.15 45) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    letter-spacing: 0.05em;
-    filter: drop-shadow(0 15px 35px oklch(70% 0.15 45 / 0.3));
-  }
+        .sun-bleed {
+            background: linear-gradient(180deg, oklch(72.73% 0.18197 47.683) 0%, oklch(100% 0.00011 271.152) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            letter-spacing: 0.05em; filter: drop-shadow(0 15px 35px oklch(70% 0.15 45 / 0.3));
+        }
 
-  .subsurface-nav {
-    background: linear-gradient(to bottom, oklch(94% 0.04 70 / 0.9) 0%, oklch(94% 0.04 70 / 0) 100%);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-  }
+        .subsurface-nav {
+            background: linear-gradient(to bottom, oklch(93.949% 0.03974 69.692 / 0.866) 0%, oklch(94% 0.04 70 / 0) 100%);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        }
 
-  .nav-link {
-    position: relative;
-    color: oklch(25% 0.05 50 / 0.7);
-    transition: color 0.4s ease;
-  }
+        .nav-link {
+            position: relative; color: oklch(25% 0.05 50 / 0.7);
+            transition: color 0.4s ease;
+        }
 
-  .nav-link:hover {
-    color: oklch(70% 0.15 45);
-  }
+        .nav-link:hover { color: oklch(70% 0.15 45); }
+        .nav-link::after {
+            content: ''; position: absolute; bottom: -4px; left: 0;
+            width: 100%; height: 1px; background: oklch(70% 0.15 45);
+            transform: scaleX(0); transform-origin: center;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .nav-link:hover::after { transform: scaleX(1); }
 
-  .nav-link::after {
-    content: '';
-    position: absolute;
-    bottom: -4px;
-    left: 0;
-    width: 100%;
-    height: 1px;
-    background: oklch(70% 0.15 45);
-    transform: scaleX(0);
-    transform-origin: center;
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  }
+        .golden-haze {
+            position: absolute; inset: 0;
+            background: radial-gradient(circle at center, oklch(70% 0.15 45 / 0.15) 0%, transparent 60%);
+            filter: blur(40px); pointer-events: none; z-index: 0;
+        }
 
-  .nav-link:hover::after {
-    transform: scaleX(1);
-  }
+        .reveal-up {
+            opacity: 0; transform: translateY(40px);
+            transition: opacity 1.4s cubic-bezier(0.16, 1, 0.3, 1), transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
 
-  .golden-haze {
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at center, oklch(70% 0.15 45 / 0.15) 0%, transparent 60%);
-    filter: blur(40px);
-    pointer-events: none;
-    z-index: 0;
-  }
+        .reveal-up.active { opacity: 1; transform: translateY(0); }
+        .delay-100 { transition-delay: 0.1s; }
+        .delay-200 { transition-delay: 0.2s; }
+        .delay-300 { transition-delay: 0.3s; }
 
-  .reveal-up {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 1.4s cubic-bezier(0.16, 1, 0.3, 1), transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
-  }
+        #giza-video { will-change: transform; transform: scale(1.05); }
+        #hero-text { will-change: transform; }
 
-  .reveal-up.active {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .delay-100 { transition-delay: 0.1s; }
-  .delay-200 { transition-delay: 0.2s; }
-  .delay-300 { transition-delay: 0.3s; }
-
-  #giza-video {
-    will-change: transform;
-    transform: scale(1.05);
-  }
-
-  #hero-text {
-    will-change: transform;
-  }
-</style>
+        .grid-bg {
+            background-size: 20px 20px;
+            background-image: linear-gradient(to right, oklch(70% 0.15 45 / 0.1) 1px, transparent 1px),
+                              linear-gradient(to bottom, oklch(70% 0.15 45 / 0.1) 1px, transparent 1px);
+        }
+    </style>
 </head>
 <body class="antialiased selection:bg-amber/30 selection:text-basalt">
+    <div class="vercel-grain"></div>
 
-<div class="vercel-grain"></div>
+    <nav class="fixed top-0 w-full z-50 px-8 py-4 flex items-center justify-between subsurface-nav transition-all duration-500" id="navbar">
+        <div class="flex items-center gap-3 cursor-pointer group">
+            <iconify-icon icon="ph:compass-rose-light" class="text-3xl text-amber transition-transform duration-700 group-hover:rotate-180"></iconify-icon>
+            <div class="flex flex-col">
+                <span class="font-serif tracking-widest text-[11px] uppercase text-basalt/60">UNESCO</span>
+                <span class="font-sans font-medium text-[13px] tracking-wide text-basalt">World Heritage</span>
+            </div>
+        </div>
+        <div class="hidden md:flex items-center gap-10 font-sans text-[11px] uppercase tracking-[0.2em] font-medium">
+            <a href="#" class="nav-link">Necropolis</a>
+            <a href="#" class="nav-link">Solar Ship</a>
+            <a href="#" class="nav-link">Archeo-astronomy</a>
+            <a href="#" class="nav-link">Conservation</a>
+        </div>
+        <button class="stone-btn px-6 py-2.5 font-sans text-[11px] uppercase tracking-[0.2em] font-medium flex items-center gap-2">
+            Plan Expedition <iconify-icon icon="ph:arrow-right-light" class="text-[14px] text-amber"></iconify-icon>
+        </button>
+    </nav>
 
-<nav class="fixed top-0 w-full z-50 px-8 py-6 flex items-center justify-between subsurface-nav transition-all duration-500" id="navbar">
-  <div class="flex items-center gap-3 cursor-pointer group">
-    <iconify-icon icon="ph:compass-rose-light" class="text-3xl text-amber transition-transform duration-700 group-hover:rotate-180"></iconify-icon>
-    <div class="flex flex-col">
-      <span class="font-serif tracking-widest text-[11px] uppercase text-basalt/60">UNESCO</span>
-      <span class="font-sans font-medium text-[13px] tracking-wide text-basalt">World Heritage</span>
-    </div>
-  </div>
+    <main class="relative w-full">
+        <section class="relative w-full h-[110vh] flex flex-col items-center justify-center overflow-hidden">
+            <div class="absolute inset-0 z-0 w-full h-full">
+                <video id="giza-video" autoPlay loop muted playsInline class="w-full h-full object-cover filter contrast-125 saturate-110 sepia-[0.15] ">
+                    <source src="./video.mp4" type="video/mp4" />
+                </video>
+            </div>
+            
+            <div class="relative z-10 flex flex-col items-center text-center px-6 w-full max-w-5xl" id="hero-text">
+                <div class="golden-haze"></div>
+                <div class="reveal-up active flex items-center gap-4 mb-8 filter [filter:drop-shadow(0_0_10px_rgba(0,0,0,1))_drop-shadow(0_2px_4px_rgba(0,0,0,1))]">
+                    <div class="h-[1px] w-12 bg-amber/60"></div>
+                    <span class="font-sans text-[10px] tracking-[0.4em] uppercase text-white"> Memphis & Its Necropolis </span>
+                    <div class="h-[1px] w-12 bg-amber/60"></div>
+                </div>
+                <h1 class="font-serif text-6xl md:text-8xl lg:text-[7.5rem] leading-[0.9] text-center sun-bleed reveal-up active delay-100 relative z-10 filter [filter:drop-shadow(0_0_15px_rgba(0,0,0,1))_drop-shadow(0_0_50px_rgba(0,0,0,0.9))]"> 
+                    The Great <br> Pyramids of Giza 
+                </h1>
+                <p class="mt-10 font-sans text-sm md:text-base text-white max-w-xl font-light leading-relaxed tracking-wide reveal-up active delay-200 filter z-20 [filter:drop-shadow(0_4px_8px_rgba(0,0,0,1))_drop-shadow(0_0_25px_rgba(0,0,0,0.7))]"> 
+                    A testament to monolithic limestone architecture and exact archeo-astronomy alignment. Experience the timeless sandstone thermal mass that has endured millennia under the desert sun. 
+                </p>
+            </div>
+        </section>
 
-  <div class="hidden md:flex items-center gap-10 font-sans text-[11px] uppercase tracking-[0.2em] font-medium">
-    <a href="#" class="nav-link">Necropolis</a>
-    <a href="#" class="nav-link">Solar Ship</a>
-    <a href="#" class="nav-link">Archeo-astronomy</a>
-    <a href="#" class="nav-link">Conservation</a>
-  </div>
+        <section class="relative z-20 py-24 px-4 md:px-8 lg:px-16 bg-sandstone">
+            <div class="max-w-[1400px] mx-auto mt-12">
+                <div class="mb-16 flex items-end justify-between reveal-up">
+                    <div>
+                        <h2 class="font-serif text-4xl text-basalt mb-2">Architectural Telemetry</h2>
+                        <p class="font-mono text-xs text-basalt/50 tracking-widest uppercase">Dataset: Khufu Complex</p>
+                    </div>
+                    <iconify-icon icon="ph:hexagon-light" class="text-4xl text-amber animate-[spin_10s_linear_infinite]"></iconify-icon>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 auto-rows-[250px]">
+                    <div class="stone-panel md:col-span-2 lg:col-span-2 row-span-2 p-8 flex flex-col justify-between group reveal-up">
+                        <div class="absolute inset-0 grid-bg opacity-30"></div>
+                        <div class="relative z-10 flex justify-between items-start">
+                            <iconify-icon icon="ph:scan-light" class="text-3xl text-amber"></iconify-icon>
+                            <span class="font-mono text-[10px] text-basalt/60 tracking-widest bg-white/30 px-2 py-1 rounded">SCAN_01</span>
+                        </div>
+                        <div class="relative z-10">
+                            <h3 class="font-serif text-3xl mb-3 text-basalt">Structural Topography</h3>
+                            <p class="font-sans text-sm font-light text-basalt/70 leading-relaxed max-w-sm">
+                                Engineered with microscopic precision. The original highly polished limestone casing stones acted as a mirrored beacon across the ancient sands.
+                            </p>
+                            <div class="mt-6 flex gap-6 border-t border-basalt/10 pt-4">
+                                <div>
+                                    <span class="block font-mono text-2xl text-amber"><span class="counter" data-target="2.3">0</span>M</span>
+                                    <span class="font-mono text-[9px] uppercase tracking-widest text-basalt/50">Stone Blocks</span>
+                                </div>
+                                <div>
+                                    <span class="block font-mono text-2xl text-amber"><span class="counter" data-target="5.9">0</span>M</span>
+                                    <span class="font-mono text-[9px] uppercase tracking-widest text-basalt/50">Tons Mass</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stone-panel p-6 flex flex-col justify-between group reveal-up delay-100">
+                        <iconify-icon icon="ph:star-four-light" class="text-2xl text-amber"></iconify-icon>
+                        <div>
+                            <span class="font-mono text-3xl text-basalt block mb-1">True North</span>
+                            <span class="font-mono text-[10px] uppercase tracking-widest text-basalt/50">Error margin: 0.05°</span>
+                            <p class="mt-3 font-sans text-xs text-basalt/70">Cosmic alignment targeting the constellation of Orion.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stone-panel p-6 flex flex-col justify-between group reveal-up delay-200">
+                        <iconify-icon icon="ph:thermometer-light" class="text-2xl text-amber"></iconify-icon>
+                        <div>
+                            <span class="font-mono text-3xl text-basalt block mb-1"><span class="counter" data-target="20">0</span>°C</span>
+                            <span class="font-mono text-[10px] uppercase tracking-widest text-basalt/50">Internal Temp</span>
+                            <p class="mt-3 font-sans text-xs text-basalt/70">Constant thermal mass regardless of desert fluctuations.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stone-panel md:col-span-2 p-8 flex flex-col md:flex-row items-start md:items-center justify-between group reveal-up delay-100">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-3">
+                                <iconify-icon icon="ph:boat-light" class="text-2xl text-amber"></iconify-icon>
+                                <h3 class="font-serif text-xl text-basalt">Khufu’s Solar Ship</h3>
+                            </div>
+                            <p class="font-sans text-sm font-light text-basalt/70 leading-relaxed max-w-md">
+                                Sealed in a bedrock pit, this intact vessel was engineered to carry the resurrected king across the heavens.
+                            </p>
+                        </div>
+                        <div class="mt-6 md:mt-0 font-mono text-right">
+                            <span class="block text-[10px] text-basalt/50 uppercase tracking-widest mb-1">Dimensions</span>
+                            <span class="block text-xl text-basalt">43.6m × 5.9m</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 
-  <button class="stone-btn px-6 py-2.5 font-sans text-[11px] uppercase tracking-[0.2em] font-medium flex items-center gap-2">
-    Plan Expedition
-    <iconify-icon icon="ph:arrow-right-light" class="text-[14px] text-amber"></iconify-icon>
-  </button>
-</nav>
+    <footer class="relative z-20 bg-basalt text-sandstone border-t border-amber/10 pt-24 pb-12 overflow-hidden">
+        <div class="absolute inset-0 grid-bg opacity-5 pointer-events-none"></div>
+        <div class="max-w-[1400px] mx-auto px-8 md:px-16 relative z-10">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8 mb-20">
+                <div class="md:col-span-2 flex flex-col items-start reveal-up">
+                    <iconify-icon icon="ph:compass-rose-light" class="text-4xl text-amber mb-6"></iconify-icon>
+                    <h2 class="font-serif text-3xl md:text-4xl text-sandstone mb-4">Preserving the resonance <br> of human endeavor.</h2>
+                    <p class="font-sans text-sm font-light text-sandstone/60 max-w-md mb-8 leading-relaxed">
+                        The exactitude of the stonework stands as a masterpiece of heritage engineering transcending the boundaries of time.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 rounded-full border border-sandstone/20 flex items-center justify-center text-sandstone/60 hover:text-amber hover:border-amber transition-colors">
+                            <iconify-icon icon="ph:instagram-logo-light" class="text-xl"></iconify-icon>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full border border-sandstone/20 flex items-center justify-center text-sandstone/60 hover:text-amber hover:border-amber transition-colors">
+                            <iconify-icon icon="ph:twitter-logo-light" class="text-xl"></iconify-icon>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full border border-sandstone/20 flex items-center justify-center text-sandstone/60 hover:text-amber hover:border-amber transition-colors">
+                            <iconify-icon icon="ph:youtube-logo-light" class="text-xl"></iconify-icon>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col gap-4 reveal-up delay-100">
+                    <span class="font-mono text-[10px] tracking-widest uppercase text-sandstone/40 mb-2">Expedition</span>
+                    <a href="#" class="font-sans text-sm text-sandstone/70 hover:text-amber transition-colors">The Necropolis</a>
+                    <a href="#" class="font-sans text-sm text-sandstone/70 hover:text-amber transition-colors">Solar Ship Archive</a>
+                    <a href="#" class="font-sans text-sm text-sandstone/70 hover:text-amber transition-colors">Archeo-astronomy</a>
+                    <a href="#" class="font-sans text-sm text-sandstone/70 hover:text-amber transition-colors">Virtual Mapping</a>
+                </div>
+                
+                <div class="flex flex-col gap-4 reveal-up delay-200">
+                    <span class="font-mono text-[10px] tracking-widest uppercase text-sandstone/40 mb-2">Heritage</span>
+                    <a href="#" class="font-sans text-sm text-sandstone/70 hover:text-amber transition-colors">Conservation Status</a>
+                    <a href="#" class="font-sans text-sm text-sandstone/70 hover:text-amber transition-colors">Historical Timeline</a>
+                    <a href="#" class="font-sans text-sm text-sandstone/70 hover:text-amber transition-colors">UNESCO Protocols</a>
+                    <a href="#" class="font-sans text-sm text-sandstone/70 hover:text-amber transition-colors">Data Access</a>
+                </div>
+            </div>
+            
+            <div class="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-sandstone/10 reveal-up delay-300">
+                <div class="font-mono text-[10px] text-sandstone/40 tracking-widest mb-4 md:mb-0">
+                    © 2026 UNESCO HERITAGE INITIATIVE
+                </div>
+                <div class="flex gap-6 font-mono text-[10px] text-sandstone/40 tracking-widest uppercase">
+                    <a href="#" class="hover:text-sandstone transition-colors">Privacy</a>
+                    <a href="#" class="hover:text-sandstone transition-colors">Terms</a>
+                    <span class="text-amber/50">SYS.OP: ONLINE</span>
+                </div>
+            </div>
+        </div>
+    </footer>
 
-<main class="relative w-full">
-  <section class="relative w-full h-[110vh] flex flex-col items-center justify-center overflow-hidden">
-    <div class="absolute inset-0 radial-portal z-0">
-      <video id="giza-video" autoPlay loop muted playsInline class="w-full h-full object-cover filter contrast-125 saturate-110 sepia-[0.15]">
-        <source src="./video.mp4" type="video/mp4" />
-      </video>
-      <div class="absolute inset-0 desert-dust mix-blend-overlay"></div>
-    </div>
+    <script>
+        // Smooth Hero Parallax
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const scroll = window.scrollY;
+                    const vid = document.getElementById('giza-video');
+                    const txt = document.getElementById('hero-text');
+                    
+                    if (vid && scroll < window.innerHeight * 1.5) {
+                        vid.style.transform = `scale(${1.05 + scroll * 0.0002})`;
+                    }
+                    if (txt && scroll < window.innerHeight) {
+                        txt.style.transform = `translateY(${scroll * 0.3}px)`;
+                        txt.style.opacity = Math.max(0, 1 - scroll / 700);
+                    }
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
 
-    <div class="relative z-10 flex flex-col items-center text-center px-6 w-full max-w-5xl" id="hero-text">
-      <div class="golden-haze"></div>
-      
-      <div class="reveal-up active flex items-center gap-4 mb-8">
-        <div class="h-[1px] w-12 bg-amber/60"></div>
-        <span class="font-sans text-[10px] tracking-[0.4em] uppercase text-basalt/70">Memphis & Its Necropolis</span>
-        <div class="h-[1px] w-12 bg-amber/60"></div>
-      </div>
+        // Intersection Observer for Reveal Animations & Counters
+        const observerOptions = { root: null, rootMargin: '0px 0px -5% 0px', threshold: 0.1 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    
+                    // Trigger number counters if present
+                    const counters = entry.target.querySelectorAll('.counter');
+                    counters.forEach(counter => {
+                        const target = parseFloat(counter.getAttribute('data-target'));
+                        const duration = 2000; // ms
+                        const stepTime = Math.abs(Math.floor(duration / 60));
+                        let current = 0;
+                        const isFloat = target % 1 !== 0;
+                        
+                        const timer = setInterval(() => {
+                            current += target / 60;
+                            if (current >= target) {
+                                counter.innerText = target;
+                                clearInterval(timer);
+                            } else {
+                                counter.innerText = isFloat ? current.toFixed(1) : Math.floor(current);
+                            }
+                        }, stepTime);
+                    });
 
-      <h1 class="font-serif text-6xl md:text-8xl lg:text-[7.5rem] leading-[0.9] text-center sun-bleed reveal-up active delay-100 relative z-10">
-        The Great <br> Pyramids of Giza
-      </h1>
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
 
-      <p class="mt-10 font-sans text-sm md:text-base text-basalt/70 max-w-xl font-light leading-relaxed tracking-wide reveal-up active delay-200">
-        A testament to monolithic limestone architecture and exact archeo-astronomy alignment. Experience the timeless sandstone thermal mass that has endured millennia under the desert sun.
-      </p>
-    </div>
-
-    <div class="absolute bottom-16 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-4 reveal-up active delay-300 z-10">
-      <span class="font-sans text-[9px] tracking-[0.3em] uppercase text-basalt/50">Descend</span>
-      <div class="w-[1px] h-12 bg-gradient-to-b from-amber/80 to-transparent"></div>
-    </div>
-  </section>
-
-  <section class="relative z-20 py-32 px-8 md:px-16 lg:px-24 bg-sandstone">
-    <div class="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-16">
-      
-      <div class="stone-btn rounded-3xl p-10 flex flex-col group reveal-up">
-        <iconify-icon icon="ph:triangle-light" class="text-4xl text-amber mb-8 group-hover:scale-110 transition-transform duration-700"></iconify-icon>
-        <h3 class="font-serif text-2xl mb-4 text-basalt">Monolithic Architecture</h3>
-        <p class="font-sans text-sm font-light text-basalt/70 leading-relaxed">
-          Engineered with microscopic precision, the limestone casing stones were originally highly polished, reflecting the sun like a mirrored beacon across the ancient sands.
-        </p>
-      </div>
-
-      <div class="stone-btn rounded-3xl p-10 flex flex-col group reveal-up delay-100">
-        <iconify-icon icon="ph:star-light" class="text-4xl text-amber mb-8 group-hover:scale-110 transition-transform duration-700"></iconify-icon>
-        <h3 class="font-serif text-2xl mb-4 text-basalt">Archeo-astronomy</h3>
-        <p class="font-sans text-sm font-light text-basalt/70 leading-relaxed">
-          The descending passages and ventilation shafts form a deliberate cosmic alignment, targeting true north and the constellation of Orion, merging earth and sky.
-        </p>
-      </div>
-
-      <div class="stone-btn rounded-3xl p-10 flex flex-col group reveal-up delay-200">
-        <iconify-icon icon="ph:boat-light" class="text-4xl text-amber mb-8 group-hover:scale-110 transition-transform duration-700"></iconify-icon>
-        <h3 class="font-serif text-2xl mb-4 text-basalt">Khufu’s Solar Ship</h3>
-        <p class="font-sans text-sm font-light text-basalt/70 leading-relaxed">
-          Sealed in a bedrock pit, this intact full-size vessel was designed to carry the resurrected king with the sun god Ra across the heavens in eternal cycle.
-        </p>
-      </div>
-
-    </div>
-  </section>
-  
-  <section class="relative z-20 py-40 border-t border-amber/20 overflow-hidden flex flex-col items-center text-center">
-    <div class="absolute inset-0 golden-haze opacity-50"></div>
-    <div class="relative z-10 max-w-3xl px-6 reveal-up">
-      <iconify-icon icon="ph:sun-dim-light" class="text-5xl text-amber mb-8 animate-[spin_20s_linear_infinite]"></iconify-icon>
-      <h2 class="font-serif text-4xl md:text-6xl text-basalt tracking-tight mb-8">
-        Breathe the heat of Giza
-      </h2>
-      <p class="font-sans text-base text-basalt/70 font-light leading-relaxed">
-        Preserving the resonance of human endeavor. The exactitude of the stonework stands not just as a tomb, but as a masterpiece of heritage engineering transcending the boundaries of time.
-      </p>
-    </div>
-  </section>
-</main>
-
-<script>
-  let ticking = false;
-  
-  window.addEventListener('scroll', () => {
-    if (!ticking) {
-      window.requestAnimationFrame(() => {
-        const scroll = window.scrollY;
-        const vid = document.getElementById('giza-video');
-        const txt = document.getElementById('hero-text');
-        
-        if (vid && scroll < window.innerHeight * 1.5) {
-          vid.style.transform = `scale(${1.05 + scroll * 0.0002})`;
-        }
-        
-        if (txt && scroll < window.innerHeight) {
-          txt.style.transform = `translateY(${scroll * 0.3}px)`;
-          txt.style.opacity = Math.max(0, 1 - scroll / 700);
-        }
-        
-        ticking = false;
-      });
-      ticking = true;
-    }
-  });
-
-  const observerOptions = {
-    root: null,
-    rootMargin: '0px 0px -10% 0px',
-    threshold: 0.1
-  };
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('active');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, observerOptions);
-
-  document.querySelectorAll('.reveal-up:not(.active)').forEach(el => {
-    observer.observe(el);
-  });
-</script>
-
+        document.querySelectorAll('.reveal-up:not(.active)').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
 </body>
 </html>

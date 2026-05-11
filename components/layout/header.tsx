@@ -5,10 +5,12 @@ import Link from "next/link";
 import { Icon } from "@iconify/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LiquidMetalButton } from "../ui/liquid-metal-button";
+import { SubmitModal } from "../ui/SubmitModal";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [showSubmit, setShowSubmit] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -25,8 +27,8 @@ export default function Header() {
     <>
       <header
         className={`fixed top-0 z-50 w-full transition-all duration-300 animate-fade-in ${isScrolled || isOpen
-            ? "border-b border-white/10 bg-black/80 backdrop-blur-xl py-0"
-            : "border-transparent bg-transparent py-2"
+          ? "border-b border-white/10 bg-black/80 backdrop-blur-xl py-0"
+          : "border-transparent bg-transparent py-2"
           }`}
       >
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
@@ -46,8 +48,7 @@ export default function Header() {
           </Link>
 
           <nav className="hidden items-center gap-8 text-sm font-medium text-neutral-300 md:flex">
-            <a href="#gallery" className="transition-colors hover:text-white">Gallery</a>
-            <a href="#assets" className="transition-colors hover:text-white">Assets</a>
+            <a href="/assets" target="_blank" className="transition-colors hover:text-white">Assets</a>
             <a
               href="https://mail.google.com/mail/?view=cm&fs=1&to=oliverachavezcristian@gmail.com"
               target="_blank"
@@ -58,10 +59,20 @@ export default function Header() {
           </nav>
 
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => setShowSubmit(true)}
+              className="group relative hidden sm:inline-flex items-center justify-center rounded-full px-5 py-3 mb-1 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-[0_4px_10px_rgba(0,0,0,0.2)] hover:shadow-[0_10px_20px_rgba(0,0,0,0.3)] border border-white/20 text-white backdrop-blur-lg"
+            >
+              <div className="relative z-20 flex items-center gap-1.5 text-[#f9f9f9] drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">
+                <Icon icon="solar:upload-linear" width="16" />
+                <span className="text-sm font-medium tracking-wide">Submit</span>
+              </div>
+            </button>
             <div className="hidden sm:block">
-              <LiquidMetalButton label="GitHub" icon="mdi:github" size="md" />
+              <Link href="https://github.com/CristianOlivera1/openhero" target="_blank" rel="noopener noreferrer">
+                <LiquidMetalButton label="GitHub" icon="mdi:github" size="md" />
+              </Link>
             </div>
-
             <button
               className="p-2 text-white md:hidden z-50"
               onClick={() => setIsOpen(!isOpen)}
@@ -101,9 +112,6 @@ export default function Header() {
               </motion.div>
 
               <nav className="flex flex-col items-center gap-8 text-2xl font-semibold text-white">
-                <Link href="#gallery" onClick={() => setIsOpen(false)} className="hover:text-accent transition-colors">
-                  Gallery
-                </Link>
                 <a
                   href="https://mail.google.com/mail/?view=cm&fs=1&to=oliverachavezcristian@gmail.com"
                   onClick={() => setIsOpen(false)}
@@ -111,14 +119,23 @@ export default function Header() {
                 >
                   Contact
                 </a>
+
               </nav>
-              <div className="mt-8 flex w-full justify-center">
+              <div className="mt-8 flex flex-col w-full justify-center items-center gap-4">
+                <button
+                  onClick={() => { setIsOpen(false); setShowSubmit(true); }}
+                  className="group relative items-center justify-center rounded-full px-5 py-4 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-[0_4px_10px_rgba(0,0,0,0.2)] hover:shadow-[0_10px_20px_rgba(0,0,0,0.3)] border border-white/20 text-white backdrop-blur-lg"
+                >
+                  Submit Hero
+                </button>
                 <LiquidMetalButton label="GitHub" icon="mdi:github" size="lg" />
               </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {showSubmit && <SubmitModal onClose={() => setShowSubmit(false)} />}
     </>
   );
 }
