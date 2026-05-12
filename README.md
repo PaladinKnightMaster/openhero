@@ -4,7 +4,7 @@
 
 <br/>
 
-# openhero
+<img width="50%" alt="openvid Hero" src="https://openhero.art/svg/logo-openhero.svg" />
 
 **The free, open collection of cinematic video hero sections**  
 Browse, preview, copy & download production-ready backgrounds - instantly.
