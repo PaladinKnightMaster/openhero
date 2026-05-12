@@ -31,6 +31,8 @@ openhero is a free gallery of **cinematic full-screen video hero sections** for 
 
 ---
 
+<img width="1920" height="1080" alt="373shots_so (1)" src="https://github.com/user-attachments/assets/2b1fe691-ac3c-4909-8542-965275d96e62" />
+
 ## 🎬 Features
 
 | Feature | Description |

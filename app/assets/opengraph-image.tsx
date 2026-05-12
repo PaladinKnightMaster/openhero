@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "openhero — 272 Free Premium Background Images";
+export const alt = "openhero - 272 Free Premium Background Images";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -105,7 +105,7 @@ export default function Image() {
             display: "flex",
           }}
         >
-          Wallpapers, gradients, minimal designs & patterns — curated for creative projects
+          Wallpapers, gradients, minimal designs & patterns - curated for creative projects
         </div>
       </div>
     ),

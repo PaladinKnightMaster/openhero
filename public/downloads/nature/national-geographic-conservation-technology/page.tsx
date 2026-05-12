@@ -129,14 +129,15 @@ export default function Page() {
 
     stalkEls.forEach((el) => observer.observe(el));
 
-    document.querySelectorAll(".genome-node").forEach((node) => {
-      node.addEventListener("mousemove", (e: any) => {
+    document.querySelectorAll<HTMLElement>(".genome-node").forEach((node) => {
+      node.addEventListener("mousemove", (e: MouseEvent) => {
         const rect = node.getBoundingClientRect();
+
         const x = ((e.clientX - rect.left) / rect.width) * 100;
         const y = ((e.clientY - rect.top) / rect.height) * 100;
 
-        (node as HTMLElement).style.setProperty("--mx", `${x}%`);
-        (node as HTMLElement).style.setProperty("--my", `${y}%`);
+        node.style.setProperty("--mx", `${x}%`);
+        node.style.setProperty("--my", `${y}%`);
       });
     });
 

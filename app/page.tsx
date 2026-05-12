@@ -62,10 +62,6 @@ export const metadata: Metadata = {
 export default async function Home() {
   const { videos, categories } = getVideoCatalog();
 
-  // ── Sort by views (most-viewed first) ──────────────────────────
-  // Fetch aggregate stats from Supabase and sort the catalog in-place.
-  // Falls back to original filesystem order on any error (Supabase down,
-  // empty table, env vars missing, etc.).
   let sortedVideos = videos;
   try {
     const supabase = await createClient();

@@ -5,13 +5,20 @@ import { Icon } from "@iconify/react";
 
 export default function Page() {
   useEffect(() => {
-  const cards = Array.from(document.querySelectorAll<HTMLElement>(".sss-card"));
+    const cleanups: (() => void)[] = [];
+
+    document.querySelectorAll<HTMLElement>(".sss-card").forEach((card) => {
+      const glow = card.querySelector(
+        ".subsurface-glow"
+      ) as HTMLElement | null;
 
   const handlers = new Map<HTMLElement, (e: MouseEvent) => void>();
 
-  cards.forEach((card) => {
-    const glow = card.querySelector<HTMLElement>(".subsurface-glow");
-    if (!glow) return;
+      const move = (e: globalThis.MouseEvent) => {
+        const rect = card.getBoundingClientRect();
+
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
 
     const move = (e: MouseEvent) => {
       const rect = card.getBoundingClientRect();
@@ -21,37 +28,39 @@ export default function Page() {
       glow.style.top = `${y}px`;
     };
 
-    handlers.set(card, move);
-    card.addEventListener("mousemove", move);
-  });
-
-  const observerOptions = {
-    root: null,
-    rootMargin: "0px 0px -15% 0px",
-    threshold: 0.1,
-  };
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("active");
-        observer.unobserve(entry.target);
-      }
+      cleanups.push(() => {
+        card.removeEventListener("mousemove", move);
+      });
     });
   }, observerOptions);
 
-  document.querySelectorAll(".bloom-reveal").forEach((el) => {
-    observer.observe(el);
-  });
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("active");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        root: null,
+        rootMargin: "0px 0px -15% 0px",
+        threshold: 0.1,
+      }
+    );
 
   return () => {
     cards.forEach((card) => {
       const move = handlers.get(card);
       if (move) card.removeEventListener("mousemove", move);
     });
-    observer.disconnect();
-  };
-}, []);
+
+    return () => {
+      cleanups.forEach((cleanup) => cleanup());
+      observer.disconnect();
+    };
+  }, []);
 
   return (
     <>

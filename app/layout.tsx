@@ -25,7 +25,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "openhero — Free Cinematic Video Hero Sections",
+    default: "openhero - Free Cinematic Video Hero Sections",
     template: "%s | openhero",
   },
   description:
@@ -59,13 +59,13 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: BASE_URL,
     siteName: "openhero",
-    title: "openhero — Free Cinematic Video Hero Sections",
+    title: "openhero - Free Cinematic Video Hero Sections",
     description:
       "Browse and download cinematic video hero sections with production-ready source code in HTML, React, and Next.js.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "openhero — Free Cinematic Video Hero Sections",
+    title: "openhero - Free Cinematic Video Hero Sections",
     description:
       "Browse and download cinematic video hero sections with production-ready source code in HTML, React, and Next.js.",
   },

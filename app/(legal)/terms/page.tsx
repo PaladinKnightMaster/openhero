@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
-  description: "Terms of service for openhero — the free cinematic video hero section gallery.",
+  description: "Terms of service for openhero - the free cinematic video hero section gallery.",
 };
 
 const LAST_UPDATED = "May 11, 2026";
