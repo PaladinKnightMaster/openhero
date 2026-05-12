@@ -3,12 +3,12 @@
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Icon } from "@iconify/react"; // <-- IMPORTACIÓN NECESARIA
+import { Icon } from "@iconify/react";
 
 interface TabData {
   label: string;
   value: string;
-  icon?: string; // <-- AHORA ACEPTA ICONO
+  icon?: string;
   content: React.ReactNode;
 }
 
@@ -16,7 +16,6 @@ interface VercelTabsProps {
   tabs: TabData[];
   defaultTab?: string;
   className?: string;
-  /** Override the content wrapper classes (default: "mt-8 w-full px-4") */
   contentClassName?: string;
 }
 
