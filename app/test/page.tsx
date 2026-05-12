@@ -1,239 +1,408 @@
-"use client"
+"use client";
 
-import React, { useEffect } from 'react';
-import { Icon } from '@iconify/react';
+import { useEffect } from "react";
 
-export default function VeridianLiving() {
+export default function Page() {
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add('bloomed');
+            entry.target.classList.add("active");
           }
         });
       },
       { threshold: 0.1 }
     );
 
-    const elements = document.querySelectorAll('.bloom-element');
-    elements.forEach((el) => observer.observe(el));
+    const reveals = document.querySelectorAll(".reveal");
+    reveals.forEach((el) => observer.observe(el));
 
-    return () => observer.disconnect();
+    return () => {
+      reveals.forEach((el) => observer.unobserve(el));
+    };
   }, []);
-
-  const renderKineticText = (text) => {
-    return text.split('').map((char, i) => (
-      <span
-        key={i}
-        className="kinetic-letter"
-        style={{ animationDelay: `${i * 0.05}s` }}
-      >
-        {char === ' ' ? '\u00A0' : char}
-      </span>
-    ));
-  };
 
   return (
     <>
-      <style dangerouslySetInnerHTML={{ __html: `
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600&display=swap');
+      <style jsx global>{`
+        @import url("https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Manrope:wght@200;400;600&display=swap");
 
         :root {
-          --sunlight-cream: oklch(97% 0.02 90);
-          --sun-linen: oklch(92% 0.03 85);
-          --chlorophyll: oklch(45% 0.12 140);
-          --chlorophyll-light: oklch(65% 0.10 140);
-          --oak-brown: oklch(50% 0.08 60);
-          --deep-forest: oklch(25% 0.08 140);
-          --warm-amber: oklch(75% 0.15 65);
+          --basalt: oklch(12% 0.02 260);
+          --amber: oklch(65% 0.15 45);
+          --storm: oklch(25% 0.01 260);
         }
 
         body {
-          background-color: var(--sunlight-cream);
-          color: var(--deep-forest);
-          font-family: 'Manrope', sans-serif;
+          background-color: var(--basalt);
+          color: white;
           margin: 0;
           overflow-x: hidden;
-          scroll-behavior: smooth;
+          font-family: "Manrope", sans-serif;
         }
 
-        .serif { font-family: 'Cormorant Garamond', serif; }
-
-        .nav-link {
-          position: relative;
-          font-size: 0.8rem;
-          letter-spacing: 0.2em;
-          text-transform: uppercase;
-          transition: opacity 0.3s;
+        .tectonic-section {
+          position: sticky;
+          top: 0;
+          height: 100vh;
+          width: 100%;
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          background: var(--basalt);
+          border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .nav-link::after {
-          content: '';
-          position: absolute;
-          bottom: -4px;
-          left: 0;
-          width: 0;
-          height: 1px;
-          background: currentColor;
-          transition: width 0.3s ease;
+        .blade-mask {
+          clip-path: polygon(0 0, 100% 0, 100% 85%, 25% 100%, 0 90%);
         }
 
-        .nav-link:hover::after { width: 100%; }
-
-        .kinetic-letter {
-          display: inline-block;
-          animation: sway 7s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite alternate;
+        .sharp-card {
+          clip-path: polygon(0 0, 100% 5%, 95% 100%, 0% 95%);
+          background: rgba(255, 255, 255, 0.02);
+          backdrop-filter: blur(20px);
+          border: 1px solid rgba(217, 119, 66, 0.2);
         }
 
-        @keyframes sway {
-          0% { transform: rotate(-1deg) translateY(0); }
-          100% { transform: rotate(1deg) translateY(-2px); }
+        .hud-glass {
+          background: rgba(0, 0, 0, 0.4);
+          backdrop-filter: blur(25px) brightness(0.6);
+          border: 1px solid rgba(217, 119, 66, 0.3);
         }
 
-        .bloom-element {
+        .font-syne {
+          font-family: "Syncopate", sans-serif;
+        }
+
+        .text-edge {
+          -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+          color: transparent;
+        }
+
+        .reveal {
           opacity: 0;
-          transform: translateY(30px);
-          transition: all 1s ease-out;
+          transform: translateY(40px);
+          transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .bloom-element.bloomed {
+        .reveal.active {
           opacity: 1;
           transform: translateY(0);
         }
-      `}} />
 
-      <nav className="fixed top-0 left-0 w-full z-50 px-10 py-8 flex justify-between items-center text-white bg-black/20">
-        <div className="text-2xl font-light tracking-tighter serif">Veridian Living</div>
-        <div className="hidden md:flex gap-12">
-          <a href="#" className="nav-link">Sofas</a>
-          <a href="#" className="nav-link">Tables</a>
-          <a href="#" className="nav-link">Lighting</a>
-          <a href="#" className="nav-link">Explore</a>
-        </div>
-        <div className="flex gap-6 items-center">
-          <button className="nav-link flex items-center gap-2">
-            <Icon icon="mdi:cart-outline" className="text-xl" /> Cart (0)
-          </button>
-        </div>
-      </nav>
+        .stealth-btn {
+          background: #000;
+          position: relative;
+          padding: 1.25rem 2.5rem;
+          clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+          transition: all 0.4s ease;
+          border: 1px solid rgba(217, 119, 66, 0.5);
+          color: var(--amber);
+          text-transform: uppercase;
+          font-size: 0.75rem;
+          letter-spacing: 0.3em;
+        }
 
-      <section className="relative w-screen h-screen overflow-hidden flex items-center justify-center">
-        <video autoPlay muted loop playsInline className="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto -translate-x-1/2 -translate-y-1/2 scale-110 object-cover z-0">
-          <source src="./video.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(25,40,30,0.2)_0%,rgba(25,40,30,0.5)_100%)] z-10"></div>
-        
-        <div className="relative z-20 text-center flex flex-col items-center justify-center max-w-5xl mx-auto px-6 [mask-image:linear-gradient(to_bottom,transparent,black_20%,black_80%,transparent)] [-webkit-mask-image:linear-gradient(to_bottom,transparent,black_20%,black_80%,transparent)]">
-          <div className="p-10 md:p-16 flex flex-col items-center">
-            <span className="uppercase tracking-[0.4em] text-[0.65rem] font-bold text-white mb-6 block drop-shadow-[0_10px_30px_rgba(0,0,0,0.9)]">
-              Curated Collection 2024
-            </span>
-            <h1 className="text-6xl md:text-9xl leading-[0.85] text-white serif mb-10 drop-shadow-[0_10px_30px_rgba(0,0,0,0.9)]">
-              {renderKineticText("The Sculpture")} <br />
-              {renderKineticText("of Rest")}
+        .stealth-btn:hover {
+          background: var(--amber);
+          color: #000;
+          box-shadow: 0 0 30px rgba(217, 119, 66, 0.4);
+        }
+      `}</style>
+
+      <main>
+        <header className="fixed top-8 left-8 right-8 z-[100] flex items-center justify-between mix-blend-difference">
+          <div className="font-syne text-xs font-bold uppercase tracking-[0.5em] text-white">
+            Obsidian / Horizon
+          </div>
+
+          <div className="z-20 flex gap-12 font-syne text-[9px] uppercase tracking-widest">
+            <a
+              href="#villas"
+              className="text-white transition-all hover:opacity-70"
+            >
+              Structures
+            </a>
+
+            <a
+              href="#tech"
+              className="text-white transition-all hover:opacity-70"
+            >
+              Intelligence
+            </a>
+
+            <a
+              href="#contact"
+              className="text-white transition-all hover:opacity-70"
+            >
+              Protocol
+            </a>
+          </div>
+        </header>
+
+        <section className="tectonic-section z-10">
+          <div className="blade-mask absolute inset-0">
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="h-full w-full object-cover brightness-75"
+            >
+              <source src="/video.mp4" type="video/mp4" />
+            </video>
+
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
+          </div>
+
+          <div className="relative z-20 px-12 md:px-24">
+            <h4 className="reveal font-syne mb-6 text-[10px] uppercase tracking-[0.6em] text-orange-400">
+              Project: Silence / Location: Unknown
+            </h4>
+
+            <h1 className="reveal font-syne text-[12vw] font-bold uppercase leading-[0.8] tracking-tighter">
+              Stealth
+              <br />
+              <span className="text-edge">Systems</span>
             </h1>
-            <p className="text-lg md:text-3xl font-light text-white/90 max-w-xl leading-relaxed mb-12 drop-shadow-lg">
-              Furniture that breathes. Organic designs that transform your living room into a sanctuary of biophilic wellness.
+
+            <p className="reveal mt-10 max-w-md font-light leading-relaxed text-gray-300">
+              Arquitectura de baja observabilidad integrada en el permafrost
+              volcánico. Residencias que no habitan el paisaje, sino que lo
+              dominan desde la sombra.
             </p>
-            <div className="flex flex-col md:flex-row gap-6">
-              <button className="inline-flex items-center justify-center px-12 py-5 rounded-[50vw] bg-[var(--deep-forest)] text-[var(--sunlight-cream)] font-medium tracking-[0.1em] uppercase transition-all duration-600 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:bg-[var(--chlorophyll)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.2)] border-none cursor-pointer shadow-2xl">
-                Shop Collection
-              </button>
-              <button className="px-8 py-4 border border-white/20 bg-black/20 backdrop-blur-md rounded-full text-white text-sm uppercase tracking-widest hover:bg-white/30 transition-all shadow-xl">
-                View Catalog
-              </button>
-            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="py-32 bg-[var(--sun-linen)] overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
-            <div className="bloom-element">
-              <h2 className="text-5xl md:text-7xl text-[var(--deep-forest)] mb-8 leading-tight serif">Living Matter for your Interior</h2>
-              <p className="text-[var(--oak-brown)] text-lg font-light leading-relaxed mb-10">
-                Our pieces don&apos;t just occupy space; they evolve with it. We use reclaimed woods and smart textiles that purify the air.
-              </p>
-              <div className="grid grid-cols-2 gap-8">
-                <div>
-                  <span className="text-3xl serif block mb-2">01. Sustainable</span>
-                  <p className="text-sm opacity-70">Full forestry certification.</p>
+        <section
+          id="villas"
+          className="tectonic-section z-20"
+          style={{ background: "var(--storm)" }}
+        >
+          <div className="grid h-full w-full grid-cols-1 md:grid-cols-12">
+            <div className="relative hidden h-full md:col-span-5 md:block">
+              <img
+                src="https://plus.unsplash.com/premium_photo-1676657954811-9409c4830467?q=80&w=687&auto=format&fit=crop"
+                className="h-full w-full object-cover brightness-75 grayscale"
+                alt=""
+              />
+
+              <div className="absolute inset-0 bg-orange-400/10 mix-blend-color" />
+            </div>
+
+            <div className="col-span-12 flex flex-col justify-center px-12 py-20 md:col-span-7 md:px-24">
+              <span className="font-syne mb-4 text-xs uppercase tracking-widest text-orange-400">
+                Structural Logic
+              </span>
+
+              <h2 className="font-syne mb-10 text-6xl uppercase leading-none">
+                Aerodynamic
+                <br />
+                Structuralism
+              </h2>
+
+              <div className="grid grid-cols-1 gap-10 sm:grid-cols-2">
+                <div className="sharp-card p-8">
+                  <h3 className="font-syne mb-4 text-sm text-white">
+                    Monolithic Cantilevers
+                  </h3>
+
+                  <p className="text-xs leading-loose text-gray-400">
+                    Nuestros voladizos de hasta 35 metros desafían la gravedad
+                    mediante núcleos de fibra de carbono y anclajes de roca
+                    viva.
+                  </p>
                 </div>
-                <div>
-                  <span className="text-3xl serif block mb-2">02. Ergonomic</span>
-                  <p className="text-sm opacity-70">Adapted to the human rhythm.</p>
+
+                <div className="sharp-card p-8">
+                  <h3 className="font-syne mb-4 text-sm text-white">
+                    Zero-Glare Glazing
+                  </h3>
+
+                  <p className="text-xs leading-loose text-gray-400">
+                    Cristal blindado con tratamiento fotocrómico de baja
+                    reflectancia. Invisible desde el radar y la visión humana.
+                  </p>
+                </div>
+
+                <div className="sharp-card p-8">
+                  <h3 className="font-syne mb-4 text-sm text-white">
+                    Thermal Obsidian
+                  </h3>
+
+                  <p className="text-xs leading-loose text-gray-400">
+                    Fachadas de obsidiana sintética que absorben el calor
+                    residual para alimentar los sistemas de soporte vital
+                    off-grid.
+                  </p>
+                </div>
+
+                <div className="sharp-card p-8">
+                  <h3 className="font-syne mb-4 text-sm text-white">
+                    Seismic Anchors
+                  </h3>
+
+                  <p className="text-xs leading-loose text-gray-400">
+                    Tecnología de amortiguación hidráulica integrada directamente
+                    en el basalto del acantilado.
+                  </p>
                 </div>
               </div>
             </div>
-            <div className="relative">
-              <div className="aspect-[4/5] overflow-hidden rounded-2xl shadow-2xl bloom-element">
-                <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1000&q=80" alt="Furniture Detail" className="w-full h-full object-cover" />
-              </div>
-              <div className="absolute -bottom-10 -left-10 bg-white p-6 rounded-lg shadow-xl hidden md:block bloom-element" style={{ transitionDelay: '0.3s' }}>
-                <span className="text-sm uppercase tracking-widest opacity-50 mb-2 block">Veridian Armchair</span>
-                <span className="text-3xl serif block mb-4">$2,450.00</span>
-                <button className="text-sm font-bold border-b border-black">ADD</button>
-              </div>
-            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="py-32 bg-white">
-        <div className="max-w-[1600px] mx-auto px-6">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-6xl text-[var(--deep-forest)] serif mb-4">Featured Pieces</h2>
-            <p className="text-sm tracking-widest uppercase opacity-40">Signature Furniture</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            <div className="bg-white p-6 rounded-lg transition-all duration-500 ease-in-out hover:shadow-[0_30px_60px_rgba(0,0,0,0.05)] hover:-translate-y-2.5 bloom-element">
-              <div className="aspect-square mb-6 overflow-hidden bg-[var(--sunlight-cream)] rounded-lg">
-                <img src="https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&w=800&q=80" alt="Moss High-Back Sofa" className="w-full h-full object-cover mix-blend-multiply hover:scale-110 transition-transform duration-700" />
-              </div>
-              <h3 className="text-2xl serif mb-2">Moss High-Back Sofa</h3>
-              <p className="text-sm text-[var(--oak-brown)] mb-4">Forest green organic linen textile.</p>
-              <span className="text-lg font-medium">$4,200</span>
-            </div>
-            <div className="bg-white p-6 rounded-lg transition-all duration-500 ease-in-out hover:shadow-[0_30px_60px_rgba(0,0,0,0.05)] hover:-translate-y-2.5 bloom-element" style={{ transitionDelay: '0.1s' }}>
-              <div className="aspect-square mb-6 overflow-hidden bg-[var(--sunlight-cream)] rounded-lg">
-                <img src="https://images.unsplash.com/photo-1581539250439-c96689b516dd?auto=format&fit=crop&w=800&q=80" alt="Cedar Root Table" className="w-full h-full object-cover mix-blend-multiply hover:scale-110 transition-transform duration-700" />
-              </div>
-              <h3 className="text-2xl serif mb-2">Cedar Root Table</h3>
-              <p className="text-sm text-[var(--oak-brown)] mb-4">Cedar wood with bio-based resin.</p>
-              <span className="text-lg font-medium">$1,850</span>
-            </div>
-            <div className="bg-white p-6 rounded-lg transition-all duration-500 ease-in-out hover:shadow-[0_30px_60px_rgba(0,0,0,0.05)] hover:-translate-y-2.5 bloom-element" style={{ transitionDelay: '0.2s' }}>
-              <div className="aspect-square mb-6 overflow-hidden bg-[var(--sunlight-cream)] rounded-lg">
-                <img src="https://images.unsplash.com/photo-1567016376408-0226e4d0c1ea?auto=format&fit=crop&w=800&q=80" alt="Bloom Amber Lamp" className="w-full h-full object-cover mix-blend-multiply hover:scale-110 transition-transform duration-700" />
-              </div>
-              <h3 className="text-2xl serif mb-2">Bloom Amber Lamp</h3>
-              <p className="text-sm text-[var(--oak-brown)] mb-4">Blown glass and oak base.</p>
-              <span className="text-lg font-medium">$890</span>
-            </div>
-          </div>
-        </div>
-      </section>
+        <section id="tech" className="tectonic-section z-30">
+          <div
+            className="absolute inset-0 opacity-10"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle at 2px 2px, var(--amber) 1px, transparent 0)",
+              backgroundSize: "40px 40px",
+            }}
+          />
 
-      <footer className="bg-[var(--deep-forest)] py-20 text-center text-white/60">
-        <div className="max-w-4xl mx-auto px-6">
-          <h2 className="text-5xl text-[var(--warm-amber)] serif mb-8">Join the Ecosystem</h2>
-          <p className="mb-12">Receive news about launches and design philosophies.</p>
-          <div className="flex max-w-md mx-auto border-b border-white/20 pb-2 mb-10">
-            <input type="email" placeholder="Email" className="bg-transparent w-full outline-none text-white px-4" />
-            <button className="uppercase text-sm tracking-widest font-bold">Subscribe</button>
+          <div className="mx-auto grid max-w-7xl grid-cols-12 items-center gap-8 px-12">
+            <div className="col-span-12 lg:col-span-5">
+              <h2 className="font-syne mb-8 text-5xl uppercase leading-none">
+                Topographic
+                <br />
+                Integration
+              </h2>
+
+              <div className="space-y-6">
+                <div className="hud-glass group flex cursor-pointer items-center justify-between p-6 transition-all hover:border-orange-400">
+                  <span className="font-syne text-xs">
+                    Acoustic Cloaking
+                  </span>
+
+                  <span className="text-xs text-orange-400">Active</span>
+                </div>
+
+                <div className="hud-glass group flex cursor-pointer items-center justify-between p-6 transition-all hover:border-orange-400">
+                  <span className="font-syne text-xs">
+                    Hydrological Recovery
+                  </span>
+
+                  <span className="text-xs text-orange-400">
+                    98% Efficient
+                  </span>
+                </div>
+
+                <div className="hud-glass group flex cursor-pointer items-center justify-between p-6 transition-all hover:border-orange-400">
+                  <span className="font-syne text-xs">
+                    Off-Grid Intelligence
+                  </span>
+
+                  <span className="text-xs text-orange-400">
+                    Quantum Link
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-span-12 grid h-[60vh] grid-cols-2 gap-4 lg:col-span-7">
+              <div className="sharp-card overflow-hidden bg-gray-900">
+                <img
+                  src="https://images.unsplash.com/photo-1479839672679-a46483c0e7c8?q=80&w=710&auto=format&fit=crop"
+                  className="h-full w-full object-cover grayscale transition-transform duration-700 hover:scale-110"
+                  alt=""
+                />
+              </div>
+
+              <div className="sharp-card mt-12 overflow-hidden bg-gray-900">
+                <img
+                  src="https://images.unsplash.com/photo-1581250053637-02ad7eb70688?q=80&w=687&auto=format&fit=crop"
+                  className="h-full w-full object-cover grayscale transition-transform duration-700 hover:scale-110"
+                  alt=""
+                />
+              </div>
+            </div>
           </div>
-          <div className="flex justify-center gap-6 mb-10">
-            <a href="#" className="hover:text-white transition-colors"><Icon icon="mdi:instagram" className="text-2xl" /></a>
-            <a href="#" className="hover:text-white transition-colors"><Icon icon="mdi:twitter" className="text-2xl" /></a>
-            <a href="#" className="hover:text-white transition-colors"><Icon icon="mdi:pinterest" className="text-2xl" /></a>
+        </section>
+
+        <footer
+          id="contact"
+          className="tectonic-section z-40 flex flex-col justify-end bg-black pb-20"
+        >
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-orange-400/5" />
+
+          <div className="relative z-10 w-full px-12 md:px-24">
+            <div className="flex flex-col items-end justify-between gap-20 md:flex-row">
+              <div className="max-w-2xl">
+                <h2 className="font-syne mb-10 text-[8vw] font-bold uppercase leading-none tracking-tighter">
+                  The
+                  <br />
+                  Abyss
+                </h2>
+
+                <p className="font-syne mb-12 text-[10px] uppercase tracking-widest text-gray-400">
+                  Coordinates: 13.6394° S, 72.8814° W / 2026 Ready
+                </p>
+
+                <button className="stealth-btn">
+                  Initialize Acquisition
+                </button>
+              </div>
+
+              <div className="grid grid-cols-2 gap-20 text-right font-syne text-[10px] uppercase tracking-[0.3em]">
+                <div className="space-y-6">
+                  <a
+                    href="#"
+                    className="block text-gray-400 hover:text-white"
+                  >
+                    Dossier
+                  </a>
+
+                  <a
+                    href="#"
+                    className="block text-gray-400 hover:text-white"
+                  >
+                    Philosophy
+                  </a>
+
+                  <a
+                    href="#"
+                    className="block text-gray-400 hover:text-white"
+                  >
+                    Security
+                  </a>
+                </div>
+
+                <div className="space-y-6">
+                  <a
+                    href="#"
+                    className="block text-gray-400 hover:text-white"
+                  >
+                    Encrypted Comms
+                  </a>
+
+                  <a
+                    href="#"
+                    className="block text-gray-400 hover:text-white"
+                  >
+                    Satellite Uplink
+                  </a>
+
+                  <a
+                    href="#"
+                    className="block text-gray-400 hover:text-white"
+                  >
+                    Terminal
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-32 flex items-center justify-between border-t border-white/5 pt-8 text-[9px] uppercase tracking-widest opacity-50">
+              <span>Obsidian Horizon © 2026</span>
+
+              <span>Designed for Total Anonymity</span>
+            </div>
           </div>
-          <div className="text-[0.6rem] tracking-widest uppercase">
-            &copy; 2024 Veridian Living - Organic Aesthetics
-          </div>
-        </div>
-      </footer>
+        </footer>
+      </main>
     </>
   );
 }
