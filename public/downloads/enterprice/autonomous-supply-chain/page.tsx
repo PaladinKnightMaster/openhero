@@ -109,20 +109,32 @@ export default function Page() {
       setDarkMode((prev) => !prev);
     };
 
-    // @ts-ignore
-    if (document.startViewTransition) {
-      // @ts-ignore
-      document.startViewTransition(transition);
-    } else {
-      transition();
-    }
+    const toggleTheme = () => {
+      const transition = () => {
+        document.body.dataset.theme =
+          document.body.dataset.theme === "dark" ? "" : "dark";
+
+        setDarkMode((prev) => !prev);
+      };
+
+      const startViewTransition = (
+        document as Document & {
+          startViewTransition?: (cb: () => void) => void;
+        }
+      ).startViewTransition;
+
+      if (typeof document !== "undefined" && startViewTransition) {
+        startViewTransition(transition);
+      } else {
+        transition();
+      }
+    };
   };
 
   return (
     <main
       className={`${inter.className} min-h-[200vh] overflow-x-hidden bg-[var(--pearl-canvas)] text-[var(--text-core)] transition-all duration-700`}
     >
-      {/* BACKGROUND VIDEO */}
       <div
         ref={droneRef}
         className="pointer-events-none fixed right-[-5vw] top-[10vh] z-0 h-[80vh] w-[55vw] overflow-hidden"
@@ -144,7 +156,6 @@ export default function Page() {
         </video>
       </div>
 
-      {/* NAVBAR */}
       <nav className="fixed inset-x-0 top-0 z-50 px-8 py-6 mix-blend-luminosity">
         <div className="mx-auto flex max-w-[1600px] items-center justify-between">
           <div className="flex items-center gap-3">
@@ -163,17 +174,15 @@ export default function Page() {
             className="relative h-6 w-11 rounded-full bg-[var(--surface-bottom)] shadow-[inset_0_2px_4px_var(--shadow-dark),0_1px_1px_var(--shadow-light)]"
           >
             <div
-              className={`absolute top-[2px] h-5 w-5 rounded-full bg-[var(--text-core)] transition-all duration-500 ${
-                darkMode
+              className={`absolute top-[2px] h-5 w-5 rounded-full bg-[var(--text-core)] transition-all duration-500 ${darkMode
                   ? "translate-x-5"
                   : "translate-x-0"
-              }`}
+                }`}
             />
           </button>
         </div>
       </nav>
 
-      {/* CONTENT */}
       <div className="relative z-10 mx-auto max-w-[1600px] px-8 pb-32 pt-40">
         <header className="relative z-20 mb-32 max-w-4xl">
           <span className="mb-6 block text-xs font-semibold uppercase tracking-[0.3em] text-[var(--text-dim)]">
@@ -277,7 +286,6 @@ export default function Page() {
         </section>
       </div>
 
-      {/* GLOBAL STYLES */}
       <style jsx global>{`
         :root {
           --pearl-canvas: oklch(98% 0.01 200);
