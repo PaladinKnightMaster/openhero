@@ -113,6 +113,12 @@ export default function Header() {
 
               <nav className="flex flex-col items-center gap-8 text-2xl font-semibold text-white">
                 <a
+                  href="/assets"
+                  className="hover:text-accent transition-colors"
+                >
+                  Contact
+                </a>
+                <a
                   href="https://mail.google.com/mail/?view=cm&fs=1&to=oliverachavezcristian@gmail.com"
                   onClick={() => setIsOpen(false)}
                   className="hover:text-accent transition-colors"
