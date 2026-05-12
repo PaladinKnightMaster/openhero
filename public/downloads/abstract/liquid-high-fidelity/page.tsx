@@ -1,0 +1,155 @@
+"use client"
+
+import { useEffect, useRef } from "react"
+import Script from "next/script"
+
+export default function LiquidHighFidelityArchitecturePage() {
+  const parallaxRef = useRef<HTMLDivElement>(null)
+
+  // Parallax Effect
+  useEffect(() => {
+    let ticking = false
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrolled = window.scrollY
+          if (parallaxRef.current) {
+            parallaxRef.current.style.transform = `translate3d(0, ${scrolled * -0.15}px, 0) scale(${1 + scrolled * 0.0002})`
+          }
+          ticking = false
+        })
+        ticking = true
+      }
+    }
+    
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  // Global Mouse Position
+  useEffect(() => {
+    const handleGlobalMouseMove = (e: MouseEvent) => {
+      document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`)
+      document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`)
+    }
+    
+    window.addEventListener('mousemove', handleGlobalMouseMove, { passive: true })
+    return () => window.removeEventListener('mousemove', handleGlobalMouseMove)
+  }, [])
+
+  // Local Mouse Position (Bento Grid elements)
+  const handleLocalMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    e.currentTarget.style.setProperty('--mouse-x', `${x}px`)
+    e.currentTarget.style.setProperty('--mouse-y', `${y}px`)
+  }
+
+  // View Transitions Theme Toggle
+  const toggleTheme = () => {
+    const switchTheme = () => {
+      const isLight = document.body.getAttribute('data-theme') === 'light'
+      if (isLight) {
+        document.body.removeAttribute('data-theme')
+      } else {
+        document.body.setAttribute('data-theme', 'light')
+      }
+    }
+    if (document.startViewTransition) {
+      document.startViewTransition(switchTheme)
+    } else {
+      switchTheme()
+    }
+  }
+
+  return (
+    <>
+      {/* 1. Cargamos Tailwind CSS exactamente como en tu HTML original */}
+      <Script src="https://cdn.tailwindcss.com" strategy="beforeInteractive" />
+
+      {/* 2. Estilos minificados para evitar el error de hidratación */}
+      <style dangerouslySetInnerHTML={{
+        __html: `@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;800&display=swap');:root{--bg-pure:oklch(0.05 0 0);--nebula-blue:oklch(65% 0.25 280);--cosmic-violet:oklch(60% 0.2 310);--surface-base:oklch(0.15 0.02 280 / 0.4);--surface-highlight:oklch(0.9 0.02 280 / 0.08);--text-primary:oklch(0.98 0 0);--text-muted:oklch(0.6 0.05 280);--mouse-x:50%;--mouse-y:50%;color-scheme:dark light}[data-theme="light"]{--bg-pure:oklch(0.98 0.01 280);--surface-base:oklch(0.95 0.02 280 / 0.6);--surface-highlight:oklch(1 0 0 / 0.5);--text-primary:oklch(0.1 0.02 280);--text-muted:oklch(0.4 0.05 280)}::view-transition-old(root),::view-transition-new(root){animation:1s cubic-bezier(0.16, 1, 0.3, 1) both blend-fade}@keyframes blend-fade{0%{opacity:0;filter:blur(20px) saturate(0)}100%{opacity:1;filter:blur(0) saturate(100%)}}*{box-sizing:border-box;margin:0;padding:0}body{background-color:var(--bg-pure);color:var(--text-primary);font-family:'Inter', sans-serif;overflow-x:hidden;overscroll-behavior:none;-webkit-font-smoothing:antialiased;transition:background-color 0.8s ease}.atmospheric-portal{position:fixed;bottom:-20vh;right:-15vw;width:90vw;height:90vw;border-radius:50%;overflow:hidden;filter:none;opacity:1;mix-blend-mode:normal;pointer-events:none;z-index:-1;will-change:transform;transform:translate3d(0,0,0)}[data-theme="light"] .atmospheric-portal{mix-blend-mode:normal;opacity:1}.atmospheric-portal video{width:100%;height:100%;object-fit:cover;transform:none}@keyframes scroll-shimmer{to{background-position:200% center}}.kinetic-text{background:linear-gradient(110deg, var(--text-primary) 0%, var(--nebula-blue) 25%, var(--text-primary) 50%, var(--cosmic-violet) 75%, var(--text-primary) 100%);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:scroll-shimmer linear;animation-timeline:scroll(root block)}.liquid-obsidian{background:var(--surface-base);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);box-shadow:inset 0 1px 1px var(--surface-highlight), inset 0 -2px 10px rgba(0, 0, 0, 0.4), 0 30px 60px rgba(0, 0, 0, 0.4);border-radius:2rem;position:relative;isolation:isolate}.liquid-obsidian::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;background:radial-gradient(800px circle at var(--mouse-x) var(--mouse-y), var(--nebula-blue), transparent 40%);-webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0.3;pointer-events:none;transition:opacity 0.5s ease}.liquid-obsidian:hover::before{opacity:1}.frosted-ether{background:radial-gradient(circle at top left, var(--surface-highlight), transparent 70%);backdrop-filter:blur(60px);-webkit-backdrop-filter:blur(60px);box-shadow:inset 0 2px 4px rgba(255, 255, 255, 0.1), inset 0 -2px 20px rgba(0, 0, 0, 0.5), 0 15px 35px rgba(0, 0, 0, 0.3);border-radius:1.5rem;position:relative;overflow:hidden}.mercury-btn{position:relative;overflow:hidden;border-radius:999px;padding:1.2rem 2.5rem;color:#000;font-weight:600;letter-spacing:-0.01em;background:linear-gradient(180deg, #ffffff, #c8c8dc);box-shadow:inset 0 2px 2px rgba(255, 255, 255, 1), inset 0 -4px 8px rgba(0, 0, 0, 0.2), 0 10px 20px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.2);transition:transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;border:none}[data-theme="light"] .mercury-btn{background:linear-gradient(180deg, #111, #333);color:#fff;box-shadow:inset 0 2px 2px rgba(255, 255, 255, 0.2), inset 0 -4px 8px rgba(0, 0, 0, 0.8), 0 10px 20px rgba(0, 0, 0, 0.1)}.mercury-btn::after{content:'';position:absolute;inset:-50%;background:radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(255,255,255,0.8), transparent 50%);opacity:0;transition:opacity 0.3s ease;mix-blend-mode:overlay;pointer-events:none}.mercury-btn:hover{transform:translateY(-4px) scale(1.02);box-shadow:inset 0 2px 2px rgba(255, 255, 255, 1), inset 0 -4px 8px rgba(0, 0, 0, 0.1), 0 20px 40px var(--nebula-blue), 0 0 0 1px rgba(255, 255, 255, 0.5)}[data-theme="light"] .mercury-btn:hover{box-shadow:inset 0 2px 2px rgba(255, 255, 255, 0.2), inset 0 -4px 8px rgba(0, 0, 0, 0.8), 0 20px 40px var(--nebula-blue)}.mercury-btn:hover::after{opacity:1}.reveal-scroll{opacity:0;transform:translateY(40px) scale(0.98);filter:blur(10px);animation:reveal-keyframe linear forwards;animation-timeline:view();animation-range:entry 10% cover 30%}@keyframes reveal-keyframe{to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}.bento-grid{container-type:inline-size;container-name:bento}.micro-label{font-size:0.75rem;text-transform:uppercase;letter-spacing:0.3em;color:var(--text-muted);font-weight:500}.theme-trigger{width:48px;height:24px;border-radius:999px;background:var(--surface-highlight);backdrop-filter:blur(10px);position:relative;cursor:pointer;border:1px solid rgba(255, 255, 255, 0.1);transition:border-color 0.3s}.theme-trigger::before{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--text-primary);transition:transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)}[data-theme="light"] .theme-trigger::before{transform:translateX(24px)}`
+      }} />
+
+      <div className="atmospheric-portal" id="parallax-anchor" ref={parallaxRef}>
+        <video autoPlay muted loop playsInline>
+          <source src="./video.mp4" type="video/mp4" />
+        </video>
+      </div>
+
+      <nav className="fixed top-0 w-full z-50 px-6 py-8 mix-blend-difference text-white">
+        <div className="max-w-screen-2xl mx-auto flex items-center justify-between">
+          <div className="text-xl font-bold tracking-tighter">LIQUID <span className="text-white/40">O.S.</span></div>
+          <div className="theme-trigger" id="theme-toggle" onClick={toggleTheme}></div>
+        </div>
+      </nav>
+
+      <main className="relative z-10 max-w-screen-2xl mx-auto px-6 pt-48 pb-32">
+        <header className="max-w-5xl mb-32 relative">
+          <span className="micro-label mb-6 block">Sensory Architecture</span>
+          <h1 className="text-7xl md:text-9xl font-light tracking-tighter leading-[0.9] kinetic-text mb-8">
+            Fluid<br />Dynamics.
+          </h1>
+          <p className="text-xl md:text-2xl text-[var(--text-muted)] font-light max-w-2xl leading-relaxed">
+            A zero-edge spatial interface. Digital debossing and perceptual OKLCH fusion eliminate structural rigidity.
+          </p>
+          <div className="mt-14">
+            <button className="mercury-btn interactive-surface" onMouseMove={handleLocalMouseMove}>
+              Initialize Sequence
+            </button>
+          </div>
+        </header>
+
+        <section className="bento-grid grid grid-cols-1 md:grid-cols-12 gap-6 auto-rows-[minmax(320px,auto)] reveal-scroll">
+          <div className="liquid-obsidian md:col-span-8 p-10 md:p-16 flex flex-col justify-between interactive-surface" onMouseMove={handleLocalMouseMove}>
+            <div className="flex justify-between items-start">
+              <span className="micro-label">01 // Volumetric Space</span>
+              <div className="w-3 h-3 rounded-full bg-[var(--nebula-blue)] shadow-[0_0_20px_var(--nebula-blue)] mix-blend-screen"></div>
+            </div>
+            <div className="mt-24">
+              <h2 className="text-4xl md:text-5xl font-light mb-6 tracking-tight">Predictable edges have failed.</h2>
+              <p className="text-[var(--text-muted)] text-lg max-w-lg leading-relaxed">
+                Refractive depth overrides solid borders. Inner shadow hierarchies construct digital materials mimicking liquid obsidian reacting to atmospheric luminance.
+              </p>
+            </div>
+          </div>
+
+          <div className="frosted-ether md:col-span-4 p-10 flex flex-col justify-between interactive-surface group" onMouseMove={handleLocalMouseMove}>
+            <span className="micro-label">Telemetry</span>
+            <div className="mt-12">
+              <div className="text-6xl md:text-7xl font-light tracking-tighter mb-2 group-hover:scale-105 transition-transform duration-700 origin-left">
+                120<span className="text-2xl text-[var(--text-muted)] ml-1">fps</span>
+              </div>
+              <p className="text-[var(--text-muted)] text-sm leading-relaxed">
+                Native hardware acceleration via Scroll-Timeline and View Transitions API. Zero external runtime logic.
+              </p>
+            </div>
+          </div>
+
+          <div className="frosted-ether md:col-span-5 p-10 relative overflow-hidden interactive-surface" onMouseMove={handleLocalMouseMove}>
+            <div className="absolute -right-20 -top-20 w-64 h-64 bg-[var(--cosmic-violet)] rounded-full mix-blend-screen filter blur-[80px] opacity-40"></div>
+            <div className="relative z-10 h-full flex flex-col justify-between">
+              <span className="micro-label">Spectrum Engine</span>
+              <div className="mt-auto">
+                <h3 className="text-3xl font-light mb-4">OKLCH Perception</h3>
+                <div className="flex gap-4">
+                  <div className="h-1 bg-[var(--nebula-blue)] w-1/2 rounded-full shadow-[0_0_15px_var(--nebula-blue)]"></div>
+                  <div className="h-1 bg-[var(--cosmic-violet)] w-1/4 rounded-full shadow-[0_0_15px_var(--cosmic-violet)]"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="liquid-obsidian md:col-span-7 p-10 md:p-16 flex items-center interactive-surface overflow-hidden" onMouseMove={handleLocalMouseMove}>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[var(--surface-highlight)] opacity-50 mix-blend-overlay pointer-events-none"></div>
+            <h3 className="text-3xl md:text-5xl font-light leading-tight text-[var(--text-primary)]">
+              Seek luxury through absolute cleanliness and depth.
+            </h3>
+          </div>
+        </section>
+      </main>
+    </>
+  )
+}

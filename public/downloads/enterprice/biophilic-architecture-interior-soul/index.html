@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Veridian Living | Biophilic Furniture Collection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sunlight-cream: oklch(97% 0.02 90);
+            --sun-linen: oklch(92% 0.03 85);
+            --chlorophyll: oklch(45% 0.12 140);
+            --chlorophyll-light: oklch(65% 0.10 140);
+            --oak-brown: oklch(50% 0.08 60);
+            --deep-forest: oklch(25% 0.08 140);
+            --warm-amber: oklch(75% 0.15 65);
+        }
+
+        body {
+            background-color: var(--sunlight-cream);
+            color: var(--deep-forest);
+            font-family: 'Manrope', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        h1, h2, h3, h4, .serif { font-family: 'Cormorant Garamond', serif; }
+
+        /* HERO VIDEO STYLES */
+        .hero-wrapper {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-bg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%) scale(1.1);
+            object-fit: cover;
+            z-index: 0;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(25, 40, 30, 0.2) 0%, rgba(25, 40, 30, 0.5) 100%);
+            z-index: 1;
+        }
+
+        .glass-projection {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(40px) saturate(1.2);
+            -webkit-backdrop-filter: blur(40px) saturate(1.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.2);
+            border-radius: 2rem;
+        }
+
+        .nav-link {
+            position: relative;
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            transition: opacity 0.3s;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: currentColor;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after { width: 100%; }
+
+        .dew-drop {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.25rem 3rem;
+            border-radius: 50vw;
+            background: var(--deep-forest);
+            color: var(--sunlight-cream);
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+            border: none;
+        }
+
+        .dew-drop:hover {
+            transform: translateY(-4px);
+            background: var(--chlorophyll);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .kinetic-letter {
+            display: inline-block;
+            animation: sway 7s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite alternate;
+        }
+
+        @keyframes sway {
+            0% { transform: rotate(-1deg) translateY(0); }
+            100% { transform: rotate(1deg) translateY(-2px); }
+        }
+
+        .bloom-element {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1s ease-out;
+        }
+
+        .bloom-element.bloomed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* E-commerce specific card adjustment */
+        .furniture-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.5s ease;
+        }
+        
+        .furniture-card:hover {
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.05);
+            transform: translateY(-10px);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="fixed top-0 left-0 w-full z-50 px-10 py-8 flex justify-between items-center text-white bg-black/20">
+        <div class="text-2xl font-light tracking-tighter serif">Veridian Living</div>
+        <div class="hidden md:flex gap-12">
+            <a href="#" class="nav-link">Sofas</a>
+            <a href="#" class="nav-link">Tables</a>
+            <a href="#" class="nav-link">Lighting</a>
+            <a href="#" class="nav-link">Explore</a>
+        </div>
+        <div class="flex gap-6 items-center">
+            <button class="nav-link">Cart (0)</button>
+        </div>
+    </nav>
+
+    <section class="hero-wrapper">
+        <video autoplay muted loop playsinline class="video-bg">
+            <source src="./video.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div class="hero-overlay"></div>
+        
+        <div class="relative z-10 text-center flex flex-col items-center justify-center max-w-5xl mx-auto px-6 [mask-image:linear-gradient(to_bottom,transparent,black_20%,black_80%,transparent)] [-webkit-mask-image:linear-gradient(to_bottom,transparent,black_20%,black_80%,transparent)]">
+            <div class="p-10 md:p-16 flex flex-col items-center">
+                <span class="uppercase tracking-[0.4em] text-[0.65rem] font-bold text-white mb-6 block drop-shadow-[0_10px_30px_rgba(0,0,0,0.9)]">
+                    Curated Collection 2024
+                </span>
+                <h1 class="text-6xl md:text-9xl leading-[0.85] text-white serif mb-10 kinetic-text drop-shadow-[0_10px_30px_rgba(0,0,0,0.9)]">
+                    The Sculpture <br> of Rest
+                </h1>
+                <p class="text-lg md:text-3xl font-light text-white/90 max-w-xl leading-relaxed mb-12 drop-shadow-lg">
+                    Furniture that breathes. Organic designs that transform your living room into a sanctuary of biophilic wellness.
+                </p>
+                <div class="flex flex-col md:flex-row gap-6">
+                    <button class="dew-drop shadow-2xl">Shop Collection</button>
+                    <button class="px-8 py-4 border border-white/20 bg-black/20 backdrop-blur-md rounded-full text-white text-sm uppercase tracking-widest hover:bg-white/30 transition-all shadow-xl">
+                        View Catalog
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-32 bg-[var(--sun-linen)] overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
+                <div class="bloom-element">
+                    <h2 class="text-5xl md:text-7xl text-[var(--deep-forest)] mb-8 leading-tight">Living Matter for your Interior</h2>
+                    <p class="text-[var(--oak-brown)] text-lg font-light leading-relaxed mb-10">
+                        Our pieces don't just occupy space; they evolve with it. We use reclaimed woods and smart textiles that purify the air.
+                    </p>
+                    <div class="grid grid-cols-2 gap-8">
+                        <div>
+                            <span class="text-3xl serif block mb-2">01. Sustainable</span>
+                            <p class="text-sm opacity-70">Full forestry certification.</p>
+                        </div>
+                        <div>
+                            <span class="text-3xl serif block mb-2">02. Ergonomic</span>
+                            <p class="text-sm opacity-70">Adapted to the human rhythm.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="aspect-[4/5] overflow-hidden rounded-2xl shadow-2xl bloom-element">
+                        <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1000&q=80" alt="Furniture Detail" class="w-full h-full object-cover">
+                    </div>
+                    <div class="absolute -bottom-10 -left-10 bg-white p-6 rounded-lg shadow-xl hidden md:block bloom-element" style="transition-delay: 0.3s">
+                        <span class="text-sm uppercase tracking-widest opacity-50 mb-2 block">Veridian Armchair</span>
+                        <span class="text-3xl serif block mb-4">$2,450.00</span>
+                        <button class="text-sm font-bold border-b border-black">ADD</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-32 bg-white">
+        <div class="max-w-[1600px] mx-auto px-6">
+            <div class="text-center mb-20">
+                <h2 class="text-4xl md:text-6xl text-[var(--deep-forest)] serif mb-4">Featured Pieces</h2>
+                <p class="text-sm tracking-widest uppercase opacity-40">Signature Furniture</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <div class="furniture-card bloom-element">
+                    <div class="aspect-square mb-6 overflow-hidden bg-[var(--sunlight-cream)] rounded-lg">
+                        <img src="https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover mix-blend-multiply hover:scale-110 transition-transform duration-700">
+                    </div>
+                    <h3 class="text-2xl serif mb-2">Moss High-Back Sofa</h3>
+                    <p class="text-sm text-[var(--oak-brown)] mb-4">Forest green organic linen textile.</p>
+                    <span class="text-lg">$4,200</span>
+                </div>
+                <div class="furniture-card bloom-element" style="transition-delay: 0.1s">
+                    <div class="aspect-square mb-6 overflow-hidden bg-[var(--sunlight-cream)] rounded-lg">
+                        <img src="https://images.unsplash.com/photo-1581539250439-c96689b516dd?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover mix-blend-multiply hover:scale-110 transition-transform duration-700">
+                    </div>
+                    <h3 class="text-2xl serif mb-2">Cedar Root Table</h3>
+                    <p class="text-sm text-[var(--oak-brown)] mb-4">Cedar wood with bio-based resin.</p>
+                    <span class="text-lg">$1,850</span>
+                </div>
+                <div class="furniture-card bloom-element" style="transition-delay: 0.2s">
+                    <div class="aspect-square mb-6 overflow-hidden bg-[var(--sunlight-cream)] rounded-lg">
+                        <img src="https://images.unsplash.com/photo-1567016376408-0226e4d0c1ea?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover mix-blend-multiply hover:scale-110 transition-transform duration-700">
+                    </div>
+                    <h3 class="text-2xl serif mb-2">Bloom Amber Lamp</h3>
+                    <p class="text-sm text-[var(--oak-brown)] mb-4">Blown glass and oak base.</p>
+                    <span class="text-lg">$890</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-[var(--deep-forest)] py-20 text-center text-white/60">
+        <div class="max-w-4xl mx-auto px-6">
+            <h2 class="text-5xl text-[var(--warm-amber)] serif mb-8">Join the Ecosystem</h2>
+            <p class="mb-12">Receive news about launches and design philosophies.</p>
+            <div class="flex max-w-md mx-auto border-b border-white/20 pb-2 mb-16">
+                <input type="email" placeholder="Email" class="bg-transparent w-full outline-none text-white px-4">
+                <button class="uppercase text-sm tracking-widest font-bold">Subscribe</button>
+            </div>
+            <div class="text-[0.6rem] tracking-widest uppercase">
+                &copy; 2024 Veridian Living - Organic Aesthetics
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.querySelectorAll('.kinetic-text').forEach(el => {
+            const text = el.innerText;
+            el.innerHTML = '';
+            text.split('').forEach((char, i) => {
+                if (char === ' ') {
+                    el.innerHTML += '&nbsp;';
+                } else {
+                    const span = document.createElement('span');
+                    span.innerText = char;
+                    span.className = 'kinetic-letter';
+                    span.style.animationDelay = `${i * 0.05}s`;
+                    el.appendChild(span);
+                }
+            });
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('bloomed');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.bloom-element').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>

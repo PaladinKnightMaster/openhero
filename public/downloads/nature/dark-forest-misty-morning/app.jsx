@@ -457,7 +457,7 @@ export default function UNAMBAHackathon() {
               className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none opacity-80"
               style={{ WebkitMaskImage: "linear-gradient(to bottom, black 10%, transparent 100%)", maskImage: "linear-gradient(to bottom, black 40%, transparent 100%)" }}
             >
-              <source src="../../../videos/nature/dark-forest-misty-morning.mp4" type="video/mp4" />
+              <source src="./video.mp4" type="video/mp4" />
             </video>
             <div
               className="absolute inset-0 pointer-events-none mix-blend-screen opacity-30"
