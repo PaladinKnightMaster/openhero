@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Line | Living Architecture</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-bg: oklch(98% 0.01 240);
+    --color-moss: oklch(88% 0.1 150);
+    --color-text: oklch(15% 0.02 240);
+    --font-hero: 'Cormorant Garamond', serif;
+    --font-tech: 'DM Sans', sans-serif;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    border-radius: 24px;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-tech);
+    overflow-x: hidden;
+    line-height: 1.6;
+    border-radius: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: var(--color-moss);
+    color: white;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-hero);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  .fullscreen-video-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+    overflow: hidden;
+    border-radius: 0;
+  }
+
+  .fullscreen-video-container video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(1.2) contrast(1.1) brightness(0.85);
+    border-radius: 0;
+  }
+
+  .video-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.4) 60%, var(--color-bg) 100%);
+    border-radius: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .hero-typography {
+    position: relative;
+    z-index: 20;
+    padding: 3rem;
+    transform: translate3d(0, 0, 0);
+    will-change: transform, opacity;
+  }
+
+  .dew-drop {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 36px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%);
+    backdrop-filter: blur(24px) saturate(1.8);
+    -webkit-backdrop-filter: blur(24px) saturate(1.8);
+    border: 0.5px solid rgba(255,255,255,0.4);
+    box-shadow: 
+      inset 0 1px 2px rgba(255,255,255,0.5),
+      inset 0 -1px 4px rgba(255,255,255,0.1),
+      0 12px 32px rgba(0,0,0,0.2);
+    border-radius: 100px;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .dew-drop::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 100px;
+    box-shadow: inset 0 0 20px rgba(255,255,255,0.4);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .dew-drop:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 
+      inset 0 1px 2px rgba(255,255,255,0.8),
+      inset 0 -1px 4px rgba(255,255,255,0.2),
+      0 20px 48px rgba(0,0,0,0.4);
+    background: linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.1) 100%);
+  }
+
+  .dew-drop:hover::before {
+    opacity: 1;
+  }
+
+  .rhizome-section {
+    position: relative;
+    padding: 12vh 5vw;
+    container-type: inline-size;
+    container-name: rhizome;
+    background: var(--color-bg);
+    border-radius: 0;
+    z-index: 10;
+  }
+
+  .radial-leak {
+    position: absolute;
+    width: 60vw;
+    height: 60vw;
+    background: radial-gradient(circle, oklch(88% 0.1 150 / 0.15) 0%, transparent 60%);
+    border-radius: 50%;
+    filter: blur(50px);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .bionic-bloom {
+    animation: bloom-scroll linear both;
+    animation-timeline: view();
+    animation-range: entry 5% cover 35%;
+  }
+
+  @keyframes bloom-scroll {
+    from {
+      opacity: 0;
+      transform: translateY(40px) scale(0.98);
+      filter: blur(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: none;
+    }
+  }
+
+  .hero-fade-in {
+    animation: fadeIn 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .glass-card {
+    background: linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.4) 100%);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border: 0.5px solid rgba(255,255,255,0.7);
+    box-shadow: 0 24px 64px rgba(0,0,0,0.03), inset 0 1px 1px rgba(255,255,255,0.5);
+    padding: 3.5rem;
+    position: relative;
+    z-index: 1;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+  }
+
+  .glass-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 32px 80px rgba(0,0,0,0.06), inset 0 1px 1px rgba(255,255,255,0.8);
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 1.2s;
+    animation-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+  }
+</style>
+</head>
+<body class="antialiased selection:bg-emerald-200">
+
+  <nav class="fixed top-0 left-0 w-full p-6 px-10 flex justify-between items-center z-50 bg-black/10 backdrop-blur-md border-b border-white/10 text-white">
+    <div class="text-xs uppercase tracking-widest font-semibold">NEOM | The Line</div>
+    <div class="flex gap-10 text-xs uppercase tracking-widest font-medium">
+      <a href="#" class="spa-link hover:opacity-60 transition-opacity">Architecture</a>
+      <a href="#" class="spa-link hover:opacity-60 transition-opacity">Ecology</a>
+      <a href="#" class="spa-link hover:opacity-60 transition-opacity">Systems</a>
+    </div>
+  </nav>
+
+  <main id="app-root">
+    <section class="relative min-h-screen flex items-center justify-center pt-28 px-8 overflow-hidden rounded-none">
+      
+      <div class="fullscreen-video-container">
+        <video autoplay loop muted playsinline>
+          <source src="./video.mp4" type="video/mp4">
+        </video>
+        <div class="video-vignette"></div>
+      </div>
+      
+      <div class="w-full max-w-7xl relative z-10 flex flex-col items-center">
+        <div class="text-center hero-typography hero-fade-in">
+          <h1 class="text-7xl md:text-8xl lg:text-9xl mb-6 text-white" style="text-shadow: 0 4px 24px rgba(0,0,0,0.4);">Living Architecture</h1>
+          <p class="text-lg md:text-xl max-w-2xl mx-auto mb-12 text-gray-100 font-medium tracking-wide" style="text-shadow: 0 2px 12px rgba(0,0,0,0.5);">A symbiotic future synthesized through biophilic engineering and organic transparency.</p>
+          <a href="#explore" class="dew-drop">
+            <iconify-icon icon="ph:plant-light" style="stroke-width: 1.2px;" width="22"></iconify-icon>
+            Initiate Sequence
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="explore" class="rhizome-section">
+      <div class="radial-leak top-0 left-[-10vw]"></div>
+      
+      <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 relative z-10 @container">
+        
+        <div class="glass-card bionic-bloom">
+          <iconify-icon icon="ph:network-light" class="text-5xl mb-8 text-slate-800" style="stroke-width: 1.2px;"></iconify-icon>
+          <h2 class="text-4xl mb-4 text-slate-900">Hydro-Neural Systems</h2>
+          <p class="text-slate-700 mb-10 text-lg leading-relaxed">Adaptive hydration routing utilizing machine intelligence to mimic capillary action within structural membranes. Water flows dynamically based on atmospheric needs.</p>
+          <div class="h-px w-full bg-slate-900/10 mb-8 rounded-full"></div>
+          <div class="flex justify-between text-xs uppercase tracking-widest font-semibold text-slate-500">
+            <span>Status: Active</span>
+            <span>Flow: Optimal</span>
+          </div>
+        </div>
+
+        <div class="glass-card bionic-bloom mt-0 md:mt-24">
+          <iconify-icon icon="ph:tree-structure-light" class="text-5xl mb-8 text-slate-800" style="stroke-width: 1.2px;"></iconify-icon>
+          <h2 class="text-4xl mb-4 text-slate-900">Mycelium Networks</h2>
+          <p class="text-slate-700 mb-10 text-lg leading-relaxed">Subterranean data and nutrient distribution using engineered fungal logic gates. The city communicates through biochemical synapses embedded in the foundation.</p>
+          <div class="h-px w-full bg-slate-900/10 mb-8 rounded-full"></div>
+          <div class="flex justify-between text-xs uppercase tracking-widest font-semibold text-slate-500">
+            <span>Integration: 98%</span>
+            <span>Latency: 0.2ms</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <script>
+    document.querySelectorAll('.spa-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        
+        if (!document.startViewTransition) {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          return;
+        }
+
+        document.startViewTransition(() => {
+          const root = document.getElementById('app-root');
+          root.style.opacity = '0.8';
+          setTimeout(() => {
+             window.scrollTo(0, 0);
+             root.style.opacity = '1';
+          }, 50);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
