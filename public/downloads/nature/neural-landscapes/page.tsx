@@ -5,48 +5,53 @@ import { Icon } from "@iconify/react";
 
 export default function Page() {
   useEffect(() => {
-    document.querySelectorAll(".sss-card").forEach((card) => {
-      const glow = card.querySelector(".subsurface-glow") as HTMLElement;
+  const cards = Array.from(document.querySelectorAll<HTMLElement>(".sss-card"));
 
-      if (!glow) return;
+  const handlers = new Map<HTMLElement, (e: MouseEvent) => void>();
 
-      const move = (e: MouseEvent) => {
-        const rect = (card as HTMLElement).getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+  cards.forEach((card) => {
+    const glow = card.querySelector<HTMLElement>(".subsurface-glow");
+    if (!glow) return;
 
-        glow.style.left = `${x}px`;
-        glow.style.top = `${y}px`;
-      };
-
-      card.addEventListener("mousemove", move);
-
-      return () => {
-        card.removeEventListener("mousemove", move);
-      };
-    });
-
-    const observerOptions = {
-      root: null,
-      rootMargin: "0px 0px -15% 0px",
-      threshold: 0.1,
+    const move = (e: MouseEvent) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      glow.style.left = `${x}px`;
+      glow.style.top = `${y}px`;
     };
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("active");
-          observer.unobserve(entry.target);
-        }
-      });
-    }, observerOptions);
+    handlers.set(card, move);
+    card.addEventListener("mousemove", move);
+  });
 
-    document.querySelectorAll(".bloom-reveal").forEach((el) => {
-      observer.observe(el);
+  const observerOptions = {
+    root: null,
+    rootMargin: "0px 0px -15% 0px",
+    threshold: 0.1,
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("active");
+        observer.unobserve(entry.target);
+      }
     });
+  }, observerOptions);
 
-    return () => observer.disconnect();
-  }, []);
+  document.querySelectorAll(".bloom-reveal").forEach((el) => {
+    observer.observe(el);
+  });
+
+  return () => {
+    cards.forEach((card) => {
+      const move = handlers.get(card);
+      if (move) card.removeEventListener("mousemove", move);
+    });
+    observer.disconnect();
+  };
+}, []);
 
   return (
     <>
