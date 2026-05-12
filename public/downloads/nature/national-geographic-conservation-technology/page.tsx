@@ -141,73 +141,37 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    const barsContainer = acousticBarsRef.current;
-    if (!barsContainer) return;
+  const barsContainer = acousticBarsRef.current;
+  if (!barsContainer) return;
 
-    const bars = Array.from(barsContainer.querySelectorAll<HTMLDivElement>(".acoustic-bar"));
+  const bars = Array.from(
+    barsContainer.querySelectorAll<HTMLDivElement>(".acoustic-bar")
+  );
 
-        const h = 15 + Math.sin(i * 0.6) * 25 + Math.random() * 30;
-        const h2 = 20 + Math.sin(i * 0.8 + 1) * 30 + Math.random() * 35;
+  bars.forEach((b, i) => {
+    const h = 15 + Math.sin(i * 0.6) * 25 + Math.random() * 30;
+    const h2 = 20 + Math.sin(i * 0.8 + 1) * 30 + Math.random() * 35;
 
-        b.style.setProperty("--bar-h", `${h}%`);
-        b.style.setProperty("--bar-h2", `${h2}%`);
-        b.style.animationDelay = `${i * 0.04}s`;
-        b.style.animationDuration = `${0.9 + Math.random() * 0.8}s`;
+    b.style.setProperty("--bar-h", `${h}%`);
+    b.style.setProperty("--bar-h2", `${h2}%`);
+    b.style.animationDelay = `${i * 0.04}s`;
+    b.style.animationDuration = `${0.9 + Math.random() * 0.8}s`;
+  });
 
-        acousticBarsRef.current.appendChild(b);
-      }
+  const barsInterval = window.setInterval(() => {
+    bars.forEach((bar) => {
+      const h = 10 + Math.random() * 70;
+      const h2 = 10 + Math.random() * 80;
 
-      const bars = acousticBarsRef.current.children;
+      bar.style.setProperty("--bar-h", `${h}%`);
+      bar.style.setProperty("--bar-h2", `${h2}%`);
+    });
+  }, 1800);
 
-      const barsInterval = setInterval(() => {
-        Array.from(bars).forEach((bar) => {
-          const h = 10 + Math.random() * 70;
-          const h2 = 10 + Math.random() * 80;
-
-          (bar as HTMLElement).style.setProperty("--bar-h", `${h}%`);
-          (bar as HTMLElement).style.setProperty("--bar-h2", `${h2}%`);
-        });
-      }, 1800);
-
-      return () => {
-        clearInterval(dustInterval);
-        clearInterval(barsInterval);
-        document.removeEventListener("mousemove", move);
-      };
-    }
-
-    const stalkEls = document.querySelectorAll(".stalk");
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            e.target.classList.add("in-view");
-          }
-        });
-      },
-      {
-        threshold: 0.08,
-        rootMargin: "0px 0px -40px 0px",
-      }
-    );
-
-    stalkEls.forEach((el) => observer.observe(el));
-
-    document.querySelectorAll<HTMLElement>(".genome-node").forEach((node) => {
-      node.addEventListener("mousemove", (e: MouseEvent) => {
-        const rect = node.getBoundingClientRect();
-
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
-
-        node.style.setProperty("--mx", `${x}%`);
-        node.style.setProperty("--my", `${y}%`);
-      });
-    }, 1800);
-
-    return () => window.clearInterval(interval);
-  }, []);
+  return () => {
+    window.clearInterval(barsInterval);
+  };
+}, []);
 
   useEffect(() => {
     const nav = navRef.current;
