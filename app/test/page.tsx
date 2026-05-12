@@ -1,364 +1,511 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-
-const lookbookItems = [
-  {
-    title: "Raw Selvedge",
-    subtitle: "14.5oz Japanese Denim",
-    image:
-      "https://images.unsplash.com/photo-1542272454315-4c01d7abdf4a?q=80&w=2070&auto=format&fit=crop",
-    placement: "bottom-left",
-    widthClass: "min-w-[40vw]",
-  },
-  {
-    title: "Structural Fit",
-    subtitle: "",
-    image:
-      "https://images.unsplash.com/photo-1745834311248-f19d424c5398?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    placement: "top-left",
-    widthClass: "min-w-[30vw]",
-    offsetClass: "mt-20",
-  },
-  {
-    title: "Monochrome Layering",
-    subtitle: "",
-    image:
-      "https://images.unsplash.com/photo-1551854838-212c50b4c184?q=80&w=1974&auto=format&fit=crop",
-    placement: "bottom-right",
-    widthClass: "min-w-[45vw]",
-  },
-];
-
-const opticCards = [
-  {
-    label: "Model_Alpha / Silver Lens",
-    image:
-      "https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=2080&auto=format&fit=crop",
-  },
-  {
-    label: "Model_Beta / Obsidian Edge",
-    image:
-      "https://images.unsplash.com/photo-1511499767150-a48a237f0083?q=80&w=2080&auto=format&fit=crop",
-  },
-  {
-    label: "Structural_Frame / 001",
-    image:
-      "https://images.unsplash.com/photo-1509695507497-903c140c43b0?q=80&w=2073&auto=format&fit=crop",
-  },
-];
+import { useEffect } from "react";
+import { Icon } from "@iconify/react";
 
 export default function Page() {
-  const heroVideoRef = useRef<HTMLVideoElement | null>(null);
-
   useEffect(() => {
-    const onScroll = () => {
-      const scrolled = window.scrollY;
-      document.documentElement.style.setProperty("--weight-scroll", `${200 + scrolled * 0.5}`);
+    const cleanups: Array<() => void> = [];
 
-      if (heroVideoRef.current) {
-        const progress = Math.min(scrolled / (window.innerHeight * 1.1), 1);
-        heroVideoRef.current.style.transform = `scale(${1 + progress * 0.07}) translateY(${progress * 8}vh)`;
+    const cards = document.querySelectorAll<HTMLElement>(".sss-card");
+
+    cards.forEach((card) => {
+      const glow = card.querySelector<HTMLElement>(".subsurface-glow");
+      if (!glow) return;
+
+      const move = (e: MouseEvent) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        glow.style.left = `${x}px`;
+        glow.style.top = `${y}px`;
+      };
+
+      card.addEventListener("mousemove", move);
+      cleanups.push(() => card.removeEventListener("mousemove", move));
+    });
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("active");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        root: null,
+        rootMargin: "0px 0px -15% 0px",
+        threshold: 0.1,
       }
-    };
+    );
 
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+    document.querySelectorAll<HTMLElement>(".bloom-reveal").forEach((el) => {
+      observer.observe(el);
+    });
 
     return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      cleanups.forEach((cleanup) => cleanup());
+      observer.disconnect();
     };
   }, []);
 
-  const handleZoomMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const item = e.currentTarget;
-    const zoom = item.querySelector<HTMLElement>(".optic-zoom");
-    if (!zoom) return;
-
-    const rect = item.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    zoom.style.transformOrigin = `${x}% ${y}%`;
-    zoom.style.transform = "scale(2.5)";
-  };
-
-  const handleZoomLeave = (e: React.MouseEvent<HTMLDivElement>) => {
-    const item = e.currentTarget;
-    const zoom = item.querySelector<HTMLElement>(".optic-zoom");
-    if (!zoom) return;
-    zoom.style.transformOrigin = "center center";
-    zoom.style.transform = "scale(1)";
-  };
-
   return (
-    <div className="min-h-screen overflow-x-hidden bg-white font-manrope text-[#080808] selection:bg-[#080808] selection:text-white">
-      <header className="pointer-events-none fixed left-0 top-0 z-[100] flex w-full items-end justify-between p-8">
-        <div className="pointer-events-auto">
-          <h1 className="font-syne text-xl font-bold leading-none tracking-tighter">SD-00</h1>
-          <span className="text-[9px] uppercase tracking-[0.4em]">Autonomous Label</span>
-        </div>
-        <nav className="pointer-events-auto flex gap-12 font-syne text-[10px] uppercase tracking-widest">
-          <a href="#collection" className="hover:line-through">
-            Collection
-          </a>
-          <a href="#optics" className="hover:line-through">
-            Optics
-          </a>
-          <a href="#archive" className="hover:line-through">
-            Archive
-          </a>
-        </nav>
-      </header>
-
-      <main>
-        <section className="relative h-screen w-screen overflow-hidden bg-white">
-          <div className="absolute inset-0 z-10 grid h-full grid-cols-12 items-center px-8">
-            <div className="z-20 col-span-8">
-              <h2 className="kinetic-header font-syne text-[11vw] uppercase leading-[0.85] tracking-tighter">
-                Urban
-                <br />
-                Visionary
-              </h2>
-              <div className="mt-12 flex items-center gap-8">
-                <button className="inverted-impact bg-[#080808] px-12 py-5 font-syne text-[10px] uppercase tracking-[0.3em] text-white transition-all duration-75">
-                  Enter Archive
-                </button>
-                <span className="max-w-[200px] border-l border-[#080808] pl-8 text-[10px] uppercase tracking-widest">
-                  Refractive optics for the modern monolith.
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div className="jagged-mask absolute right-0 top-0 z-0 h-full w-full bg-[#080808]">
-            <video autoPlay muted loop playsInline className="h-full w-full object-cover opacity-80 mix-blend-luminosity">
-              <source src="/video.mp4" type="video/mp4" />
-            </video>
-          </div>
-
-          <div className="absolute bottom-12 right-12 z-30 flex flex-col items-end">
-            <span className="mb-2 font-syne text-[10px] uppercase tracking-[0.5em]">Latitude 52.5200</span>
-            <div className="h-px w-32 bg-[#080808] inverted-text" />
-          </div>
-        </section>
-
-        <section id="collection" className="overflow-hidden bg-white py-40">
-          <div className="mb-24 px-8">
-            <h3 className="mb-4 font-syne text-[4vw] uppercase tracking-tighter">Lookbook_01</h3>
-            <div className="h-px w-full bg-[#080808]/10" />
-          </div>
-
-          <div className="parallax-container flex snap-x snap-mandatory gap-4 overflow-x-auto px-8 scroll-smooth">
-            {lookbookItems.map((item, index) => (
-              <div
-                key={item.title}
-                className={`${item.widthClass} ${item.offsetClass ?? ""} group relative h-[80vh] snap-center overflow-hidden bg-[#080808]`}
-              >
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  className="h-full w-full object-cover grayscale opacity-70 transition-transform duration-[2s] group-hover:scale-110"
-                />
-                <div
-                  className={`absolute text-white ${item.placement === "bottom-left" ? "bottom-8 left-8" : item.placement === "top-left" ? "left-8 top-8" : "bottom-8 right-8 text-right"}`}
-                >
-                  <p className="font-syne text-xs uppercase tracking-widest">{item.title}</p>
-                  {item.subtitle ? <span className="text-[9px] opacity-50">{item.subtitle}</span> : null}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section id="optics" className="grid min-h-screen grid-cols-1 border-y border-[#080808] bg-white md:grid-cols-4">
-          <div className="flex flex-col justify-between border-r border-[#080808] p-12">
-            <div>
-              <h4 className="mb-8 font-syne text-2xl uppercase leading-none">Refractive<br />Optics</h4>
-              <p className="text-xs uppercase leading-relaxed tracking-widest text-gray-500">
-                Surgical precision in titanium. Engineered for the urban silhouette.
-              </p>
-            </div>
-            <div className="magazine-column font-syne text-[8px] uppercase tracking-[0.6em] opacity-20">
-              Visionary Systems // Sector 09
-            </div>
-          </div>
-
-          <div className="col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            {opticCards.map((card) => (
-              <div
-                key={card.label}
-                onMouseMove={handleZoomMove}
-                onMouseLeave={handleZoomLeave}
-                className="group relative aspect-square cursor-none overflow-hidden border-b border-r border-[#080808]"
-              >
-                <div
-                  className="optic-zoom absolute inset-0 bg-cover bg-center grayscale transition-transform duration-500"
-                  style={{ backgroundImage: `url('${card.image}')` }}
-                />
-                <div className="absolute inset-0 flex items-center justify-center bg-[#080808]/80 p-12 opacity-0 transition-opacity group-hover:opacity-100 text-white">
-                  <span className="font-syne text-[10px] uppercase tracking-widest">{card.label}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <footer id="archive" className="relative overflow-hidden bg-[#080808] px-8 py-32 text-white">
-          <div className="grain-overlay pointer-events-none absolute inset-0 opacity-[0.08]" />
-
-          <div className="relative z-10 grid grid-cols-12 items-end">
-            <div className="col-span-12 lg:col-span-7">
-              <h2 className="font-syne text-[15vw] uppercase leading-[0.75] tracking-tighter opacity-20 transition-opacity duration-1000 hover:opacity-100">
-                Studio
-                <br />
-                Denim
-              </h2>
-            </div>
-            <div className="col-span-12 flex flex-col items-end lg:col-span-5">
-              <div className="mb-20 flex gap-16 font-syne text-[10px] uppercase tracking-[0.4em]">
-                <div className="space-y-4">
-                  <a href="#" className="block hover:text-[#C0C0C0]">
-                    Wholesale
-                  </a>
-                  <a href="#" className="block hover:text-[#C0C0C0]">
-                    Press Kit
-                  </a>
-                </div>
-                <div className="space-y-4">
-                  <a href="#" className="block hover:text-[#C0C0C0]">
-                    Terms
-                  </a>
-                  <a href="#" className="block hover:text-[#C0C0C0]">
-                    Privacy
-                  </a>
-                </div>
-              </div>
-              <div className="flex w-full items-center justify-between border-t border-white/10 pt-8">
-                <span className="text-[9px] uppercase tracking-widest">©2026 Studio Denim Aesthetics</span>
-                <div className="flex gap-4">
-                  <div className="h-2 w-2 rounded-full bg-white" />
-                  <div className="h-2 w-2 rounded-full bg-white opacity-20" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </footer>
-      </main>
-
+    <>
       <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Manrope:wght@200;300;400;800&display=swap');
+        html {
+          scroll-behavior: smooth;
+          background-color: oklch(10% 0.01 150);
+        }
 
-        :root {
-          background-color: #ffffff;
-          --weight-scroll: 200;
+        body {
+          margin: 0;
+          overflow-x: hidden;
+          color: white;
+          background-color: oklch(10% 0.01 150);
+          font-family: "Space Grotesk", sans-serif;
         }
 
         * {
           box-sizing: border-box;
         }
 
-        html {
-          scroll-behavior: smooth;
-        }
-
-        body {
-          margin: 0;
-          overflow-x: hidden;
-          background: #fff;
-        }
-
         ::-webkit-scrollbar {
-          display: none;
+          width: 2px;
         }
 
-        .font-syne {
-          font-family: 'Syncopate', sans-serif;
+        ::-webkit-scrollbar-track {
+          background: transparent;
         }
 
-        .font-manrope {
-          font-family: 'Manrope', sans-serif;
+        ::-webkit-scrollbar-thumb {
+          background: oklch(60% 0.15 150 / 0.5);
         }
 
-        .jagged-mask {
-          clip-path: polygon(0 0, 100% 0, 100% 100%, 15% 100%, 42% 78%, 28% 54%, 55% 32%, 35% 0);
+        .vercel-grain {
+          position: fixed;
+          inset: 0;
+          z-index: 9999;
+          pointer-events: none;
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+          opacity: 0.04;
+          mix-blend-mode: screen;
         }
 
-        .inverted-text {
-          mix-blend-mode: difference;
-          filter: invert(1);
+        .radial-portal {
+          -webkit-mask-image: radial-gradient(
+            circle at center,
+            black 30%,
+            transparent 70%
+          );
+          mask-image: radial-gradient(circle at center, black 30%, transparent 70%);
+          transition:
+            transform 1.5s cubic-bezier(0.16, 1, 0.3, 1),
+            mask-size 1.5s ease;
+          will-change: transform, mask-image;
         }
 
-        .magazine-column {
-          writing-mode: vertical-rl;
-          text-orientation: mixed;
+        .radial-portal:hover {
+          transform: scale(1.05);
         }
 
-        .inverted-impact:hover {
-          animation: strobe 0.1s steps(1) 3;
-          background-color: #ffffff;
-          color: #000000;
+        .kinetic-sway {
+          display: inline-block;
+          animation: sway 6s ease-in-out infinite alternate;
+          transform-origin: bottom center;
         }
 
-        .kinetic-header {
-          font-variation-settings: 'wght' var(--weight-scroll);
-        }
-
-        .grain-overlay {
-          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-        }
-
-        .parallax-container {
-          view-timeline-name: --lookbook;
-          view-timeline-axis: x;
-        }
-
-        @supports (animation-timeline: scroll()) {
-          .kinetic-header {
-            animation: weight-shift linear both;
-            animation-timeline: scroll();
-          }
-
-          @keyframes weight-shift {
-            from {
-              font-weight: 200;
-              letter-spacing: 0.5em;
-            }
-
-            to {
-              font-weight: 800;
-              letter-spacing: -0.05em;
-            }
-          }
-        }
-
-        @keyframes strobe {
+        @keyframes sway {
           0% {
-            background-color: #ffffff;
-            color: #000000;
+            transform: rotate(-1.5deg) translateX(-2px);
           }
 
           100% {
-            background-color: #000000;
-            color: #ffffff;
+            transform: rotate(1.5deg) translateX(2px);
           }
         }
 
-        .optic-zoom {
-          will-change: transform;
+        .morning-sun-text {
+          background: linear-gradient(
+            110deg,
+            oklch(90% 0.1 70) 0%,
+            oklch(85% 0.15 70) 40%,
+            oklch(60% 0.15 150) 100%
+          );
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
         }
 
-        @media (max-width: 768px) {
-          .jagged-mask {
-            clip-path: polygon(0 0, 100% 0, 100% 100%, 6% 100%, 28% 76%, 15% 56%, 43% 34%, 24% 0);
-          }
+        .apple-sharpness {
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          background: oklch(100% 0 0 / 0.02);
+          border: 0.5px solid oklch(100% 0 0 / 0.1);
+          box-shadow:
+            inset 0 1px 1px oklch(100% 0 0 / 0.05),
+            0 20px 40px rgba(0, 0, 0, 0.4);
+          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
 
-          .magazine-column {
-            writing-mode: horizontal-tb;
-          }
+        .dew-drop {
+          position: relative;
+          overflow: hidden;
+          backdrop-filter: blur(20px) saturate(1.5);
+          -webkit-backdrop-filter: blur(20px) saturate(1.5);
+          background: oklch(100% 0 0 / 0.03);
+          border: 0.5px solid oklch(100% 0 0 / 0.08);
+          box-shadow: inset 0 1px 2px oklch(100% 0 0 / 0.1);
+          border-radius: 99px;
+          transition: all 0.3s ease;
+        }
+
+        .dew-drop::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 20%;
+          right: 20%;
+          height: 1px;
+          background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.8),
+            transparent
+          );
+          opacity: 0;
+          transition: opacity 0.3s ease;
+        }
+
+        .dew-drop:hover {
+          background: oklch(100% 0 0 / 0.06);
+          transform: translateY(-2px);
+          box-shadow:
+            0 10px 20px rgba(0, 0, 0, 0.3),
+            inset 0 1px 2px oklch(100% 0 0 / 0.2);
+        }
+
+        .dew-drop:hover::before {
+          opacity: 1;
+        }
+
+        .sss-card {
+          position: relative;
+        }
+
+        .sss-card::before {
+          content: "";
+          position: absolute;
+          inset: -1px;
+          border-radius: inherit;
+          padding: 1px;
+          background: linear-gradient(
+            145deg,
+            oklch(60% 0.15 150 / 0.4),
+            transparent 40%
+          );
+          -webkit-mask:
+            linear-gradient(#fff 0 0) content-box,
+            linear-gradient(#fff 0 0);
+          -webkit-mask-composite: xor;
+          mask-composite: exclude;
+          pointer-events: none;
+        }
+
+        .sss-card::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          border-radius: inherit;
+          box-shadow: inset 0 0 40px oklch(60% 0.15 150 / 0.05);
+          pointer-events: none;
+          transition: box-shadow 0.4s ease;
+        }
+
+        .sss-card:hover::after {
+          box-shadow: inset 0 0 60px oklch(60% 0.15 150 / 0.15);
+        }
+
+        .subsurface-glow {
+          position: absolute;
+          width: 150px;
+          height: 150px;
+          background: radial-gradient(
+            circle,
+            oklch(60% 0.15 150 / 0.4) 0%,
+            transparent 70%
+          );
+          border-radius: 50%;
+          filter: blur(20px);
+          opacity: 0;
+          transition: opacity 0.5s ease;
+          pointer-events: none;
+          transform: translate(-50%, -50%);
+          z-index: 0;
+        }
+
+        .sss-card:hover .subsurface-glow {
+          opacity: 1;
+        }
+
+        .ambient-light {
+          position: absolute;
+          border-radius: 50%;
+          filter: blur(140px);
+          pointer-events: none;
+          z-index: -1;
+          mix-blend-mode: screen;
+        }
+
+        .bloom-reveal {
+          opacity: 0;
+          transform: translateY(30px) scale(0.98);
+          filter: blur(10px);
+          transition:
+            opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+            transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+            filter 1.2s ease;
+        }
+
+        .bloom-reveal.active {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+          filter: blur(0px);
+        }
+
+        .delay-100 {
+          transition-delay: 0.1s;
+        }
+
+        .delay-200 {
+          transition-delay: 0.2s;
+        }
+
+        .delay-300 {
+          transition-delay: 0.3s;
         }
       `}</style>
-    </div>
+
+      <div className="selection:bg-emerald-500/30 selection:text-white antialiased">
+        <div className="vercel-grain" />
+
+        <nav className="pointer-events-none fixed inset-x-0 top-0 z-50 flex w-full items-center justify-between px-6 py-6 mix-blend-plus-lighter">
+          <div className="pointer-events-auto group flex items-center gap-4">
+            <div className="apple-sharpness relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full">
+              <div className="absolute inset-0 bg-emerald-400/20 opacity-0 transition-opacity group-hover:opacity-100" />
+              <Icon
+                icon="ph:infinity-light"
+                className="relative z-10 text-xl text-white"
+              />
+            </div>
+
+            <span className="text-xs uppercase tracking-[0.2em] text-white/80">
+              The Line
+            </span>
+          </div>
+
+          <div className="pointer-events-auto hidden gap-4 md:flex">
+            <button className="dew-drop flex items-center gap-2 px-5 py-2 text-[10px] uppercase tracking-widest text-white/70 hover:text-white">
+              <Icon
+                icon="ph:tree-structure-light"
+                className="text-base text-emerald-400"
+              />
+              Neural Architecture
+            </button>
+
+            <button className="dew-drop flex items-center gap-2 px-5 py-2 text-[10px] uppercase tracking-widest text-white/70 hover:text-white">
+              <Icon
+                icon="ph:cloud-fog-light"
+                className="text-base text-yellow-300"
+              />
+              Cloud Server Protocol
+            </button>
+          </div>
+        </nav>
+
+        <main className="relative w-full">
+          <div className="ambient-light fixed left-[10%] top-[10%] h-[40vw] w-[40vw] bg-yellow-300/5" />
+          <div className="ambient-light fixed bottom-[10%] right-[10%] h-[50vw] w-[50vw] bg-emerald-400/10" />
+
+          <section className="relative z-10 grid min-h-screen w-full grid-cols-1 lg:grid-cols-2">
+            <div className="z-20 flex flex-col justify-center px-8 pb-20 pt-32 md:px-16 lg:px-24 lg:py-0">
+              <div className="bloom-reveal active mb-6 inline-flex items-center gap-3">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_12px_oklch(60%_0.15_150)]" />
+                <span className="text-[9px] uppercase tracking-[0.4em] text-emerald-400/80">
+                  Andean Bio-Digitalism
+                </span>
+              </div>
+
+              <h1
+                className="bloom-reveal active delay-100 mb-8 text-7xl uppercase leading-[0.85] tracking-tight md:text-8xl lg:text-[9rem]"
+                style={{ fontFamily: "Oswald, sans-serif" }}
+              >
+                <span className="kinetic-sway morning-sun-text block">
+                  Living
+                </span>
+                <span className="block text-white">Architecture</span>
+              </h1>
+
+              <p className="bloom-reveal active delay-200 max-w-md text-sm font-light leading-relaxed text-white/50 md:text-base">
+                Integrating high-altitude biomes with scalable carbon capture.
+                We design structural mycelium integrity to house tomorrow&apos;s
+                neural landscapes.
+              </p>
+
+              <div className="bloom-reveal active delay-300 mt-12 flex items-center gap-6">
+                <button className="dew-drop flex items-center gap-3 px-8 py-4 text-[10px] uppercase tracking-[0.2em] text-white">
+                  Initiate Synthesis
+                  <Icon
+                    icon="ph:arrow-right-light"
+                    className="text-base text-emerald-400"
+                  />
+                </button>
+
+                <span className="border-b border-white/10 pb-1 text-[10px] uppercase tracking-widest text-white/30">
+                  Data Yield: 99.8%
+                </span>
+              </div>
+            </div>
+
+            <div className="relative z-10 flex h-[60vh] w-full items-center justify-center lg:h-screen">
+              <div className="radial-portal absolute inset-0 h-full w-full">
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="h-full w-full object-cover"
+                >
+                  <source src="/video.mp4" type="video/mp4" />
+                </video>
+
+                <div className="absolute inset-0 bg-black/40 mix-blend-multiply" />
+                <div className="absolute inset-0 bg-emerald-400/10 mix-blend-overlay" />
+              </div>
+            </div>
+          </section>
+
+          <section className="relative z-20 w-full px-6 py-40 md:px-16 lg:px-24">
+            <div className="mx-auto max-w-7xl">
+              <div className="grid grid-cols-1 items-start gap-8 md:grid-cols-12 md:gap-16">
+                <div className="bloom-reveal md:sticky md:top-40 md:col-span-5">
+                  <h2
+                    className="mb-6 text-5xl uppercase leading-none tracking-tight text-white md:text-7xl"
+                    style={{ fontFamily: "Oswald, sans-serif" }}
+                  >
+                    Cloud-Forest
+                    <br />
+                    <span className="text-white/30">Cooling</span>
+                  </h2>
+
+                  <p className="mb-8 text-sm font-light leading-relaxed text-white/50">
+                    Leveraging natural thermodynamics of the Andean cloud
+                    forests. Our server arrays are integrated seamlessly into
+                    the biome, utilizing raw atmospheric moisture for absolute
+                    zero-emission cooling protocols.
+                  </p>
+
+                  <div className="h-px w-full bg-gradient-to-r from-emerald-400 via-yellow-300 to-transparent opacity-20" />
+                </div>
+
+                <div className="flex flex-col gap-6 md:col-span-7">
+                  <div className="apple-sharpness sss-card bloom-reveal delay-100 group overflow-hidden rounded-3xl p-8 md:p-10">
+                    <div className="subsurface-glow" />
+
+                    <div className="relative z-10 flex flex-col items-start justify-between gap-8 md:flex-row">
+                      <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md">
+                        <Icon
+                          icon="ph:drop-half-bottom-light"
+                          className="text-3xl text-emerald-400"
+                        />
+                      </div>
+
+                      <div className="flex-1">
+                        <h3 className="mb-3 text-xl tracking-wide text-white">
+                          Atmospheric Extraction
+                        </h3>
+
+                        <p className="mb-6 text-xs font-light leading-relaxed text-white/40">
+                          Passive condensation networks extract micro-droplets
+                          directly from the mist, funneling highly pure water
+                          into the thermal core of our processing hubs.
+                        </p>
+
+                        <div className="flex items-center justify-between border-t border-white/5 pt-4">
+                          <span className="text-[10px] uppercase tracking-[0.2em] text-emerald-400">
+                            Status: Active
+                          </span>
+
+                          <span
+                            className="text-2xl tracking-wider text-white"
+                            style={{ fontFamily: "Oswald, sans-serif" }}
+                          >
+                            14.2
+                            <span className="ml-1 text-sm text-white/30">L/s</span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="apple-sharpness sss-card bloom-reveal delay-200 group overflow-hidden rounded-3xl p-8 md:p-10">
+                    <div className="subsurface-glow" />
+
+                    <div className="relative z-10 flex flex-col items-start justify-between gap-8 md:flex-row">
+                      <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md">
+                        <Icon
+                          icon="logos:graphql"
+                          className="text-3xl text-yellow-300"
+                        />
+                      </div>
+
+                      <div className="flex-1">
+                        <h3 className="mb-3 text-xl tracking-wide text-white">
+                          Mycelium Structural Integrity
+                        </h3>
+
+                        <p className="mb-6 text-xs font-light leading-relaxed text-white/40">
+                          Hardware racks grown, not assembled. Genetically
+                          optimized fungal networks form an impact-resistant,
+                          self-healing chassis around the server logic.
+                        </p>
+
+                        <div className="flex items-center justify-between border-t border-white/5 pt-4">
+                          <span className="text-[10px] uppercase tracking-[0.2em] text-yellow-300">
+                            Growth Phase: 4
+                          </span>
+
+                          <span
+                            className="text-2xl tracking-wider text-white"
+                            style={{ fontFamily: "Oswald, sans-serif" }}
+                          >
+                            98.5
+                            <span className="ml-1 text-sm text-white/30">%</span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="relative z-20 mb-32 flex h-[50vh] w-full items-center justify-center">
+            <div className="bloom-reveal text-center">
+              <div className="mx-auto mb-8 h-24 w-px bg-gradient-to-b from-transparent via-emerald-400 to-transparent" />
+
+              <h2
+                className="cursor-default text-3xl uppercase tracking-widest text-white/20 transition-colors duration-700 hover:text-white md:text-5xl"
+                style={{ fontFamily: "Oswald, sans-serif" }}
+              >
+                Return to the source
+              </h2>
+            </div>
+          </section>
+        </main>
+      </div>
+    </>
   );
 }
