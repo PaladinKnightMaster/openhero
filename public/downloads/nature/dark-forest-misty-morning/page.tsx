@@ -1,219 +1,146 @@
-"use client";
+"use client"
 
-import React, { ReactNode, useCallback, useEffect, useRef, useState } from "react";
-import { Icon } from "@iconify/react";
+import { useEffect, useRef, useState } from "react"
+import { Icon } from "@iconify/react"
 
-type SectionId = "home" | "participation" | "rules" | "projects";
+export default function Page() {
+  const [activeSection, setActiveSection] = useState("home")
+  const [isMobileOpen, setIsMobileOpen] = useState(false)
 
-type NavItem = {
-  id: SectionId;
-  label: string;
-};
-
-const NAV_ITEMS: NavItem[] = [
-  { id: "home", label: "Home" },
-  { id: "participation", label: "Participation" },
-  { id: "rules", label: "Rules" },
-  { id: "projects", label: "Projects" },
-];
-
-type RevealBlockProps = {
-  className?: string;
-  children: ReactNode;
-};
-
-function RevealBlock({ className = "", children }: RevealBlockProps): React.JSX.Element {
-  return <div className={`reveal-on-scroll ${className}`}>{children}</div>;
-}
-
-type CardProps = {
-  className?: string;
-  icon: string;
-  title: string;
-  description: string;
-};
-
-function FeatureCard({ className = "", icon, title, description }: CardProps): React.JSX.Element {
-  return (
-    <div className={`glass-card hover-glow rounded-3xl p-8 transition-all duration-300 ${className}`}>
-      <div className="h-12 w-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-6 text-accent">
-        <Icon icon={icon} width="24" />
-      </div>
-      <h3 className="text-xl font-semibold mb-3">{title}</h3>
-      <p className="text-zinc-400 leading-relaxed text-sm">{description}</p>
-    </div>
-  );
-}
-
-type ProjectCardProps = {
-  className?: string;
-  image: string;
-  alt: string;
-  tags: string[];
-  title: string;
-  description: string;
-};
-
-function ProjectCard({
-  className = "",
-  image,
-  alt,
-  tags,
-  title,
-  description,
-}: ProjectCardProps): React.JSX.Element {
-  return (
-    <div
-      className={`group relative rounded-3xl overflow-hidden bg-surface border border-white/10 hover:border-white/30 transition-all duration-500 cursor-pointer reveal-on-scroll reveal-zoom ${className}`}
-    >
-      <div className="aspect-video bg-[#111] relative overflow-hidden">
-        <img
-          src={image}
-          alt={alt}
-          className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-      </div>
-      <div className="absolute bottom-0 inset-x-0 p-8 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-        <div className="flex gap-2 mb-4">
-          {tags.map((tag) => (
-            <span
-              key={tag}
-              className="px-2.5 py-1 rounded-md bg-white/10 backdrop-blur-md border border-white/10 text-xs font-medium"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-        <h3 className="text-2xl font-bold mb-2">{title}</h3>
-        <p className="text-zinc-400 text-sm line-clamp-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
-          {description}
-        </p>
-      </div>
-    </div>
-  );
-}
-
-export default function UNAMBAHackathonPage(): React.JSX.Element {
-  const [activeSection, setActiveSection] = useState<SectionId>("home");
-  const [isMobileOpen, setIsMobileOpen] = useState<boolean>(false);
-
-  const desktopNavRef = useRef<HTMLDivElement | null>(null);
-  const desktopMaskRef = useRef<HTMLDivElement | null>(null);
-  const mobileNavRef = useRef<HTMLDivElement | null>(null);
-  const mobileMaskRef = useRef<HTMLDivElement | null>(null);
-
-  const updateHoles = useCallback((): void => {
-    const desktopContainer = desktopNavRef.current;
-    const desktopEl = document.querySelector(`.nav-link[data-id="${activeSection}"]`) as HTMLElement | null;
-    const desktopMask = desktopMaskRef.current;
-
-    if (desktopContainer && desktopEl && desktopMask) {
-      const cRect = desktopContainer.getBoundingClientRect();
-      const eRect = desktopEl.getBoundingClientRect();
-
-      desktopMask.style.setProperty("-webkit-mask-size", `100% 100%, ${eRect.width}px ${eRect.height}px`);
-      desktopMask.style.setProperty("-webkit-mask-position", `0 0, ${eRect.left - cRect.left}px ${eRect.top - cRect.top}px`);
-      desktopMask.style.setProperty("mask-size", `100% 100%, ${eRect.width}px ${eRect.height}px`);
-      desktopMask.style.setProperty("mask-position", `0 0, ${eRect.left - cRect.left}px ${eRect.top - cRect.top}px`);
-    }
-
-    const mobileContainer = mobileNavRef.current;
-    const mobileEl = document.querySelector(`.mobile-link[data-id="${activeSection}"]`) as HTMLElement | null;
-    const mobileMask = mobileMaskRef.current;
-
-    if (mobileContainer && mobileEl && mobileMask && isMobileOpen) {
-      const cRect = mobileContainer.getBoundingClientRect();
-      const eRect = mobileEl.getBoundingClientRect();
-
-      mobileMask.style.setProperty("-webkit-mask-size", `100% 100%, ${eRect.width}px ${eRect.height}px`);
-      mobileMask.style.setProperty("-webkit-mask-position", `0 0, ${eRect.left - cRect.left}px ${eRect.top - cRect.top}px`);
-      mobileMask.style.setProperty("mask-size", `100% 100%, ${eRect.width}px ${eRect.height}px`);
-      mobileMask.style.setProperty("mask-position", `0 0, ${eRect.left - cRect.left}px ${eRect.top - cRect.top}px`);
-    }
-  }, [activeSection, isMobileOpen]);
+  const desktopMaskRef = useRef<HTMLDivElement>(null)
+  const mobileMaskRef = useRef<HTMLDivElement>(null)
+  const desktopNavRef = useRef<HTMLDivElement>(null)
+  const mobileNavRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    const updateHoles = () => {
+      const desktopEl = document.querySelector(
+        `.nav-link[data-id="${activeSection}"]`
+      ) as HTMLElement | null
+
+      if (desktopNavRef.current && desktopEl && desktopMaskRef.current) {
+        const cRect = desktopNavRef.current.getBoundingClientRect()
+        const eRect = desktopEl.getBoundingClientRect()
+
+        desktopMaskRef.current.style.setProperty(
+          "-webkit-mask-size",
+          `100% 100%, ${eRect.width}px ${eRect.height}px`
+        )
+
+        desktopMaskRef.current.style.setProperty(
+          "-webkit-mask-position",
+          `0 0, ${eRect.left - cRect.left}px ${eRect.top - cRect.top}px`
+        )
+
+        desktopMaskRef.current.style.setProperty(
+          "mask-size",
+          `100% 100%, ${eRect.width}px ${eRect.height}px`
+        )
+
+        desktopMaskRef.current.style.setProperty(
+          "mask-position",
+          `0 0, ${eRect.left - cRect.left}px ${eRect.top - cRect.top}px`
+        )
+      }
+
+      const mobileEl = document.querySelector(
+        `.mobile-link[data-id="${activeSection}"]`
+      ) as HTMLElement | null
+
+      if (
+        mobileNavRef.current &&
+        mobileEl &&
+        mobileMaskRef.current &&
+        isMobileOpen
+      ) {
+        const cRect = mobileNavRef.current.getBoundingClientRect()
+        const eRect = mobileEl.getBoundingClientRect()
+
+        mobileMaskRef.current.style.setProperty(
+          "-webkit-mask-size",
+          `100% 100%, ${eRect.width}px ${eRect.height}px`
+        )
+
+        mobileMaskRef.current.style.setProperty(
+          "-webkit-mask-position",
+          `0 0, ${eRect.left - cRect.left}px ${eRect.top - cRect.top}px`
+        )
+
+        mobileMaskRef.current.style.setProperty(
+          "mask-size",
+          `100% 100%, ${eRect.width}px ${eRect.height}px`
+        )
+
+        mobileMaskRef.current.style.setProperty(
+          "mask-position",
+          `0 0, ${eRect.left - cRect.left}px ${eRect.top - cRect.top}px`
+        )
+      }
+    }
+
+    const sections = document.querySelectorAll(".section-block")
+
     const sectionObserver = new IntersectionObserver(
-      (entries: IntersectionObserverEntry[]) => {
-        const visibleSection = entries.find((entry) => entry.isIntersecting);
-        if (visibleSection?.target instanceof HTMLElement) {
-          setActiveSection(visibleSection.target.id as SectionId);
+      (entries) => {
+        const visibleSection = entries.find((entry) => entry.isIntersecting)
+
+        if (visibleSection) {
+          setActiveSection(visibleSection.target.id)
         }
       },
-      { rootMargin: "-40% 0px -40% 0px" }
-    );
+      {
+        rootMargin: "-40% 0px -40% 0px",
+      }
+    )
+
+    sections.forEach((el) => sectionObserver.observe(el))
 
     const revealObserver = new IntersectionObserver(
-      (entries: IntersectionObserverEntry[]) => {
+      (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting && entry.target instanceof HTMLElement) {
-            entry.target.classList.add("active");
+          if (entry.isIntersecting) {
+            entry.target.classList.add("active")
           }
-        });
+        })
       },
-      { threshold: 0.14, rootMargin: "0px 0px -8% 0px" }
-    );
+      {
+        threshold: 0.14,
+        rootMargin: "0px 0px -8% 0px",
+      }
+    )
 
-    const sections = Array.from(document.querySelectorAll(".section-block"));
-    const reveals = Array.from(document.querySelectorAll(".reveal-on-scroll"));
+    document
+      .querySelectorAll(".reveal-on-scroll")
+      .forEach((el) => revealObserver.observe(el))
 
-    sections.forEach((el) => sectionObserver.observe(el));
-    reveals.forEach((el) => revealObserver.observe(el));
+    const handleResize = () => updateHoles()
 
-    return () => {
-      sectionObserver.disconnect();
-      revealObserver.disconnect();
-    };
-  }, []);
+    const handleScroll = () => {
+      document.body.style.setProperty(
+        "--scroll",
+        window.scrollY.toString()
+      )
+    }
 
-  useEffect(() => {
-    updateHoles();
-  }, [updateHoles]);
+    window.addEventListener("resize", handleResize)
+    window.addEventListener("scroll", handleScroll)
 
-  useEffect(() => {
-    const onResize = (): void => {
-      updateHoles();
-    };
-
-    const onScroll = (): void => {
-      document.body.style.setProperty("--scroll", String(window.scrollY));
-    };
-
-    const onKeyDown = (event: KeyboardEvent): void => {
-      if (event.key === "Escape") setIsMobileOpen(false);
-    };
-
-    window.addEventListener("resize", onResize);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("keydown", onKeyDown);
-    onScroll();
+    setTimeout(updateHoles, 100)
 
     return () => {
-      window.removeEventListener("resize", onResize);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("keydown", onKeyDown);
-    };
-  }, [updateHoles]);
+      sectionObserver.disconnect()
+      revealObserver.disconnect()
+      window.removeEventListener("resize", handleResize)
+      window.removeEventListener("scroll", handleScroll)
+    }
+  }, [activeSection, isMobileOpen])
 
-  const handleSectionClick = (id: SectionId): void => {
-    setActiveSection(id);
-    setIsMobileOpen(false);
-  };
-
-  const navLinkClass = (id: SectionId): string =>
-    `nav-link cursor-pointer px-4 py-2 rounded-full transition-colors duration-300 relative z-10 ${
-      activeSection === id
-        ? "text-white font-medium border border-white/20"
-        : "text-white/60 hover:text-white hover:bg-white/5 border border-transparent"
-    }`;
-
-  const mobileLinkClass = (id: SectionId): string =>
-    `mobile-link px-4 py-3 rounded-xl text-sm transition-all duration-300 ${
-      activeSection === id
-        ? "bg-white/10 text-white font-semibold border border-white/10 shadow-sm"
-        : "text-[#a1a1aa] hover:text-white hover:bg-white/5 border border-transparent"
-    }`;
+  const navLinks = [
+    { id: "home", label: "Home" },
+    { id: "participation", label: "Participation" },
+    { id: "rules", label: "Rules" },
+    { id: "projects", label: "Projects" },
+  ]
 
   return (
     <>
@@ -223,11 +150,9 @@ export default function UNAMBAHackathonPage(): React.JSX.Element {
         }
 
         body {
-          background: #000;
-          margin: 0;
+          background: black;
           overflow-x: hidden;
-          color: #fff;
-          font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+          color: white;
         }
 
         @keyframes slideDownFade {
@@ -266,34 +191,6 @@ export default function UNAMBAHackathonPage(): React.JSX.Element {
           }
         }
 
-        @keyframes floating {
-          0% {
-            transform: translateY(0px);
-          }
-
-          50% {
-            transform: translateY(-12px);
-          }
-
-          100% {
-            transform: translateY(0px);
-          }
-        }
-
-        @keyframes pulseGlow {
-          0% {
-            box-shadow: 0 0 0 rgba(250, 204, 21, 0);
-          }
-
-          50% {
-            box-shadow: 0 0 40px rgba(250, 204, 21, 0.12);
-          }
-
-          100% {
-            box-shadow: 0 0 0 rgba(250, 204, 21, 0);
-          }
-        }
-
         @keyframes shine {
           from {
             transform: translateX(-120%);
@@ -305,7 +202,8 @@ export default function UNAMBAHackathonPage(): React.JSX.Element {
         }
 
         .nav-anim {
-          animation: slideDownFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          animation: slideDownFade 0.8s cubic-bezier(0.16, 1, 0.3, 1)
+            forwards;
         }
 
         .hero-text-1 {
@@ -321,12 +219,14 @@ export default function UNAMBAHackathonPage(): React.JSX.Element {
         .svg-underline path {
           stroke-dasharray: 200;
           stroke-dashoffset: 200;
-          animation: drawPath 1.5s cubic-bezier(0.33, 1, 0.68, 1) forwards 0.5s;
+          animation: drawPath 1.5s cubic-bezier(0.33, 1, 0.68, 1)
+            forwards 0.5s;
         }
 
         .desktop-mask {
           transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          -webkit-mask-image: linear-gradient(white, white), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' rx='18' fill='white'/%3E%3C/svg%3E");
+          -webkit-mask-image: linear-gradient(white, white),
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' rx='18' fill='white'/%3E%3C/svg%3E");
           -webkit-mask-repeat: no-repeat;
           -webkit-mask-composite: destination-out;
           mask-composite: exclude;
@@ -334,39 +234,40 @@ export default function UNAMBAHackathonPage(): React.JSX.Element {
 
         .mobile-mask {
           transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          -webkit-mask-image: linear-gradient(white, white), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' rx='12' fill='white'/%3E%3C/svg%3E");
+          -webkit-mask-image: linear-gradient(white, white),
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' rx='12' fill='white'/%3E%3C/svg%3E");
           -webkit-mask-repeat: no-repeat;
           -webkit-mask-composite: destination-out;
           mask-composite: exclude;
         }
 
-        .mobile-menu-container {
-          opacity: 0;
-          transform: translateY(-10px) scale(0.95);
-          pointer-events: none;
-          transition: 0.2s ease;
-        }
-
-        .mobile-menu-container.open {
-          opacity: 1;
-          transform: translateY(0) scale(1);
-          pointer-events: auto;
-        }
-
         .glass-card {
-          background: linear-gradient(180deg, rgba(24, 24, 27, 0.65) 0%, rgba(24, 24, 27, 0.2) 100%);
+          background: linear-gradient(
+            180deg,
+            rgba(24, 24, 27, 0.65) 0%,
+            rgba(24, 24, 27, 0.2) 100%
+          );
           backdrop-filter: blur(14px);
           border: 1px solid rgba(255, 255, 255, 0.08);
           position: relative;
           overflow: hidden;
-          transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.55s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.55s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+          transition:
+            transform 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+            box-shadow 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+            border-color 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+            opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .glass-card::before {
           content: "";
           position: absolute;
           inset: 0;
-          background: linear-gradient(120deg, transparent 20%, rgba(255, 255, 255, 0.08), transparent 80%);
+          background: linear-gradient(
+            120deg,
+            transparent 20%,
+            rgba(255, 255, 255, 0.08),
+            transparent 80%
+          );
           transform: translateX(-120%);
           pointer-events: none;
         }
@@ -391,8 +292,10 @@ export default function UNAMBAHackathonPage(): React.JSX.Element {
           opacity: 0;
           transform: translateY(56px) scale(0.98);
           filter: blur(10px);
-          transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), filter 0.9s cubic-bezier(0.16, 1, 0.3, 1);
-          will-change: transform, opacity, filter;
+          transition:
+            opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+            transform 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+            filter 0.9s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .reveal-on-scroll.active {
@@ -401,386 +304,524 @@ export default function UNAMBAHackathonPage(): React.JSX.Element {
           filter: blur(0);
         }
 
-        .reveal-left {
-          transform: translateX(-80px) translateY(24px);
-        }
-
-        .reveal-right {
-          transform: translateX(80px) translateY(24px);
-        }
-
-        .reveal-zoom {
-          transform: scale(0.92);
-        }
-
-        .reveal-left.active,
-        .reveal-right.active,
-        .reveal-zoom.active {
-          transform: translateX(0) translateY(0) scale(1);
-        }
-
-        .delay-1 {
-          transition-delay: 0.08s;
-        }
-
-        .delay-2 {
-          transition-delay: 0.16s;
-        }
-
-        .delay-3 {
-          transition-delay: 0.24s;
-        }
-
-        .delay-4 {
-          transition-delay: 0.32s;
-        }
-
-        .float-soft {
-          animation: floating 6s ease-in-out infinite;
-        }
-
-        .pulse-glow {
-          animation: pulseGlow 4s ease-in-out infinite;
-        }
-
-        .timeline-line {
-          position: absolute;
-          left: 0;
-          top: 0;
-          width: 1px;
-          background: rgba(255, 255, 255, 0.12);
-          transform-origin: top;
-        }
-
-        .parallax {
-          transform: translateY(calc(var(--scroll) * 0.08px));
-        }
-
         .noise::before {
           content: "";
           position: absolute;
           inset: 0;
-          background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+          background-image: radial-gradient(
+            rgba(255, 255, 255, 0.06) 1px,
+            transparent 1px
+          );
           background-size: 18px 18px;
           opacity: 0.2;
           pointer-events: none;
         }
       `}</style>
 
-      <nav className="nav-anim fixed top-8 inset-x-0 z-50 flex flex-col px-4 md:px-8 w-full max-w-[1440px] mx-auto">
-        <div className="flex items-center justify-between relative">
-          <a href="#home" className="flex items-center cursor-pointer shrink-0 z-20" onClick={() => handleSectionClick("home")}>
-            <span className="font-bold text-lg pt-1 tracking-tight text-white flex items-center gap-2">
-              <Icon icon="solar:code-square-bold-duotone" className="text-accent text-2xl" width="28" />
-              UNAMBA <span className="text-accent font-medium">Hackathon</span>
-            </span>
-          </a>
-
-          <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 z-10 w-auto">
-            <div ref={desktopNavRef} className="relative flex p-1.5 items-center justify-center space-x-1 text-sm desktop-nav rounded-full border border-white/10 bg-black/50 backdrop-blur-md">
-              <div ref={desktopMaskRef} className="desktop-mask absolute inset-0 bg-white/10 rounded-full -z-10" />
-              {NAV_ITEMS.map((item) => (
-                <a key={item.id} href={`#${item.id}`} className={navLinkClass(item.id)} data-id={item.id} onClick={() => handleSectionClick(item.id)}>
-                  {item.label}
-                </a>
-              ))}
-            </div>
-          </div>
-
-          <div className="flex items-center justify-end w-[180px] shrink-0 z-20">
-            <a
-              href="https://github.com/CristianOlivera1/openhero"
-              target="_blank"
-              rel="noreferrer"
-              className="hidden md:flex items-center justify-center px-4 py-2 bg-white text-black rounded-full font-medium hover:bg-white/90 transition-all duration-300 text-sm gap-2 hover:scale-105"
-            >
-              <span>Join Now</span>
-              <Icon icon="line-md:github-loop" width="18" />
+      <div className="bg-black text-white antialiased selection:bg-yellow-400/30 selection:text-yellow-400">
+        <nav className="nav-anim fixed top-8 inset-x-0 z-50 flex flex-col px-4 md:px-8 w-full max-w-[1440px] mx-auto">
+          <div className="flex items-center justify-between relative">
+            <a href="/" className="flex items-center gap-2 shrink-0 z-20">
+              <Icon
+                icon="solar:code-square-bold-duotone"
+                className="text-yellow-400 text-3xl"
+              />
+              <span className="font-bold text-lg tracking-tight">
+                UNAMBA{" "}
+                <span className="text-yellow-400 font-medium">
+                  Hackathon
+                </span>
+              </span>
             </a>
-          </div>
 
-          <button
-            type="button"
-            aria-label={isMobileOpen ? "Close menu" : "Open menu"}
-            className="md:hidden flex items-center justify-center p-2 text-white/80 hover:text-white bg-black/40 backdrop-blur-md border border-white/10 rounded-xl z-20 transition-colors"
-            onClick={() => setIsMobileOpen((value) => !value)}
-          >
-            <Icon icon={isMobileOpen ? "line-md:close" : "line-md:menu"} width="24" />
-          </button>
-        </div>
-
-        <div
-          ref={mobileNavRef}
-          id="mobileMenu"
-          className={`mobile-menu-container md:hidden mt-4 w-full relative rounded-2xl border border-white/10 shadow-2xl mobile-nav overflow-hidden absolute top-full left-0 ${
-            isMobileOpen ? "open" : ""
-          }`}
-        >
-          <div ref={mobileMaskRef} id="mobileMaskEl" className="mobile-mask absolute inset-0 bg-black/90 backdrop-blur-2xl rounded-2xl -z-10" />
-          <div className="p-5 flex flex-col space-y-2 relative z-10">
-            <div className="px-4 py-2 mb-2 flex items-center gap-2">
-              <Icon icon="solar:code-square-bold-duotone" className="text-accent text-2xl" width="28" />
-              <h2 className="text-xl font-bold text-white tracking-tight">
-                UNAMBA <span className="text-accent font-medium">Hackathon</span>
-              </h2>
-            </div>
-            {NAV_ITEMS.map((item) => (
-              <a
-                key={item.id}
-                href={`#${item.id}`}
-                className={mobileLinkClass(item.id)}
-                data-id={item.id}
-                onClick={() => handleSectionClick(item.id)}
+            <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 z-10">
+              <div
+                ref={desktopNavRef}
+                className="relative flex p-1.5 items-center justify-center space-x-1 text-sm rounded-full border border-white/10 bg-black/50 backdrop-blur-md"
               >
-                {item.label}
-              </a>
-            ))}
-            <div className="pt-6 mt-4 border-t border-white/10 w-full">
-              <a
-                href="https://github.com"
-                className="flex items-center justify-center w-full px-4 py-3 bg-white text-black rounded-xl font-medium hover:bg-white/90 transition-colors text-sm gap-2"
-              >
-                <span>Register with GitHub</span>
-                <Icon icon="line-md:github-loop" width="18" />
-              </a>
-            </div>
-          </div>
-        </div>
-      </nav>
+                <div
+                  ref={desktopMaskRef}
+                  className="desktop-mask absolute inset-0 bg-white/10 rounded-full -z-10"
+                />
 
-      <main>
-        <section id="home" className="p-2 md:p-4 h-[95vh] md:h-screen flex items-center justify-center relative w-full section-block">
-          <div className="relative w-full h-full rounded-[2rem] overflow-hidden bg-surface border border-white/5 noise">
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              poster="/images/nature/your-poster.avif"
-              className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none opacity-80"
-              style={{ WebkitMaskImage: "linear-gradient(to bottom, black 10%, transparent 100%)", maskImage: "linear-gradient(to bottom, black 40%, transparent 100%)" }}
-            >
-              <source src="./video.mp4" type="video/mp4" />
-            </video>
-            <div className="absolute inset-0 pointer-events-none mix-blend-screen opacity-30" style={{ background: "linear-gradient(130deg, transparent 40%, transparent 60%, #00aa17b6 100%)" }} />
-            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zz4%3C...')] [mask-image:linear-gradient(to_bottom,white,transparent)]" />
-
-            <div className="absolute bottom-0 inset-x-0 p-6 md:p-16 z-20 flex flex-col lg:flex-row justify-between lg:items-end gap-10">
-              <div className="hero-text-1 max-w-4xl">
-                <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] font-bold leading-[1.05] mb-6 tracking-tight text-white">
-                  Empowering the talent <br />
-                  <span className="text-white/60">of our region.</span>
-                </h1>
+                {navLinks.map((link) => (
+                  <a
+                    key={link.id}
+                    href={`#${link.id}`}
+                    data-id={link.id}
+                    className={`nav-link px-4 py-2 rounded-full transition-all duration-300 relative z-10 border ${
+                      activeSection === link.id
+                        ? "text-white font-medium border-white/20"
+                        : "text-white/60 hover:text-white hover:bg-white/5 border-transparent"
+                    }`}
+                  >
+                    {link.label}
+                  </a>
+                ))}
               </div>
-              <div className="hero-text-2 flex flex-col sm:flex-row items-start sm:items-center gap-6 border-t lg:border-t-0 lg:border-l border-white/10 pt-6 lg:pt-0 lg:pl-12 w-full lg:w-auto">
-                <div className="text-lg font-normal text-zinc-400 max-w-sm leading-relaxed">
-                  Develop your project and showcase your skills to the world in
-                  <span className="relative inline-block whitespace-nowrap text-white font-medium ml-1">
-                    just 3 weeks.
-                    <svg viewBox="0 0 187 10" fill="none" xmlns="http://www.w3.org/2000/svg" className="svg-underline absolute -bottom-1 left-0 w-full pointer-events-none" preserveAspectRatio="none">
-                      <path d="M2 7.85498C2 7.85498 63 2.81649 112 1.97674C161 1.137 185.5 4.91586 185.5 4.91586" stroke="#FACC15" strokeWidth="4" strokeLinecap="round" />
-                    </svg>
-                  </span>
+            </div>
+
+            <div className="hidden md:flex items-center justify-end w-[180px] shrink-0 z-20">
+              <a
+                href="https://github.com/CristianOlivera1/openhero"
+                target="_blank"
+                className="flex items-center justify-center px-4 py-2 bg-white text-black rounded-full font-medium hover:bg-white/90 transition-all duration-300 text-sm gap-2 hover:scale-105"
+              >
+                <span>Join Now</span>
+                <Icon icon="line-md:github-loop" className="text-lg" />
+              </a>
+            </div>
+
+            <button
+              onClick={() => setIsMobileOpen(!isMobileOpen)}
+              className="md:hidden flex items-center justify-center p-2 text-white/80 hover:text-white bg-black/40 backdrop-blur-md border border-white/10 rounded-xl z-20"
+            >
+              <Icon
+                icon={isMobileOpen ? "line-md:close" : "line-md:menu"}
+                className="text-2xl"
+              />
+            </button>
+          </div>
+
+          <div
+            className={`md:hidden mt-4 w-full relative rounded-2xl border border-white/10 shadow-2xl overflow-hidden absolute top-full left-0 transition-all duration-300 ${
+              isMobileOpen
+                ? "opacity-100 translate-y-0 scale-100 pointer-events-auto"
+                : "opacity-0 -translate-y-3 scale-95 pointer-events-none"
+            }`}
+          >
+            <div
+              ref={mobileNavRef}
+              className="relative bg-black/90 backdrop-blur-2xl rounded-2xl"
+            >
+              <div
+                ref={mobileMaskRef}
+                className="mobile-mask absolute inset-0 bg-black/90 rounded-2xl -z-10"
+              />
+
+              <div className="p-5 flex flex-col space-y-2 relative z-10">
+                <div className="px-4 py-2 mb-2 flex items-center gap-2">
+                  <Icon
+                    icon="solar:code-square-bold-duotone"
+                    className="text-yellow-400 text-3xl"
+                  />
+
+                  <h2 className="text-xl font-bold tracking-tight">
+                    UNAMBA{" "}
+                    <span className="text-yellow-400">Hackathon</span>
+                  </h2>
+                </div>
+
+                {navLinks.map((link) => (
+                  <a
+                    key={link.id}
+                    href={`#${link.id}`}
+                    data-id={link.id}
+                    onClick={() => setIsMobileOpen(false)}
+                    className={`mobile-link px-4 py-3 rounded-xl text-sm transition-all duration-300 border ${
+                      activeSection === link.id
+                        ? "bg-white/10 text-white font-semibold border-white/10"
+                        : "text-zinc-400 hover:text-white hover:bg-white/5 border-transparent"
+                    }`}
+                  >
+                    {link.label}
+                  </a>
+                ))}
+
+                <div className="pt-6 mt-4 border-t border-white/10">
+                  <a
+                    href="https://github.com"
+                    className="flex items-center justify-center w-full px-4 py-3 bg-white text-black rounded-xl font-medium hover:bg-white/90 transition-colors text-sm gap-2"
+                  >
+                    <span>Register with GitHub</span>
+
+                    <Icon
+                      icon="line-md:github-loop"
+                      className="text-lg"
+                    />
+                  </a>
                 </div>
               </div>
             </div>
           </div>
-        </section>
+        </nav>
 
-        <section id="participation" className="min-h-screen w-full flex flex-col items-center justify-center section-block py-32 px-6 relative">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent/5 blur-[120px] rounded-full pointer-events-none" />
-          <div className="max-w-6xl w-full relative z-10">
-            <RevealBlock className="text-center mb-20">
-              <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 gradient-text">Who can participate?</h2>
-              <p className="text-zinc-400 text-lg max-w-2xl mx-auto">
-                Join a community of builders, designers, and innovators. Build the future, regardless of your current skill level.
-              </p>
-            </RevealBlock>
+        <main>
+          <section
+            id="home"
+            className="section-block p-2 md:p-4 h-[95vh] md:h-screen flex items-center justify-center relative"
+          >
+            <div className="relative w-full h-full rounded-[2rem] overflow-hidden bg-[#0A0A0A] border border-white/5 noise">
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none opacity-80"
+                style={{
+                  WebkitMaskImage:
+                    "linear-gradient(to bottom, black 10%, transparent 100%)",
+                  maskImage:
+                    "linear-gradient(to bottom, black 40%, transparent 100%)",
+                }}
+              >
+                <source src="/video.mp4" type="video/mp4" />
+              </video>
 
-            <div className="grid md:grid-cols-3 gap-6">
-              <FeatureCard
-                className="reveal-on-scroll reveal-left delay-1"
-                icon="solar:users-group-rounded-bold-duotone"
-                title="Teams of 2 to 4"
-                description="Gather your friends or find teammates in our community platform. Collaboration is key to building an impactful project."
+              <div
+                className="absolute inset-0 pointer-events-none mix-blend-screen opacity-30"
+                style={{
+                  background:
+                    "linear-gradient(130deg, transparent 40%, transparent 60%, #00aa17b6 100%)",
+                }}
               />
-              <FeatureCard
-                className="reveal-on-scroll delay-2"
-                icon="solar:diploma-bold-duotone"
-                title="All Skill Levels"
-                description="Whether you&apos;re a freshman writing your first line of code or a senior architecting complex systems, there&apos;s a place for you here."
-              />
-              <FeatureCard
-                className="reveal-on-scroll reveal-right delay-3"
-                icon="solar:rocket-bold-duotone"
-                title="Expert Mentorship"
-                description="Get stuck? Don&apos;t worry. Industry professionals will be available throughout the event to guide you and review your code."
-              />
-            </div>
-          </div>
-        </section>
 
-        <section id="rules" className="min-h-screen w-full flex flex-col items-center justify-center section-block py-32 px-6 relative border-t border-white/5 bg-[#050505]">
-          <div className="max-w-4xl w-full relative z-10">
-            <RevealBlock className="text-center mb-20">
-              <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 gradient-text">Event Timeline</h2>
-              <p className="text-zinc-400 text-lg max-w-2xl mx-auto">
-                Three weeks of intense building, learning, and shipping. Here is how the event is structured.
-              </p>
-            </RevealBlock>
+              <div className="absolute bottom-0 inset-x-0 p-6 md:p-16 z-20 flex flex-col lg:flex-row justify-between lg:items-end gap-10">
+                <div className="hero-text-1 max-w-4xl">
+                  <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] font-bold leading-[1.05] mb-6 tracking-tight">
+                    Empowering the talent
+                    <br />
+                    <span className="text-white/60">
+                      of our region.
+                    </span>
+                  </h1>
+                </div>
 
-            <div className="relative border-l border-white/10 ml-4 md:ml-0 md:mx-auto space-y-12 pb-12">
-              <div className="relative pl-8 md:pl-0 md:w-1/2 md:pr-12 md:text-right md:ml-auto md:-left-[50%] reveal-on-scroll reveal-left delay-1">
-                <div className="absolute w-4 h-4 rounded-full bg-black border-2 border-accent left-[-8px] md:right-[-8px] md:left-auto top-1 shadow-[0_0_10px_rgba(250,204,21,0.5)]" />
-                <span className="text-accent font-mono text-sm tracking-widest uppercase mb-2 block">Week 1</span>
-                <h3 className="text-2xl font-bold mb-2">Ideation & Team Formation</h3>
-                <p className="text-zinc-400 text-sm leading-relaxed">
-                  Meet your peers, form a team, and brainstorm ideas. Submit your project proposal and get it approved by the mentors.
-                </p>
-              </div>
-
-              <div className="relative pl-8 md:pl-12 md:w-1/2 md:ml-auto reveal-on-scroll delay-2">
-                <div className="absolute w-4 h-4 rounded-full bg-black border-2 border-white/30 left-[-8px] md:left-[-8px] top-1" />
-                <span className="text-white/50 font-mono text-sm tracking-widest uppercase mb-2 block">Week 2</span>
-                <h3 className="text-2xl font-bold mb-2">Development Phase</h3>
-                <p className="text-zinc-400 text-sm leading-relaxed">
-                  Turn caffeine into code. Build the core features of your application, attend technical workshops, and consult with mentors.
-                </p>
-              </div>
-
-              <div className="relative pl-8 md:pl-0 md:w-1/2 md:pr-12 md:text-right md:ml-auto md:-left-[50%] reveal-on-scroll reveal-right delay-3">
-                <div className="absolute w-4 h-4 rounded-full bg-black border-2 border-white/30 left-[-8px] md:right-[-8px] md:left-auto top-1" />
-                <span className="text-white/50 font-mono text-sm tracking-widest uppercase mb-2 block">Week 3</span>
-                <h3 className="text-2xl font-bold mb-2">Refinement & Pitch</h3>
-                <p className="text-zinc-400 text-sm leading-relaxed">
-                  Polish your UI, fix bugs, and prepare your pitch deck. Present your final product to the judges on Demo Day.
-                </p>
+                <div className="hero-text-2 flex flex-col sm:flex-row items-start sm:items-center gap-6 border-t lg:border-t-0 lg:border-l border-white/10 pt-6 lg:pt-0 lg:pl-12 w-full lg:w-auto">
+                  <div className="text-lg text-zinc-400 max-w-sm leading-relaxed">
+                    Develop your project and showcase your skills to
+                    the world in
+                    <span className="relative inline-block whitespace-nowrap text-white font-medium ml-1">
+                      just 3 weeks.
+                      <svg
+                        viewBox="0 0 187 10"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="svg-underline absolute -bottom-1 left-0 w-full pointer-events-none"
+                        preserveAspectRatio="none"
+                      >
+                        <path
+                          d="M2 7.85498C2 7.85498 63 2.81649 112 1.97674C161 1.137 185.5 4.91586 185.5 4.91586"
+                          stroke="#FACC15"
+                          strokeWidth="4"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        <section id="projects" className="min-h-screen w-full flex flex-col items-center justify-center section-block py-32 px-6 relative border-t border-white/5">
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-accent/5 blur-[150px] rounded-full pointer-events-none" />
-          <div className="max-w-6xl w-full relative z-10">
-            <RevealBlock className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-              <div>
-                <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 gradient-text">Previous Projects</h2>
-                <p className="text-zinc-400 text-lg max-w-xl">
-                  Take a look at what teams have built in past editions. Incredible ideas brought to life in record time.
+          <section
+            id="participation"
+            className="section-block min-h-screen flex flex-col items-center justify-center py-32 px-6 relative"
+          >
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-yellow-400/5 blur-[120px] rounded-full" />
+
+            <div className="max-w-6xl w-full relative z-10">
+              <div className="text-center mb-20 reveal-on-scroll">
+                <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 gradient-text">
+                  Who can participate?
+                </h2>
+
+                <p className="text-zinc-400 text-lg max-w-2xl mx-auto">
+                  Join a community of builders, designers, and
+                  innovators.
                 </p>
               </div>
-              <a href="#" className="text-accent hover:text-white transition-colors flex items-center gap-1 text-sm font-medium">
-                View All Projects <Icon icon="solar:arrow-right-linear" />
-              </a>
-            </RevealBlock>
 
-            <div className="grid md:grid-cols-2 gap-6">
-              <ProjectCard
-                className="delay-1"
-                image="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop"
-                alt="Project 1"
-                tags={["AI", "Healthcare"]}
-                title="MedAssist AI"
-                description="An intelligent diagnostic assistant helping rural doctors analyze symptoms and recommend preliminary treatments using machine learning."
-              />
+              <div className="grid md:grid-cols-3 gap-6">
+                {[
+                  {
+                    icon: "solar:users-group-rounded-bold-duotone",
+                    title: "Teams of 2 to 4",
+                    text: "Gather your friends or find teammates in our community platform.",
+                  },
+                  {
+                    icon: "solar:diploma-bold-duotone",
+                    title: "All Skill Levels",
+                    text: "Whether you're a freshman or a senior architecting systems.",
+                  },
+                  {
+                    icon: "solar:rocket-bold-duotone",
+                    title: "Expert Mentorship",
+                    text: "Industry professionals will guide you throughout the event.",
+                  },
+                ].map((card) => (
+                  <div
+                    key={card.title}
+                    className="glass-card hover-glow rounded-3xl p-8 reveal-on-scroll"
+                  >
+                    <div className="h-12 w-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-6 text-yellow-400">
+                      <Icon icon={card.icon} className="text-2xl" />
+                    </div>
 
-              <ProjectCard
-                className="delay-2"
-                image="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop"
-                alt="Project 2"
-                tags={["Fintech", "Web3"]}
-                title="AgriPay Network"
-                description="A decentralized payment infrastructure designed specifically for local farmers to secure direct transactions without intermediaries."
-              />
+                    <h3 className="text-xl font-semibold mb-3">
+                      {card.title}
+                    </h3>
+
+                    <p className="text-zinc-400 leading-relaxed text-sm">
+                      {card.text}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
-      </main>
+          </section>
 
-      <footer className="border-t border-white/10 bg-black pt-16 pb-8 px-6">
-        <div className="max-w-6xl mx-auto">
-          <RevealBlock className="flex flex-col md:flex-row justify-between items-start gap-12 mb-16">
-            <div className="max-w-xs">
-              <a href="#home" className="flex items-center gap-2 mb-4" onClick={() => handleSectionClick("home")}>
-                <Icon icon="solar:code-square-bold-duotone" className="text-accent text-3xl" width="32" />
-                <span className="font-bold text-xl tracking-tight text-white">
-                  UNAMBA <span className="text-accent">Hack</span>
-                </span>
-              </a>
-              <p className="text-zinc-500 text-sm leading-relaxed mb-6">
-                Empowering the next generation of builders in the Apurímac region through technology, collaboration, and innovation.
-              </p>
-              <div className="flex items-center gap-4 text-zinc-400">
-                <a href="#" className="hover:text-white transition-colors">
-                  <Icon icon="mdi:twitter" width="20" />
+          <section
+            id="rules"
+            className="section-block min-h-screen flex flex-col items-center justify-center py-32 px-6 relative border-t border-white/5 bg-[#050505]"
+          >
+            <div className="max-w-4xl w-full relative z-10">
+              <div className="text-center mb-20 reveal-on-scroll">
+                <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 gradient-text">
+                  Event Timeline
+                </h2>
+
+                <p className="text-zinc-400 text-lg max-w-2xl mx-auto">
+                  Three weeks of intense building, learning, and
+                  shipping.
+                </p>
+              </div>
+
+              <div className="relative border-l border-white/10 ml-4 md:ml-0 space-y-12 pb-12">
+                {[
+                  {
+                    week: "Week 1",
+                    title: "Ideation & Team Formation",
+                    text: "Meet your peers, form a team, and brainstorm ideas.",
+                  },
+                  {
+                    week: "Week 2",
+                    title: "Development Phase",
+                    text: "Turn caffeine into code and build your application.",
+                  },
+                  {
+                    week: "Week 3",
+                    title: "Refinement & Pitch",
+                    text: "Polish your UI and prepare your pitch deck.",
+                  },
+                ].map((item) => (
+                  <div
+                    key={item.week}
+                    className="relative pl-8 reveal-on-scroll"
+                  >
+                    <div className="absolute w-4 h-4 rounded-full bg-black border-2 border-yellow-400 left-[-8px] top-1 shadow-[0_0_10px_rgba(250,204,21,0.5)]" />
+
+                    <span className="text-yellow-400 font-mono text-sm tracking-widest uppercase mb-2 block">
+                      {item.week}
+                    </span>
+
+                    <h3 className="text-2xl font-bold mb-2">
+                      {item.title}
+                    </h3>
+
+                    <p className="text-zinc-400 text-sm leading-relaxed">
+                      {item.text}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section
+            id="projects"
+            className="section-block min-h-screen flex flex-col items-center justify-center py-32 px-6 relative border-t border-white/5"
+          >
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-yellow-400/5 blur-[150px] rounded-full" />
+
+            <div className="max-w-6xl w-full relative z-10">
+              <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 reveal-on-scroll">
+                <div>
+                  <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 gradient-text">
+                    Previous Projects
+                  </h2>
+
+                  <p className="text-zinc-400 text-lg max-w-xl">
+                    Incredible ideas brought to life in record time.
+                  </p>
+                </div>
+
+                <a
+                  href="#"
+                  className="text-yellow-400 hover:text-white transition-colors flex items-center gap-1 text-sm font-medium"
+                >
+                  View All Projects
+                  <Icon
+                    icon="solar:arrow-right-linear"
+                    className="text-lg"
+                  />
                 </a>
-                <a href="#" className="hover:text-white transition-colors">
-                  <Icon icon="mdi:github" width="20" />
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                {[
+                  {
+                    title: "MedAssist AI",
+                    image:
+                      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop",
+                    tags: ["AI", "Healthcare"],
+                  },
+                  {
+                    title: "AgriPay Network",
+                    image:
+                      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop",
+                    tags: ["Fintech", "Web3"],
+                  },
+                ].map((project) => (
+                  <div
+                    key={project.title}
+                    className="group relative rounded-3xl overflow-hidden bg-[#0A0A0A] border border-white/10 hover:border-white/30 transition-all duration-500"
+                  >
+                    <div className="aspect-video relative overflow-hidden">
+                      <img
+                        src={project.image}
+                        alt={project.title}
+                        className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
+                      />
+
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+                    </div>
+
+                    <div className="absolute bottom-0 inset-x-0 p-8">
+                      <div className="flex gap-2 mb-4">
+                        {project.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="px-2.5 py-1 rounded-md bg-white/10 backdrop-blur-md border border-white/10 text-xs font-medium"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+
+                      <h3 className="text-2xl font-bold mb-2">
+                        {project.title}
+                      </h3>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <footer className="border-t border-white/10 bg-black pt-16 pb-8 px-6">
+          <div className="max-w-6xl mx-auto">
+            <div className="flex flex-col md:flex-row justify-between items-start gap-12 mb-16">
+              <div className="max-w-xs">
+                <a href="/" className="flex items-center gap-2 mb-4">
+                  <Icon
+                    icon="solar:code-square-bold-duotone"
+                    className="text-yellow-400 text-3xl"
+                  />
+
+                  <span className="font-bold text-xl tracking-tight">
+                    UNAMBA{" "}
+                    <span className="text-yellow-400">Hack</span>
+                  </span>
                 </a>
-                <a href="#" className="hover:text-white transition-colors">
-                  <Icon icon="mdi:discord" width="20" />
-                </a>
+
+                <p className="text-zinc-500 text-sm leading-relaxed mb-6">
+                  Empowering the next generation of builders in the
+                  Apurímac region.
+                </p>
+
+                <div className="flex items-center gap-4 text-zinc-400">
+                  <a href="#" className="hover:text-white">
+                    <Icon icon="mdi:twitter" className="text-xl" />
+                  </a>
+
+                  <a href="#" className="hover:text-white">
+                    <Icon icon="mdi:github" className="text-xl" />
+                  </a>
+
+                  <a href="#" className="hover:text-white">
+                    <Icon icon="mdi:discord" className="text-xl" />
+                  </a>
+                </div>
+              </div>
+
+              <div className="flex gap-16">
+                <div>
+                  <h4 className="text-white font-semibold mb-4 text-sm">
+                    Resources
+                  </h4>
+
+                  <ul className="space-y-3 text-sm text-zinc-500">
+                    <li>
+                      <a href="#" className="hover:text-yellow-400">
+                        Documentation
+                      </a>
+                    </li>
+
+                    <li>
+                      <a href="#" className="hover:text-yellow-400">
+                        Starter Kits
+                      </a>
+                    </li>
+
+                    <li>
+                      <a href="#" className="hover:text-yellow-400">
+                        Mentorship Program
+                      </a>
+                    </li>
+
+                    <li>
+                      <a href="#" className="hover:text-yellow-400">
+                        FAQ
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="text-white font-semibold mb-4 text-sm">
+                    Legal
+                  </h4>
+
+                  <ul className="space-y-3 text-sm text-zinc-500">
+                    <li>
+                      <a href="#" className="hover:text-white">
+                        Privacy Policy
+                      </a>
+                    </li>
+
+                    <li>
+                      <a href="#" className="hover:text-white">
+                        Terms of Service
+                      </a>
+                    </li>
+
+                    <li>
+                      <a href="#" className="hover:text-white">
+                        Code of Conduct
+                      </a>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
 
-            <div className="flex gap-16">
-              <div>
-                <h4 className="text-white font-semibold mb-4 text-sm">Resources</h4>
-                <ul className="space-y-3 text-sm text-zinc-500">
-                  <li>
-                    <a href="#" className="hover:text-accent transition-colors">
-                      Documentation
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="hover:text-accent transition-colors">
-                      Starter Kits
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="hover:text-accent transition-colors">
-                      Mentorship Program
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="hover:text-accent transition-colors">
-                      FAQ
-                    </a>
-                  </li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="text-white font-semibold mb-4 text-sm">Legal</h4>
-                <ul className="space-y-3 text-sm text-zinc-500">
-                  <li>
-                    <a href="#" className="hover:text-white transition-colors">
-                      Privacy Policy
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="hover:text-white transition-colors">
-                      Terms of Service
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="hover:text-white transition-colors">
-                      Code of Conduct
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </RevealBlock>
+            <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-zinc-600">
+              <p>© 2026 UNAMBA Hackathon. All rights reserved.</p>
 
-          <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-zinc-600 reveal-on-scroll delay-1">
-            <p>&copy; 2026 UNAMBA Hackathon. All rights reserved.</p>
-            <p className="flex items-center gap-1">
-              Designed with <Icon icon="solar:heart-bold" className="text-zinc-400" width="14" /> for the community.
-            </p>
+              <p className="flex items-center gap-1">
+                Designed with
+                <Icon
+                  icon="solar:heart-bold"
+                  className="text-zinc-400 text-base"
+                />
+                for the community.
+              </p>
+            </div>
           </div>
-        </div>
-      </footer>
+        </footer>
+      </div>
     </>
-  );
+  )
 }
