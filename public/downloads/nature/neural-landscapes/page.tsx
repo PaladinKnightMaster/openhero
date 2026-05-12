@@ -5,34 +5,26 @@ import { Icon } from "@iconify/react";
 
 export default function Page() {
   useEffect(() => {
-    const cleanups: (() => void)[] = [];
+    const cleanups: Array<() => void> = [];
 
-    document.querySelectorAll<HTMLElement>(".sss-card").forEach((card) => {
-      const glow = card.querySelector(
-        ".subsurface-glow"
-      ) as HTMLElement | null;
+    const cards = document.querySelectorAll<HTMLElement>(".sss-card");
 
-  const handlers = new Map<HTMLElement, (e: MouseEvent) => void>();
+    cards.forEach((card) => {
+      const glow = card.querySelector<HTMLElement>(".subsurface-glow");
+      if (!glow) return;
 
-      const move = (e: globalThis.MouseEvent) => {
+      const move = (e: MouseEvent) => {
         const rect = card.getBoundingClientRect();
-
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
 
-    const move = (e: MouseEvent) => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      glow.style.left = `${x}px`;
-      glow.style.top = `${y}px`;
-    };
+        glow.style.left = `${x}px`;
+        glow.style.top = `${y}px`;
+      };
 
-      cleanups.push(() => {
-        card.removeEventListener("mousemove", move);
-      });
+      card.addEventListener("mousemove", move);
+      cleanups.push(() => card.removeEventListener("mousemove", move));
     });
-  }, observerOptions);
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -50,10 +42,8 @@ export default function Page() {
       }
     );
 
-  return () => {
-    cards.forEach((card) => {
-      const move = handlers.get(card);
-      if (move) card.removeEventListener("mousemove", move);
+    document.querySelectorAll<HTMLElement>(".bloom-reveal").forEach((el) => {
+      observer.observe(el);
     });
 
     return () => {
@@ -76,6 +66,10 @@ export default function Page() {
           color: white;
           background-color: oklch(10% 0.01 150);
           font-family: "Space Grotesk", sans-serif;
+        }
+
+        * {
+          box-sizing: border-box;
         }
 
         ::-webkit-scrollbar {
@@ -101,7 +95,11 @@ export default function Page() {
         }
 
         .radial-portal {
-          -webkit-mask-image: radial-gradient(circle at center, black 30%, transparent 70%);
+          -webkit-mask-image: radial-gradient(
+            circle at center,
+            black 30%,
+            transparent 70%
+          );
           mask-image: radial-gradient(circle at center, black 30%, transparent 70%);
           transition:
             transform 1.5s cubic-bezier(0.16, 1, 0.3, 1),
@@ -290,13 +288,12 @@ export default function Page() {
       `}</style>
 
       <div className="selection:bg-emerald-500/30 selection:text-white antialiased">
-        <div className="vercel-grain"></div>
+        <div className="vercel-grain" />
 
         <nav className="pointer-events-none fixed inset-x-0 top-0 z-50 flex w-full items-center justify-between px-6 py-6 mix-blend-plus-lighter">
           <div className="pointer-events-auto group flex items-center gap-4">
             <div className="apple-sharpness relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full">
-              <div className="absolute inset-0 bg-emerald-400/20 opacity-0 transition-opacity group-hover:opacity-100"></div>
-
+              <div className="absolute inset-0 bg-emerald-400/20 opacity-0 transition-opacity group-hover:opacity-100" />
               <Icon
                 icon="ph:infinity-light"
                 className="relative z-10 text-xl text-white"
@@ -328,15 +325,13 @@ export default function Page() {
         </nav>
 
         <main className="relative w-full">
-          <div className="ambient-light fixed left-[10%] top-[10%] h-[40vw] w-[40vw] bg-yellow-300/5"></div>
-
-          <div className="ambient-light fixed bottom-[10%] right-[10%] h-[50vw] w-[50vw] bg-emerald-400/10"></div>
+          <div className="ambient-light fixed left-[10%] top-[10%] h-[40vw] w-[40vw] bg-yellow-300/5" />
+          <div className="ambient-light fixed bottom-[10%] right-[10%] h-[50vw] w-[50vw] bg-emerald-400/10" />
 
           <section className="relative z-10 grid min-h-screen w-full grid-cols-1 lg:grid-cols-2">
             <div className="z-20 flex flex-col justify-center px-8 pb-20 pt-32 md:px-16 lg:px-24 lg:py-0">
               <div className="bloom-reveal active mb-6 inline-flex items-center gap-3">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_12px_oklch(60%_0.15_150)]"></span>
-
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_12px_oklch(60%_0.15_150)]" />
                 <span className="text-[9px] uppercase tracking-[0.4em] text-emerald-400/80">
                   Andean Bio-Digitalism
                 </span>
@@ -349,7 +344,6 @@ export default function Page() {
                 <span className="kinetic-sway morning-sun-text block">
                   Living
                 </span>
-
                 <span className="block text-white">Architecture</span>
               </h1>
 
@@ -362,7 +356,6 @@ export default function Page() {
               <div className="bloom-reveal active delay-300 mt-12 flex items-center gap-6">
                 <button className="dew-drop flex items-center gap-3 px-8 py-4 text-[10px] uppercase tracking-[0.2em] text-white">
                   Initiate Synthesis
-
                   <Icon
                     icon="ph:arrow-right-light"
                     className="text-base text-emerald-400"
@@ -387,9 +380,8 @@ export default function Page() {
                   <source src="/video.mp4" type="video/mp4" />
                 </video>
 
-                <div className="absolute inset-0 bg-black/40 mix-blend-multiply"></div>
-
-                <div className="absolute inset-0 bg-emerald-400/10 mix-blend-overlay"></div>
+                <div className="absolute inset-0 bg-black/40 mix-blend-multiply" />
+                <div className="absolute inset-0 bg-emerald-400/10 mix-blend-overlay" />
               </div>
             </div>
           </section>
@@ -414,12 +406,12 @@ export default function Page() {
                     zero-emission cooling protocols.
                   </p>
 
-                  <div className="h-px w-full bg-gradient-to-r from-emerald-400 via-yellow-300 to-transparent opacity-20"></div>
+                  <div className="h-px w-full bg-gradient-to-r from-emerald-400 via-yellow-300 to-transparent opacity-20" />
                 </div>
 
                 <div className="flex flex-col gap-6 md:col-span-7">
                   <div className="apple-sharpness sss-card bloom-reveal delay-100 group overflow-hidden rounded-3xl p-8 md:p-10">
-                    <div className="subsurface-glow"></div>
+                    <div className="subsurface-glow" />
 
                     <div className="relative z-10 flex flex-col items-start justify-between gap-8 md:flex-row">
                       <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md">
@@ -450,9 +442,7 @@ export default function Page() {
                             style={{ fontFamily: "Oswald, sans-serif" }}
                           >
                             14.2
-                            <span className="ml-1 text-sm text-white/30">
-                              L/s
-                            </span>
+                            <span className="ml-1 text-sm text-white/30">L/s</span>
                           </span>
                         </div>
                       </div>
@@ -460,7 +450,7 @@ export default function Page() {
                   </div>
 
                   <div className="apple-sharpness sss-card bloom-reveal delay-200 group overflow-hidden rounded-3xl p-8 md:p-10">
-                    <div className="subsurface-glow"></div>
+                    <div className="subsurface-glow" />
 
                     <div className="relative z-10 flex flex-col items-start justify-between gap-8 md:flex-row">
                       <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md">
@@ -491,9 +481,7 @@ export default function Page() {
                             style={{ fontFamily: "Oswald, sans-serif" }}
                           >
                             98.5
-                            <span className="ml-1 text-sm text-white/30">
-                              %
-                            </span>
+                            <span className="ml-1 text-sm text-white/30">%</span>
                           </span>
                         </div>
                       </div>
@@ -506,7 +494,7 @@ export default function Page() {
 
           <section className="relative z-20 mb-32 flex h-[50vh] w-full items-center justify-center">
             <div className="bloom-reveal text-center">
-              <div className="mx-auto mb-8 h-24 w-px bg-gradient-to-b from-transparent via-emerald-400 to-transparent"></div>
+              <div className="mx-auto mb-8 h-24 w-px bg-gradient-to-b from-transparent via-emerald-400 to-transparent" />
 
               <h2
                 className="cursor-default text-3xl uppercase tracking-widest text-white/20 transition-colors duration-700 hover:text-white md:text-5xl"
