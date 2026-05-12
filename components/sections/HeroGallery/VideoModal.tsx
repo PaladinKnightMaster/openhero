@@ -5,17 +5,16 @@ import { Icon } from "@iconify/react";
 import { Highlight, themes, type Language } from "prism-react-renderer";
 import type { HeroVideo } from "@/lib/videos";
 import { capitalize } from "@/lib/utils";
-import { getNextjsCode, getReactCode, getHtmlCode } from "@/lib/hero-templates";
+import { getNextjsCode, getHtmlCode } from "@/lib/hero-templates";
 import { VercelTabs } from "@/components/ui/vercel-tabs";
 
-type Framework = "nextjs" | "react" | "html";
+type Framework = "nextjs" | "html";
 
 const FW_CONFIG: Record<
   Framework,
   { label: string; icon: string; lang: Language; filename: string; format: string }
 > = {
   nextjs: { label: "Next.js", icon: "simple-icons:nextdotjs", lang: "tsx", filename: "page.tsx", format: "nextjs" },
-  react: { label: "React", icon: "simple-icons:react", lang: "jsx", filename: "Hero.jsx", format: "react" },
   html: { label: "HTML", icon: "simple-icons:html5", lang: "markup", filename: "index.html", format: "html" },
 };
 
@@ -201,7 +200,7 @@ interface VideoModalProps {
 export function VideoModal({ video, onClose }: VideoModalProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [mobileTab, setMobileTab] = useState<Framework>("nextjs");
-  const [codes, setCodes] = useState<Record<Framework, string>>({ nextjs: "", react: "", html: "" });
+  const [codes, setCodes] = useState<Record<Framework, string>>({ nextjs: "", html: "" });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -213,16 +212,14 @@ export function VideoModal({ video, onClose }: VideoModalProps) {
       if (video.hasDownloads) {
         const base = `/downloads/${video.category}/${video.slug}`;
         try {
-          const [nextjs, react, html] = await Promise.all([
+          const [nextjs, html] = await Promise.all([
             fetch(`${base}/page.tsx`).then((r) => (r.ok ? r.text() : null)),
-            fetch(`${base}/app.jsx`).then((r) => (r.ok ? r.text() : null)),
             fetch(`${base}/index.html`).then((r) => (r.ok ? r.text() : null)),
           ]);
 
           if (isMounted) {
             setCodes({
               nextjs: nextjs ?? getNextjsCode(opts),
-              react: react ?? getReactCode(opts),
               html: html ?? getHtmlCode(opts),
             });
           }
@@ -231,7 +228,7 @@ export function VideoModal({ video, onClose }: VideoModalProps) {
         }
       } else {
         if (isMounted) {
-          setCodes({ nextjs: getNextjsCode(opts), react: getReactCode(opts), html: getHtmlCode(opts) });
+          setCodes({ nextjs: getNextjsCode(opts), html: getHtmlCode(opts) });
         }
       }
       if (isMounted) setLoading(false);

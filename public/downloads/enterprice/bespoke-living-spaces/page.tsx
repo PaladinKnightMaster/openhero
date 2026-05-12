@@ -79,9 +79,14 @@ export default function VestaAtelierPage() {
       setDarkMode((prev) => !prev);
     };
 
-    if (typeof document !== "undefined" && "startViewTransition" in document) {
-      // @ts-expect-error startViewTransition is not in every TS DOM lib version
-      document.startViewTransition(apply);
+    const startViewTransition = (
+      document as Document & {
+        startViewTransition?: (cb: () => void) => void;
+      }
+    ).startViewTransition;
+
+    if (typeof document !== "undefined" && startViewTransition) {
+      startViewTransition(apply);
     } else {
       apply();
     }

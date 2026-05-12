@@ -85,13 +85,13 @@ export default function AnthropicBioTechInterface() {
                 : document.body.setAttribute("data-theme", "synthesized");
         };
 
-        // @ts-expect-error
-        document.startViewTransition
-            ? // @ts-expect-error
-            document.startViewTransition(synthesize)
-            : synthesize();
-    };
+        const startViewTransition = (document as Document & {
+            startViewTransition?: (cb: () => void) => void;
+        }).startViewTransition;
 
+        startViewTransition ? startViewTransition(synthesize) : synthesize();
+    };
+    
     return (
         <>
             <style>{`

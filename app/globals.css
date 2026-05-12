@@ -115,6 +115,12 @@
 
   --animate-infinite-scroll: scroll var(--animation-duration) linear infinite var(--animation-direction);
 
+  @keyframes shimmer {
+    100% {
+      transform: translateX(200%);
+    }
+  }
+
   @keyframes scroll {
     to {
       transform: translateX(calc(-50% - 0.5rem));

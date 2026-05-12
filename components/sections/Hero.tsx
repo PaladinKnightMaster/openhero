@@ -55,7 +55,7 @@ export default function Hero() {
                             <Icon icon="solar:play-circle-bold" width="16" />
                             Browse Gallery
                         </a>
-                        <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl border border-neutral-700 px-6 py-3 text-sm font-semibold text-white transition-colors hover:border-neutral-500 hover:bg-neutral-900">
+                        <a href="https://github.com/CristianOlivera1/openhero" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl border border-neutral-700 px-6 py-3 text-sm font-semibold text-white transition-colors hover:border-neutral-500 hover:bg-neutral-900">
                             <Icon icon="mdi:github" width="16" />
                             View on GitHub
                         </a>

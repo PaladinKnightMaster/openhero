@@ -4,6 +4,7 @@ import Header from "@/components/layout/header";
 import Hero from "@/components/sections/Hero";
 import HeroGallery from "@/components/sections/HeroGallery";
 import { getVideoCatalog } from "@/lib/videos";
+import { createClient } from "@/utils/supabase/server";
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://openhero.art'),
@@ -58,8 +59,34 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Home() {
+export default async function Home() {
   const { videos, categories } = getVideoCatalog();
+
+  // ── Sort by views (most-viewed first) ──────────────────────────
+  // Fetch aggregate stats from Supabase and sort the catalog in-place.
+  // Falls back to original filesystem order on any error (Supabase down,
+  // empty table, env vars missing, etc.).
+  let sortedVideos = videos;
+  try {
+    const supabase = await createClient();
+    const slugs = videos.map((v) => v.slug);
+    const { data: stats } = await supabase
+      .from("hero_videos")
+      .select("slug, views_count")
+      .in("slug", slugs)
+      .order("views_count", { ascending: false });
+
+    if (stats && stats.length > 0) {
+      const viewsMap = new Map<string, number>(
+        stats.map((s) => [s.slug, s.views_count ?? 0]),
+      );
+      sortedVideos = [...videos].sort(
+        (a, b) => (viewsMap.get(b.slug) ?? 0) - (viewsMap.get(a.slug) ?? 0),
+      );
+    }
+  } catch {
+    // Supabase unavailable — serve original order
+  }
 
   const collectionSchema = {
     "@context": "https://schema.org",
@@ -68,7 +95,7 @@ export default function Home() {
     url: "https://openhero.art",
     description:
       "Browse and download cinematic video hero sections with production-ready source code in HTML, React, and Next.js.",
-    numberOfItems: videos.length,
+    numberOfItems: sortedVideos.length,
     inLanguage: "en-US",
     isPartOf: { "@type": "WebSite", name: "openhero", url: "https://openhero.art" },
   };
@@ -91,7 +118,7 @@ export default function Home() {
       <Header />
       <main className="flex-1">
         <Hero />
-        <HeroGallery videos={videos} categories={categories} />
+        <HeroGallery videos={sortedVideos} categories={categories} />
       </main>
       <Footer />
       <div className="pointer-events-none fixed bottom-0 left-0 z-50 h-32 w-full bg-linear-to-t from-black via-black/15 to-transparent" />
