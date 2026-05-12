@@ -5,13 +5,18 @@ import { Icon } from "@iconify/react";
 
 export default function Page() {
   useEffect(() => {
-    document.querySelectorAll(".sss-card").forEach((card) => {
-      const glow = card.querySelector(".subsurface-glow") as HTMLElement;
+    const cleanups: (() => void)[] = [];
+
+    document.querySelectorAll<HTMLElement>(".sss-card").forEach((card) => {
+      const glow = card.querySelector(
+        ".subsurface-glow"
+      ) as HTMLElement | null;
 
       if (!glow) return;
 
-      const move = (e: MouseEvent) => {
-        const rect = (card as HTMLElement).getBoundingClientRect();
+      const move = (e: globalThis.MouseEvent) => {
+        const rect = card.getBoundingClientRect();
+
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
 
@@ -21,31 +26,35 @@ export default function Page() {
 
       card.addEventListener("mousemove", move);
 
-      return () => {
+      cleanups.push(() => {
         card.removeEventListener("mousemove", move);
-      };
+      });
     });
 
-    const observerOptions = {
-      root: null,
-      rootMargin: "0px 0px -15% 0px",
-      threshold: 0.1,
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("active");
-          observer.unobserve(entry.target);
-        }
-      });
-    }, observerOptions);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("active");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        root: null,
+        rootMargin: "0px 0px -15% 0px",
+        threshold: 0.1,
+      }
+    );
 
     document.querySelectorAll(".bloom-reveal").forEach((el) => {
       observer.observe(el);
     });
 
-    return () => observer.disconnect();
+    return () => {
+      cleanups.forEach((cleanup) => cleanup());
+      observer.disconnect();
+    };
   }, []);
 
   return (
