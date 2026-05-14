@@ -1,402 +1,567 @@
-"use client";
-
+"use client"
 import { useEffect, useRef } from "react";
 import { Icon } from "@iconify/react";
-import { Cormorant_Garamond, Inter_Tight } from "next/font/google";
 
-const interTight = Inter_Tight({
-  subsets: ["latin"],
-  display: "swap",
-});
+export default function AnthropicBioTechInterface() {
+    const portalRef = useRef<HTMLDivElement>(null);
 
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  display: "swap",
-});
+    useEffect(() => {
+        const root = document.documentElement;
+        let ticking = false;
 
-export default function Page() {
-  const heroVideoRef = useRef<HTMLVideoElement | null>(null);
+        const updateFluidCoordinates = (
+            e: MouseEvent,
+            el?: HTMLElement,
+            isRoot = false
+        ) => {
+            const target = isRoot ? root : el;
+            if (!target) return;
 
-  useEffect(() => {
-    const video = heroVideoRef.current;
-    if (!video) return;
+            const rect = isRoot
+                ? { left: 0, top: 0 }
+                : el!.getBoundingClientRect();
 
-    // Sincronización manual para evitar conflictos con CSS experimental
-    const updateHero = () => {
-      const max = window.innerHeight * 1.2;
-      const progress = Math.min(Math.max(window.scrollY / max, 0), 1);
-      
-      // Mantenemos tus valores de escala originales
-      const scale = 1.08 + progress * 0.16;
-      const translateY = progress * 16;
-      
-      video.style.transform = `scale(${scale}) translateY(${translateY}px)`;
-    };
+            target.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
+            target.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
+        };
 
-    let raf = 0;
-    const onScroll = () => {
-      if (raf) return;
-      raf = window.requestAnimationFrame(() => {
-        updateHero();
-        raf = 0;
-      });
-    };
+        const handleMouseMove = (e: MouseEvent) => {
+            updateFluidCoordinates(e, undefined, true);
+        };
 
-    updateHero();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", updateHero);
+        const fluidNodes = document.querySelectorAll(".fluid-node");
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) entry.target.classList.add("active");
+        const handleScroll = () => {
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    const scrolled = window.scrollY;
+
+                    if (portalRef.current) {
+                        portalRef.current.style.transform = `
+              translate3d(0, ${scrolled * 0.12}px, 0)
+              scale(${1 + scrolled * 0.0004})
+              rotate(${scrolled * 0.01}deg)
+            `;
+                    }
+
+                    ticking = false;
+                });
+
+                ticking = true;
+            }
+        };
+
+        window.addEventListener("mousemove", handleMouseMove, {
+            passive: true,
         });
-      },
-      { threshold: 0.16 }
-    );
 
-    document.querySelectorAll(".bloom").forEach((el) => observer.observe(el));
+        fluidNodes.forEach((el) => {
+            el.addEventListener(
+                "mousemove",
+                (e: Event) => {
+                    updateFluidCoordinates(
+                        e as MouseEvent,
+                        el as HTMLElement
+                    );
+                },
+                { passive: true }
+            );
+        });
 
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", updateHero);
-      observer.disconnect();
-      if (raf) window.cancelAnimationFrame(raf);
+        window.addEventListener("scroll", handleScroll, {
+            passive: true,
+        });
+
+        return () => {
+            window.removeEventListener("mousemove", handleMouseMove);
+            window.removeEventListener("scroll", handleScroll);
+        };
+    }, []);
+
+    const toggleTheme = () => {
+        const synthesize = () => {
+            document.body.getAttribute("data-theme") === "synthesized"
+                ? document.body.removeAttribute("data-theme")
+                : document.body.setAttribute("data-theme", "synthesized");
+        };
+
+        const startViewTransition = (document as Document & {
+            startViewTransition?: (cb: () => void) => void;
+        }).startViewTransition;
+
+        startViewTransition ? startViewTransition(synthesize) : synthesize();
     };
-  }, []);
+    
+    return (
+        <>
+            <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap');
 
-  return (
-    <div
-      className={`${interTight.className} relative min-h-screen overflow-x-hidden bg-[radial-gradient(circle_at_20%_10%,rgba(255,148,70,.14),transparent_18%),radial-gradient(circle_at_80%_15%,rgba(125,88,255,.11),transparent_18%),linear-gradient(180deg,oklch(8%_0.02_280)_0%,oklch(6%_0.02_280)_50%,oklch(5%_0.02_280)_100%)] text-white`}
-    >
-      {/* Background Ambience */}
-      <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute left-[8%] top-[-10rem] h-[28rem] w-[28rem] rounded-full bg-[radial-gradient(circle,rgba(255,148,70,.14),transparent_72%)] blur-3xl" />
-        <div className="absolute bottom-[-12rem] right-[10%] h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,rgba(125,88,255,.12),transparent_72%)] blur-3xl" />
-        <div className="grid-noise absolute inset-0" />
-      </div>
-
-      <header className="fixed inset-x-0 top-0 z-50 px-4 py-4 md:px-8">
-        <div className="hud mx-auto grid max-w-[1700px] grid-cols-[1fr_auto_1fr] items-center rounded-[2rem] px-5 py-4">
-          <div className="flex items-center gap-4">
-            <div className="hex grid h-12 w-12 place-items-center">
-              <Icon icon="ph:rocket-launch-bold" className="text-2xl text-[#ff9b52]" />
-            </div>
-            <div className="leading-tight">
-              <div className="text-[11px] uppercase tracking-[0.34em] text-white/45">Ares Logistics</div>
-              <div className="text-sm text-white/72">Red Planet Infrastructure</div>
-            </div>
-          </div>
-
-          <div className="orbtag hidden items-center gap-3 rounded-full px-4 py-2 text-[11px] uppercase tracking-[0.3em] text-white/55 md:flex">
-            <span className="h-2 w-2 rounded-full bg-[#ff9b52] shadow-[0_0_18px_rgba(255,155,82,.8)]" />
-            Orbital resonance stable · Ion-propulsion telemetry live
-          </div>
-
-          <div className="flex items-center justify-end gap-3">
-            <button type="button" className="aero px-5 py-2.5 text-[11px] uppercase tracking-[0.24em] text-white/90">
-              <span className="aero-shine" aria-hidden="true" />
-              Mission feed
-            </button>
-            <button type="button" className="aero px-5 py-2.5 text-[11px] uppercase tracking-[0.24em] text-white/90">
-              <span className="aero-shine" aria-hidden="true" />
-              Launch window
-            </button>
-          </div>
-        </div>
-      </header>
-
-      <main className="relative pt-[94px]">
-        {/* HERO SECTION */}
-        <section className="relative min-h-[100svh] overflow-hidden">
-          <div className="absolute inset-0 z-[1] bg-[radial-gradient(circle_at_50%_35%,rgba(255,255,255,.02),rgba(0,0,0,.12)_44%,rgba(0,0,0,.38)_100%)]" />
-          <div className="hero-shell absolute inset-0 z-0">
-            <video
-              ref={heroVideoRef}
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="hero-video absolute inset-0 h-full w-full object-cover brightness-[0.8]"
-              style={{ willChange: "transform" }}
-            >
-              <source src="/video.mp4" type="video/mp4" />
-            </video>
-          </div>
-
-          <div className="relative z-10 mx-auto flex min-h-[calc(100svh-94px)] max-w-[1700px] items-center px-6 md:px-10">
-            <div className="max-w-3xl">
-              <div className="bloom inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] uppercase tracking-[0.3em] text-white/65 backdrop-blur-[40px] contrast-[1.1]">
-                <span className="h-2 w-2 rounded-full bg-[#ff9b52] shadow-[0_0_18px_rgba(255,155,82,.8)]" />
-                Martian habitation systems online
-              </div>
-
-              <h1 className={`${cormorant.className} bloom mega-title mt-8 text-[clamp(4rem,10vw,9rem)] leading-[.84] text-white`}>
-                <span className="pulse-text block">Ares <br /></span>
-                <span className="pulse-text block">Logistics</span>
-              </h1>
-
-              <p className="bloom mt-8 max-w-2xl rounded-[2rem] border border-white/10 bg-white/[0.03] p-6 text-lg leading-9 text-white/70 backdrop-blur-[40px] contrast-[1.1]">
-                An interplanetary operations platform for regolith 3D printing, atmospheric scrubbers, perchlorate
-                remediation, and ion-propulsion telemetry.
-              </p>
-
-              <div className="bloom mt-10 flex flex-wrap gap-4">
-                <button type="button" className="aero rounded-full px-8 py-5 text-[11px] uppercase tracking-[0.25em] text-white">
-                  <span className="aero-shine" aria-hidden="true" />
-                  Deploy habitat
-                </button>
-                <button type="button" className="rounded-full border border-white/10 bg-white/[0.03] px-8 py-5 text-[11px] uppercase tracking-[0.25em] text-white/75 backdrop-blur-[40px] transition hover:bg-white/[0.05]">
-                  View logistics map
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* SIDE-SCRUB SECTION */}
-        <section className="ridges relative px-6 py-24 md:px-10">
-          <div className="mx-auto grid max-w-[1700px] gap-10 lg:grid-cols-[.88fr_1.12fr] lg:items-start">
-            <div className="bloom sticky top-28 self-start">
-              <div className="text-[11px] uppercase tracking-[0.32em] text-white/40">Side-scrub</div>
-              <h2 className={`${cormorant.className} mt-5 max-w-lg text-[clamp(2.7rem,5vw,5.2rem)] leading-[.9] text-white`}>
-                Edge-fed telemetry for long-duration Martian operations.
-              </h2>
-              <p className="mt-6 max-w-md text-base leading-8 text-white/66">
-                The first terrain layer focuses on critical logistics: air, water, power, and fabrication across
-                unstable orbital windows.
-              </p>
-            </div>
-
-            <div className="relative">
-              <div className="absolute left-0 top-0 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(255,148,70,.16),transparent_70%)] blur-3xl" />
-              <div className="absolute right-0 top-32 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(125,88,255,.14),transparent_70%)] blur-3xl" />
-
-              <div className="mt-8 grid gap-4 lg:grid-cols-2">
-                <article className="bloom hex overflow-hidden p-0 lg:col-span-2">
-                  <div className="grid gap-0 lg:grid-cols-[.95fr_1.05fr]">
-                    <div className="p-6 lg:p-8">
-                      <div className="text-[10px] uppercase tracking-[0.28em] text-white/45">Perchlorate remediation</div>
-                      <h3 className="mt-4 text-3xl font-semibold text-white">Soil recovery systems</h3>
-                      <p className="mt-4 text-sm leading-7 text-white/65">
-                        Restoring local terrain for safe cultivation, surface work, and modular settlement expansion.
-                      </p>
-                    </div>
-                    <div className="min-h-[220px] rounded-b-[1.5rem] rounded-r-[1.5rem] bg-[radial-gradient(circle_at_30%_30%,rgba(255,148,70,.28),transparent_18%),radial-gradient(circle_at_70%_40%,rgba(125,88,255,.22),transparent_20%),linear-gradient(180deg,rgba(255,255,255,.04),rgba(0,0,0,.22))] lg:rounded-l-none lg:rounded-tr-[1.5rem]" />
-                  </div>
-                </article>
-
-                <article className="bloom fracture overflow-hidden p-6">
-                  <div className="text-[10px] uppercase tracking-[0.28em] text-white/45">Habitat pressure</div>
-                  <div className="mt-5 text-5xl font-semibold text-[#ff9b52]">1.2 bar</div>
-                  <p className="mt-4 text-sm leading-7 text-white/65">
-                    A stable interior climate for sealed living volumes and industrial corridors.
-                  </p>
-                </article>
-
-                <article className="bloom fracture overflow-hidden p-6">
-                  <div className="text-[10px] uppercase tracking-[0.28em] text-white/45">Water reserve</div>
-                  <div className="mt-5 text-5xl font-semibold text-white">86%</div>
-                  <p className="mt-4 text-sm leading-7 text-white/65">
-                    Closed-loop storage with scrubbed intake and monitored redistribution.
-                  </p>
-                </article>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* CORE-FOCUS SECTION */}
-        <section className="ridges relative px-6 py-24 md:px-10">
-          <div className="mx-auto max-w-[1700px]">
-            <div className="bloom mx-auto flex max-w-4xl flex-col items-center text-center">
-              <div className="mt-4 text-[11px] uppercase tracking-[0.32em] text-white/40">Core-focus</div>
-              <h2 className={`${cormorant.className} mt-5 text-[clamp(2.8rem,5vw,5.8rem)] leading-[.9] text-white`}>
-                Central systems with a circular reveal.
-              </h2>
-              <p className="mt-6 max-w-2xl text-base leading-8 text-white/66">
-                A single habitat core orchestrates energy, logistics, and atmospheric support through a focused radial
-                interface.
-              </p>
-            </div>
-
-            <div className="mt-14 flex justify-center">
-              <div className="core-ring bloom">
-                <div className="absolute inset-0 grid place-items-center p-8">
-                  <div className="hud w-full rounded-[999px] p-8 text-center">
-                    <div className="text-[10px] uppercase tracking-[0.3em] text-white/45">Habitat Core 03</div>
-                    <div className={`${cormorant.className} mt-4 text-5xl text-white`}>Central Command</div>
-                    <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                      <div className="orbtag rounded-full px-4 py-3 text-sm text-white/75">Oxygen 99.8%</div>
-                      <div className="orbtag rounded-full px-4 py-3 text-sm text-white/75">Thermal 21°C</div>
-                      <div className="orbtag rounded-full px-4 py-3 text-sm text-white/75">Resonance stable</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* TELEMETRIC-SLIDER SECTION */}
-        <section className="ridges relative px-6 py-24 md:px-10">
-          <div className="mx-auto max-w-[1700px]">
-            <div className="bloom flex items-end justify-between gap-6">
-              <div>
-                <div className="text-[11px] uppercase tracking-[0.32em] text-white/40">Telemetric-slider</div>
-                <h2 className={`${cormorant.className} mt-5 text-[clamp(2.6rem,5vw,5rem)] leading-[.9] text-white`}>
-                  Horizontal mission states across the planet’s surface.
-                </h2>
-              </div>
-              <div className="hidden max-w-sm text-right leading-7 text-white/60 md:block">
-                Each terrain slice communicates a different operational layer: supply, maintenance, and launch cadence.
-              </div>
-            </div>
-
-            <div className="scroll-strip mt-10 pb-4">
-              <article className="strip-card bloom rounded-[3rem] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-[30px]">
-                <div className="grid h-full gap-4 lg:grid-cols-[.8fr_1.2fr]">
-                  <div className="hex flex items-center justify-center p-6">
-                    <div className="text-center">
-                      <div className="text-[10px] uppercase tracking-[0.3em] text-white/45">Ion telemetry</div>
-                      <div className="mt-4 text-5xl font-semibold text-[#ff9b52]">07</div>
-                    </div>
-                  </div>
-                  <div className="flex flex-col justify-between">
-                    <div>
-                      <div className="text-[10px] uppercase tracking-[0.3em] text-white/45">Launch corridor</div>
-                      <h3 className={`${cormorant.className} mt-4 text-4xl text-white`}>
-                        Supply pulse across the equatorial ridge.
-                      </h3>
-                    </div>
-                    <p className="max-w-2xl text-sm leading-7 text-white/65">
-                      Cargo streams aligned to orbital resonance, with automation tuned for dust storm contingencies and
-                      fuel economy.
-                    </p>
-                  </div>
-                </div>
-              </article>
-              {/* Añade aquí los otros strip-cards si los necesitas, los mantengo simplificados para el bloque */}
-            </div>
-          </div>
-        </section>
-
-        {/* MISSION STATEMENT FOOTER */}
-        <section className="px-6 py-24 md:px-10">
-          <div className="mx-auto max-w-[1700px] rounded-[3rem] border border-white/10 bg-white/[0.03] p-8 backdrop-blur-[30px]">
-            <div className="grid gap-10 lg:grid-cols-[1fr_auto_1fr] lg:items-center">
-              <div>
-                <div className="text-[11px] uppercase tracking-[0.32em] text-white/40">Mission statement</div>
-                <h2 className={`${cormorant.className} mt-5 text-[clamp(3rem,5vw,5.4rem)] leading-[.9] text-white`}>
-                  Built on Mars, for Mars.
-                </h2>
-              </div>
-              <div className="hidden h-40 w-px bg-white/10 lg:block" />
-              <div className="max-w-2xl text-lg leading-9 text-white/68">
-                The interface behaves like terrain: ridges overlap, craters open into systems, and every operational
-                layer reads like a piece of the planet rather than a generic web page.
-              </div>
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <style jsx global>{`
-        :root { color-scheme: dark; }
-        html { scroll-behavior: smooth; }
-
-        .grid-noise {
-          background-image: linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
-          background-size: 112px 112px;
-          mask-image: radial-gradient(circle at center, black 30%, transparent 84%);
-          opacity: 0.28;
+        :root {
+          --obsidian: oklch(12% 0.05 280);
+          --electric-violet: oklch(60% 0.25 300);
+          --amber-glow: oklch(75% 0.15 50);
+          --text-core: oklch(98% 0.01 280);
+          --text-dim: oklch(65% 0.05 280);
+          --surface-top: oklch(25% 0.08 280 / 0.4);
+          --surface-bottom: oklch(15% 0.05 280 / 0.6);
+          --shadow-dark: oklch(5% 0.05 280 / 0.9);
+          --shadow-light: oklch(80% 0.15 300 / 0.15);
+          --mouse-x: 50%;
+          --mouse-y: 50%;
+          color-scheme: dark;
         }
 
-        .hud {
-          background: rgba(255, 255, 255, 0.035);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          backdrop-filter: blur(40px) contrast(1.1);
-          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 18px 60px rgba(0, 0, 0, 0.46);
+        [data-theme="synthesized"] {
+          --obsidian: oklch(95% 0.02 280);
+          --text-core: oklch(15% 0.05 280);
+          --text-dim: oklch(45% 0.05 280);
+          --surface-top: oklch(100% 0.02 280 / 0.5);
+          --surface-bottom: oklch(90% 0.02 280 / 0.7);
+          --shadow-dark: oklch(60% 0.1 280 / 0.2);
+          --shadow-light: oklch(100% 0 0 / 1);
         }
 
-        .aero {
-          position: relative;
-          overflow: hidden;
-          border-radius: 999px;
-          background: linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.04));
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.55s ease;
+        body {
+          background-color: var(--obsidian);
+          color: var(--text-core);
+          font-family: 'Inter', sans-serif;
+          overflow-x: hidden;
+          overscroll-behavior: none;
+          -webkit-font-smoothing: antialiased;
+          transition: background-color 0.8s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
-        .aero-shine {
-          position: absolute;
-          inset: -120%;
-          background: linear-gradient(120deg, transparent 44%, rgba(255, 255, 255, 0.32) 50%, transparent 56%);
-          transform: translateX(-140%) rotate(12deg);
-          animation: sheen 8s ease-in-out infinite;
+        ::view-transition-old(root),
+        ::view-transition-new(root) {
+          animation: 1.2s cubic-bezier(0.16, 1, 0.3, 1) both organic-fade;
         }
 
-        .hex, .fracture {
-          border-radius: 1.5rem;
-          background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
-          border: 1px solid rgba(255, 255, 255, 0.08);
+        @keyframes organic-fade {
+          0% {
+            opacity: 0;
+            filter: blur(40px) contrast(150%);
+            transform: scale(0.95);
+          }
+          100% {
+            opacity: 1;
+            filter: blur(0) contrast(100%);
+            transform: scale(1);
+          }
         }
 
-        .orbtag {
-          background: rgba(255, 255, 255, 0.04);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          backdrop-filter: blur(26px);
-        }
-
-        .hero-shell {
-          position: relative;
-          overflow: hidden;
-          /* Eliminamos la clase hero-scale de aquí para que no choque con el JS */
-        }
-
-        .hero-video {
-          transform-origin: center center;
+        .bio-portal {
+          position: fixed;
+          top: 0;
+          right: -5vw;
+          width: 45vw;
+          height: 100vh;
+          z-index: 0;
+          pointer-events: none;
+          -webkit-mask-image: radial-gradient(
+            ellipse at 70% 50%,
+            black 10%,
+            rgba(0,0,0,0.6) 40%,
+            transparent 80%
+          );
+          mask-image: radial-gradient(
+            ellipse at 70% 50%,
+            black 10%,
+            rgba(0,0,0,0.6) 40%,
+            transparent 80%
+          );
           will-change: transform;
         }
 
-        .bloom {
+        .bio-portal video {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          filter: saturate(140%) contrast(120%) hue-rotate(15deg);
+          transform: scale(1.1);
+          mix-blend-mode: screen;
+        }
+
+        .organic-volume {
+          background: linear-gradient(
+            160deg,
+            var(--surface-top),
+            var(--surface-bottom)
+          );
+
+          backdrop-filter: blur(80px) saturate(180%);
+          -webkit-backdrop-filter: blur(80px) saturate(180%);
+          border-radius: 2.5rem;
+          position: relative;
+          isolation: isolate;
+          box-shadow:
+            inset 1px 1px 3px var(--shadow-light),
+            inset -2px -2px 12px var(--shadow-dark),
+            0 30px 60px rgba(0,0,0,0.4);
+
+          transition:
+            transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+            border-radius 0.8s ease;
+        }
+
+        .organic-volume::before {
+          content: "";
+          position: absolute;
+          inset: -1px;
+          border-radius: inherit;
+          background: radial-gradient(
+            800px circle at var(--mouse-x) var(--mouse-y),
+            var(--electric-violet),
+            transparent 40%
+          );
           opacity: 0;
-          transform: translateY(22px) scale(0.98);
+          mix-blend-mode: screen;
+          transition: opacity 0.5s ease;
+          pointer-events: none;
+          z-index: 10;
         }
 
-        .bloom.active {
-          animation: bloom 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        .organic-volume:hover {
+          transform: translateY(-5px) scale(1.005);
+          border-radius: 2.2rem;
         }
 
-        @keyframes bloom {
-          to { opacity: 1; transform: translateY(0) scale(1); }
+        .organic-volume:hover::before {
+          opacity: 0.4;
         }
 
-        @keyframes sheen {
-          to { transform: translateX(240%) rotate(12deg); }
+        .bio-elastic-btn {
+          position: relative;
+          overflow: hidden;
+          border-radius: 999px;
+          padding: 1.2rem 2.5rem;
+          font-weight: 500;
+          letter-spacing: -0.01em;
+          color: var(--text-core);
+          background: linear-gradient(
+            145deg,
+            rgba(255,255,255,0.08),
+            rgba(255,255,255,0.02)
+          );
+
+          backdrop-filter: blur(40px);
+
+          box-shadow:
+            inset 0 2px 4px rgba(255,255,255,0.15),
+            inset 0 -4px 10px rgba(0,0,0,0.5),
+            0 10px 20px rgba(0,0,0,0.2);
+
+          cursor: pointer;
+
+          transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
         }
 
-        .pulse-text {
-          display: inline-block;
-          animation: pulsar 7s ease-in-out infinite;
+        .bio-elastic-btn::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border-radius: inherit;
+
+          background: radial-gradient(
+            circle at var(--mouse-x) var(--mouse-y),
+            var(--amber-glow) 0%,
+            transparent 60%
+          );
+
+          opacity: 0;
+          mix-blend-mode: color-dodge;
+          transition: opacity 0.4s ease;
+          pointer-events: none;
         }
 
-        @keyframes pulsar {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.02); }
+        .bio-elastic-btn:hover {
+          transform: scale(1.05) translateY(-2px);
+          border-radius: 1rem;
         }
-        
-        .scroll-strip {
-          display: grid;
-          grid-auto-flow: column;
-          grid-auto-columns: 84%;
-          gap: 1rem;
-          overflow-x: auto;
-          scrollbar-width: none;
+
+        .bio-elastic-btn:hover::before {
+          opacity: 0.5;
+        }
+
+        @keyframes synaptic-pulse {
+          to {
+            background-position: 200% center;
+          }
+        }
+
+        .synaptic-shimmer {
+          background: linear-gradient(
+            120deg,
+            var(--text-core) 0%,
+            var(--electric-violet) 25%,
+            var(--text-core) 50%,
+            var(--amber-glow) 75%,
+            var(--text-core) 100%
+          );
+
+          background-size: 200% auto;
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+
+          animation: synaptic-pulse linear;
+          animation-timeline: scroll(root block);
+        }
+
+        .neural-stat {
+          font-family:
+            ui-monospace,
+            SFMono-Regular,
+            Menlo,
+            Monaco,
+            Consolas,
+            monospace;
+
+          letter-spacing: -0.04em;
+        }
+
+        .bio-toggle {
+          width: 52px;
+          height: 28px;
+          border-radius: 999px;
+          background: var(--surface-bottom);
+
+          box-shadow:
+            inset 0 2px 6px var(--shadow-dark),
+            0 0 0 1px rgba(255,255,255,0.05);
+
+          position: relative;
+          cursor: pointer;
+          overflow: hidden;
+        }
+
+        .bio-toggle::before {
+          content: "";
+          position: absolute;
+          top: 3px;
+          left: 3px;
+          width: 22px;
+          height: 22px;
+          border-radius: 50%;
+          background: var(--amber-glow);
+          box-shadow: 0 0 10px var(--amber-glow);
+
+          transition:
+            transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+            background 0.6s;
+        }
+
+        [data-theme="synthesized"] .bio-toggle::before {
+          transform: translateX(24px);
+          background: var(--electric-violet);
+        }
+
+        .chromatic-aberration {
+          text-shadow:
+            -1px 0 2px rgba(255, 0, 0, 0.3),
+            1px 0 2px rgba(0, 255, 255, 0.3);
         }
       `}</style>
-    </div>
-  );
+
+            <div className="min-h-[220vh] bg-[var(--obsidian)] text-[var(--text-core)]">
+                <div
+                    ref={portalRef}
+                    className="bio-portal"
+                    id="organic-breach"
+                >
+                    <video autoPlay muted loop playsInline>
+                        <source src="/video.mp4" type="video/mp4" />
+                    </video>
+                </div>
+
+                <nav className="fixed top-0 inset-x-0 z-50 px-10 py-8 mix-blend-plus-lighter">
+                    <div className="max-w-[1800px] mx-auto flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center backdrop-blur-md shadow-[0_0_20px_var(--electric-violet)]">
+                                <div className="w-3 h-3 rounded-full bg-[var(--amber-glow)] shadow-[0_0_10px_var(--amber-glow)] animate-pulse"></div>
+                            </div>
+
+                            <div className="flex flex-col">
+                                <span className="font-medium tracking-tighter text-xl">
+                                    ANTHROPIC
+                                </span>
+
+                                <span className="text-[0.65rem] uppercase tracking-[0.4em] text-[var(--electric-violet)]">
+                                    Neural Orchestrator
+                                </span>
+                            </div>
+                        </div>
+
+                        <button
+                            onClick={toggleTheme}
+                            className="bio-toggle"
+                        />
+                    </div>
+                </nav>
+
+                <main className="relative z-10 max-w-[1800px] mx-auto px-10 pt-48 pb-40">
+                    <header className="max-w-5xl mb-40 relative z-20">
+                        <span className="text-xs uppercase tracking-[0.4em] text-[var(--text-dim)] font-medium mb-8 block chromatic-aberration">
+                            Bio-Tech Computing Layer
+                        </span>
+
+                        <h1 className="text-[6rem] md:text-[8.5rem] font-light tracking-tighter leading-[0.85] synaptic-shimmer mb-12">
+                            Constitutional
+                            <br />
+                            Luminance.
+                        </h1>
+
+                        <p className="text-2xl text-[var(--text-dim)] max-w-3xl leading-relaxed mb-16 font-light">
+                            Abstracting rigid data structures into organic mesh routing.
+                            Compute density simulated through bioluminescent refraction
+                            rather than static primitives.
+                        </p>
+
+                        <div className="flex items-center gap-10">
+                            <button className="bio-elastic-btn fluid-node">
+                                Initialize Core
+                            </button>
+
+                            <div className="flex flex-col border-l border-white/10 pl-8">
+                                <span className="neural-stat text-3xl text-[var(--text-core)]">
+                                    8.4
+                                    <span className="text-sm text-[var(--amber-glow)] ml-1">
+                                        pb/s
+                                    </span>
+                                </span>
+
+                                <span className="text-xs text-[var(--text-dim)] uppercase tracking-[0.2em] mt-1">
+                                    Synaptic Bandwidth
+                                </span>
+                            </div>
+                        </div>
+                    </header>
+
+                    <section className="grid grid-cols-1 xl:grid-cols-12 gap-8 auto-rows-auto">
+                        <div className="organic-volume xl:col-span-8 p-12 md:p-16 fluid-node flex flex-col justify-between min-h-[450px]">
+                            <div className="flex justify-between items-start mb-24">
+                                <span className="text-[var(--text-dim)] text-xs uppercase tracking-[0.3em] font-medium">
+                                    Neuro-Symbolic Load
+                                </span>
+
+                                <Icon
+                                    icon="solar:dollar-bold-duotone"
+                                    className="text-2xl text-[var(--electric-violet)]"
+                                />
+                            </div>
+
+                            <div>
+                                <h2 className="text-5xl tracking-tight mb-6 font-light">
+                                    Organic Mesh Routing
+                                </h2>
+
+                                <p className="text-[var(--text-dim)] max-w-lg leading-relaxed text-lg font-light">
+                                    Borders dissolved into light leaks. Volumes sculpted from
+                                    digital fluid to handle dynamic constitutional inference
+                                    loads without geometric friction.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="organic-volume xl:col-span-4 p-12 fluid-node flex flex-col justify-between">
+                            <span className="text-[var(--text-dim)] text-xs uppercase tracking-[0.3em] font-medium">
+                                Latency
+                            </span>
+
+                            <div className="mt-20">
+                                <div className="text-[5.5rem] font-light tracking-tighter neural-stat mb-2 text-[var(--amber-glow)] drop-shadow-[0_0_15px_rgba(200,150,50,0.4)]">
+                                    0.02
+                                </div>
+
+                                <div className="text-sm text-[var(--text-core)] uppercase tracking-[0.2em]">
+                                    Milliseconds
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="organic-volume xl:col-span-5 p-12 fluid-node">
+                            <div className="flex flex-col h-full justify-between">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-[var(--text-dim)] text-xs uppercase tracking-[0.3em] font-medium">
+                                        Asymmetric Anchor
+                                    </span>
+
+                                    <Icon
+                                        icon="solar:atom-bold-duotone"
+                                        className="text-2xl text-[var(--amber-glow)]"
+                                    />
+                                </div>
+
+                                <div className="mt-16 w-full h-1 bg-[var(--shadow-dark)] rounded-full overflow-hidden relative">
+                                    <div className="absolute top-0 left-0 h-full w-[85%] bg-gradient-to-r from-[var(--electric-violet)] to-[var(--amber-glow)] blur-[2px]" />
+
+                                    <div className="absolute top-0 left-0 h-full w-[85%] bg-gradient-to-r from-[var(--electric-violet)] to-[var(--amber-glow)]" />
+                                </div>
+
+                                <p className="text-lg mt-8 text-[var(--text-dim)] font-light">
+                                    Fluid intelligence requires interface malleability.
+                                    Tension replaces structure.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="organic-volume xl:col-span-7 p-12 md:p-16 fluid-node flex items-center overflow-hidden group relative">
+                            <div className="absolute inset-0 bg-gradient-to-br from-transparent to-[var(--electric-violet)] opacity-0 group-hover:opacity-10 transition-opacity duration-1000 mix-blend-color-dodge" />
+
+                            <div className="relative z-10 flex items-start gap-6">
+                                <Icon
+                                    icon="solar:chat-round-bold-duotone"
+                                    className="text-5xl text-[var(--electric-violet)] shrink-0 mt-2"
+                                />
+
+                                <h3 className="text-4xl md:text-[3rem] font-light tracking-tight leading-[1.1] chromatic-aberration">
+                                    &ldquo;If a solid edge is detected, the biomorphic system has failed.&rdquo;
+                                </h3>
+
+                            </div>
+                        </div>
+                    </section>
+
+                    <footer className="mt-40 border-t border-white/10 pt-16 flex flex-col md:flex-row items-center justify-between gap-10">
+                        <div>
+                            <h4 className="text-lg tracking-tight mb-2">
+                                Anthropic Interface Systems
+                            </h4>
+
+                            <p className="text-sm text-[var(--text-dim)]">
+                                Adaptive constitutional bio-tech framework.
+                            </p>
+                        </div>
+
+                        <div className="flex items-center gap-4">
+                            <button className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:border-[var(--electric-violet)] transition-all duration-500">
+                                <Icon
+                                    icon="mdi:github"
+                                    className="text-xl"
+                                />
+                            </button>
+
+                            <button className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:border-[var(--electric-violet)] transition-all duration-500">
+                                <Icon
+                                    icon="mdi:twitter"
+                                    className="text-xl"
+                                />
+                            </button>
+
+                            <button className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:border-[var(--electric-violet)] transition-all duration-500">
+                                <Icon
+                                    icon="mdi:linkedin"
+                                    className="text-xl"
+                                />
+                            </button>
+                        </div>
+                    </footer>
+                </main>
+            </div>
+        </>
+    );
 }

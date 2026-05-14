@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apple Card — Titanium & Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=JetBrains+Mono:wght@300..700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --titanium-base: oklch(14% 0.012 250);
+  --titanium-mid: oklch(20% 0.02 250);
+  --titanium-high: oklch(28% 0.025 250);
+  --titanium-edge: oklch(38% 0.02 250);
+  --titanium-sheen: oklch(72% 0.01 250);
+  --amber: oklch(72% 0.18 85);
+  --amber-dim: oklch(60% 0.14 85);
+  --amber-glow: oklch(78% 0.2 88 / 0.35);
+  --cyan: oklch(68% 0.16 220);
+  --cyan-dim: oklch(55% 0.12 220);
+  --cyan-glow: oklch(68% 0.16 220 / 0.3);
+  --text-primary: oklch(94% 0.005 250);
+  --text-secondary: oklch(56% 0.015 250);
+  --text-tertiary: oklch(38% 0.015 250);
+  --glass-fill: oklch(100% 0 0 / 0.03);
+  --glass-border: oklch(100% 0 0 / 0.07);
+  --glass-border-bright: oklch(100% 0 0 / 0.14);
+  --void: oklch(7% 0.01 250);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: oklch(25% 0.02 250) transparent;
+}
+
+body {
+  font-family: 'Inter Tight', sans-serif;
+  background: var(--void);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  cursor: none;
+  min-height: 100vh;
+}
+
+.cursor-dot {
+  position: fixed;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--amber);
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width .2s, height .2s, background .2s;
+  box-shadow: 0 0 12px 3px var(--amber-glow);
+  mix-blend-mode: plus-lighter;
+}
+
+.cursor-ring {
+  position: fixed;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1px solid oklch(68% 0.16 220 / 0.5);
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: transform .14s cubic-bezier(.25,.46,.45,.94), width .3s, height .3s, border-color .3s;
+  mix-blend-mode: plus-lighter;
+}
+
+.cursor-ring.expanded { width: 56px; height: 56px; border-color: var(--amber); }
+
+.noise {
+  position: fixed;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  opacity: 0.028;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 512px 512px;
+}
+
+.ambient-orb {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(120px);
+  z-index: 0;
+}
+
+.orb-amber {
+  width: 700px; height: 700px;
+  background: oklch(65% 0.16 85 / 0.07);
+  top: -200px; right: -100px;
+  animation: orb-float-a 18s ease-in-out infinite;
+}
+
+.orb-cyan {
+  width: 500px; height: 500px;
+  background: oklch(60% 0.14 220 / 0.07);
+  bottom: 10%; left: -100px;
+  animation: orb-float-b 22s ease-in-out infinite;
+}
+
+@keyframes orb-float-a {
+  0%,100% { transform: translate(0,0) scale(1); }
+  33% { transform: translate(-40px, 60px) scale(1.08); }
+  66% { transform: translate(30px, -40px) scale(0.94); }
+}
+
+@keyframes orb-float-b {
+  0%,100% { transform: translate(0,0) scale(1); }
+  50% { transform: translate(60px, -50px) scale(1.1); }
+}
+
+.vault-portal {
+  position: fixed;
+  top: 0; right: 0;
+  width: 48vw;
+  height: 100vh;
+  z-index: 1;
+  pointer-events: none;
+  transform: perspective(1200px) rotateY(-4deg) rotateX(1deg);
+  transform-origin: right center;
+}
+
+.vault-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 1;
+  filter: none;
+  mask: none;
+  -webkit-mask: none;
+}
+
+.light-corridor {
+  position: fixed;
+  top: 0; right: 0;
+  width: 52vw;
+  height: 100vh;
+  background: transparent;
+  backdrop-filter: none;
+  pointer-events: none;
+  z-index: 2;
+  mix-blend-mode: normal;
+}
+
+.vault-edge-flare {
+  position: fixed;
+  top: 0;
+  left: calc(52vw - 2px);
+  width: 180px;
+  height: 100vh;
+  background: linear-gradient(90deg, transparent, oklch(72% 0.18 85 / 0.06) 30%, oklch(68% 0.16 220 / 0.08) 60%, transparent);
+  pointer-events: none;
+  z-index: 3;
+  filter: blur(2px);
+}
+
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.4rem 3.5rem;
+  background: oklch(7% 0.01 250 / 0.75);
+  backdrop-filter: blur(32px) saturate(1.3);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.nav-apple {
+  font-size: 1.3rem;
+  line-height: 1;
+  color: var(--text-primary);
+  font-weight: 300;
+}
+
+.nav-divider {
+  width: 1px;
+  height: 16px;
+  background: var(--glass-border-bright);
+}
+
+.nav-product {
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2.8rem;
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  text-decoration: none;
+  font-family: 'JetBrains Mono', monospace;
+  transition: color .25s;
+}
+
+.nav-links a:hover { color: var(--text-secondary); }
+
+.nav-cta {
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--amber);
+  font-family: 'JetBrains Mono', monospace;
+  cursor: none;
+  background: none;
+  border: 1px solid oklch(72% 0.18 85 / 0.25);
+  padding: 0.5rem 1.2rem;
+  border-radius: 2px;
+  transition: background .3s, border-color .3s, box-shadow .3s;
+}
+
+.nav-cta:hover {
+  background: oklch(72% 0.18 85 / 0.08);
+  border-color: oklch(72% 0.18 85 / 0.5);
+  box-shadow: 0 0 20px 4px var(--amber-glow);
+}
+
+.content-rail {
+  position: relative;
+  z-index: 10;
+  width: 52vw;
+  max-width: 780px;
+  padding: 0 3.5rem;
+}
+
+.hero-section {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 7rem;
+  padding-bottom: 4rem;
+}
+
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2.2rem;
+  opacity: 0;
+  animation: reveal-up .9s cubic-bezier(.16,1,.3,1) .2s forwards;
+}
+
+.eyebrow-line {
+  width: 2.5rem;
+  height: 1px;
+  background: linear-gradient(90deg, var(--amber), transparent);
+}
+
+.eyebrow-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--amber-dim);
+}
+
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(3.2rem, 5.5vw, 5.8rem);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.2rem;
+  opacity: 0;
+  animation: reveal-up 1s cubic-bezier(.16,1,.3,1) .35s forwards;
+}
+
+.hero-title em {
+  font-style: italic;
+  color: var(--amber);
+  font-weight: 300;
+}
+
+.hero-title .line-thin {
+  font-weight: 300;
+  color: var(--text-secondary);
+  font-size: 0.65em;
+  display: block;
+  letter-spacing: 0.04em;
+  font-family: 'Inter Tight', sans-serif;
+  font-style: normal;
+  margin-top: 0.4em;
+}
+
+.hero-sub {
+  font-size: 0.88rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  font-weight: 300;
+  max-width: 46ch;
+  margin-bottom: 3rem;
+  opacity: 0;
+  animation: reveal-up .9s cubic-bezier(.16,1,.3,1) .5s forwards;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 5rem;
+  opacity: 0;
+  animation: reveal-up .9s cubic-bezier(.16,1,.3,1) .65s forwards;
+}
+
+.btn-primary {
+  position: relative;
+  padding: 0.9rem 2.4rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--void);
+  background: linear-gradient(135deg, var(--amber), oklch(65% 0.16 75));
+  border: none;
+  border-radius: 3px;
+  cursor: none;
+  overflow: hidden;
+  transition: box-shadow .35s, transform .2s;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--bx,50%) var(--by,50%), oklch(100% 0 0 / 0.3) 0%, transparent 65%);
+  opacity: 0;
+  transition: opacity .3s;
+}
+
+.btn-primary:hover {
+  box-shadow: 0 0 40px 8px var(--amber-glow), 0 8px 32px oklch(0% 0 0 / 0.4);
+  transform: translateY(-1px);
+}
+
+.btn-primary:hover::before { opacity: 1; }
+
+.btn-secondary {
+  position: relative;
+  padding: 0.9rem 2rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-border);
+  border-radius: 3px;
+  cursor: none;
+  transition: color .3s, border-color .3s, background .3s;
+}
+
+.btn-secondary:hover {
+  color: var(--text-primary);
+  border-color: var(--glass-border-bright);
+  background: oklch(100% 0 0 / 0.05);
+}
+
+.hero-stat-row {
+  display: flex;
+  gap: 3rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--glass-border);
+  opacity: 0;
+  animation: reveal-up .9s cubic-bezier(.16,1,.3,1) .8s forwards;
+}
+
+.stat-item {}
+
+.stat-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.4rem;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.stat-value span {
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 1rem;
+  font-weight: 300;
+  color: var(--amber);
+}
+
+.stat-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-top: 0.4rem;
+}
+
+@keyframes reveal-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.anodized-section {
+  padding: 8rem 0;
+}
+
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.58rem;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--amber-dim);
+  margin-bottom: 1.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.section-label::before {
+  content: '';
+  display: block;
+  width: 1.5rem;
+  height: 1px;
+  background: var(--amber-dim);
+}
+
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 3.5vw, 3.2rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  margin-bottom: 1rem;
+}
+
+.section-title em { font-style: italic; color: var(--amber); }
+
+.anodized-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--glass-border);
+  border: 1px solid var(--glass-border);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 3.5rem;
+}
+
+.anodized-cell {
+  position: relative;
+  background: var(--titanium-base);
+  padding: 2.2rem;
+  overflow: hidden;
+  transition: background .4s;
+}
+
+.anodized-cell::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at var(--cx,50%) var(--cy,50%), oklch(72% 0.18 85 / 0.06) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity .4s;
+}
+
+.anodized-cell:hover { background: var(--titanium-mid); }
+.anodized-cell:hover::before { opacity: 1; }
+
+.anodized-cell.wide { grid-column: 1 / -1; }
+.anodized-cell.accent { background: oklch(16% 0.025 85); }
+
+.cell-icon {
+  width: 36px; height: 36px;
+  border-radius: 6px;
+  background: oklch(100% 0 0 / 0.04);
+  border: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.4rem;
+  font-size: 0.85rem;
+}
+
+.cell-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--amber-dim);
+  margin-bottom: 0.7rem;
+}
+
+.cell-title {
+  font-size: 1.05rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.7rem;
+  line-height: 1.2;
+}
+
+.cell-body {
+  font-size: 0.78rem;
+  line-height: 1.75;
+  color: var(--text-secondary);
+  font-weight: 300;
+}
+
+.cell-metric {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.8rem;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+
+.cell-metric-unit {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.inner-shadow-card {
+  box-shadow:
+    inset 0 1px 0 oklch(100% 0 0 / 0.06),
+    inset 0 -1px 0 oklch(0% 0 0 / 0.3),
+    inset 1px 0 0 oklch(100% 0 0 / 0.04),
+    inset -1px 0 0 oklch(0% 0 0 / 0.2),
+    0 4px 24px oklch(0% 0 0 / 0.4);
+}
+
+.telemetry-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1.2rem;
+}
+
+.telem-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.telem-key { font-size: 0.58rem; color: var(--text-tertiary); letter-spacing: 0.1em; text-transform: uppercase; flex: 0 0 80px; }
+.telem-track { flex: 1; height: 3px; background: oklch(100% 0 0 / 0.06); border-radius: 2px; overflow: hidden; }
+.telem-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--cyan), var(--amber)); position: relative; }
+.telem-fill::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, oklch(100% 0 0 / 0.4), transparent); animation: shimmer-t 2.5s ease-in-out infinite; }
+@keyframes shimmer-t { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+.telem-val { font-size: 0.6rem; color: var(--amber); flex: 0 0 40px; text-align: right; }
+
+.assembly-section {
+  padding: 8rem 0;
+}
+
+.circuit-row {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--glass-border);
+  border: 1px solid var(--glass-border);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 3.5rem;
+}
+
+.circuit-item {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 1.6rem 2rem;
+  background: var(--titanium-base);
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: background .3s, opacity .6s, transform .6s;
+}
+
+.circuit-item.assembled {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.circuit-item::after {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--amber), var(--cyan));
+  box-shadow: 0 0 10px 2px var(--amber-glow);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform .5s cubic-bezier(.16,1,.3,1);
+}
+
+.circuit-item.assembled::after { transform: scaleY(1); }
+
+.circuit-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 400;
+  color: oklch(100% 0 0 / 0.08);
+  flex: 0 0 3rem;
+  line-height: 1;
+}
+
+.circuit-content { flex: 1; }
+
+.circuit-title {
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.3rem;
+}
+
+.circuit-desc {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+.circuit-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.8rem;
+  border-radius: 100px;
+  border: 1px solid var(--glass-border);
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.circuit-badge.active {
+  color: var(--amber);
+  border-color: oklch(72% 0.18 85 / 0.3);
+  background: oklch(72% 0.18 85 / 0.07);
+  box-shadow: 0 0 12px var(--amber-glow);
+}
+
+.ledger-section {
+  padding: 8rem 0;
+}
+
+.ledger-display {
+  background: var(--titanium-base);
+  border: 1px solid var(--glass-border);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 3.5rem;
+}
+
+.ledger-header {
+  padding: 1.2rem 2rem;
+  background: oklch(100% 0 0 / 0.02);
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ledger-title-bar {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.ledger-live {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+
+.pulse-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--amber);
+  box-shadow: 0 0 8px 2px var(--amber-glow);
+  animation: pulse-a 2s ease-in-out infinite;
+}
+
+@keyframes pulse-a {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.6); }
+}
+
+.ledger-entries {
+  display: flex;
+  flex-direction: column;
+}
+
+.ledger-entry {
+  display: flex;
+  align-items: center;
+  padding: 1.1rem 2rem;
+  border-bottom: 1px solid var(--glass-border);
+  gap: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: background .3s;
+}
+
+.ledger-entry:last-child { border-bottom: none; }
+.ledger-entry:hover { background: oklch(100% 0 0 / 0.02); }
+
+.entry-icon {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+  border: 1px solid var(--glass-border);
+  background: oklch(100% 0 0 / 0.04);
+}
+
+.entry-merchant { font-size: 0.82rem; font-weight: 500; }
+.entry-category {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-top: 0.2rem;
+}
+
+.entry-amount {
+  margin-left: auto;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.05rem;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.entry-amount.debit { color: var(--text-primary); }
+.entry-amount.credit { color: var(--amber); }
+
+.entry-time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.55rem;
+  color: var(--text-tertiary);
+  letter-spacing: 0.08em;
+  flex-shrink: 0;
+}
+
+.entry-stream {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, var(--amber-dim), transparent);
+  opacity: 0;
+  transition: opacity .3s;
+}
+
+.ledger-entry:hover .entry-stream { opacity: 0.6; }
+
+.chart-area {
+  padding: 1.5rem 2rem;
+  border-top: 1px solid var(--glass-border);
+}
+
+.chart-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 1rem;
+}
+
+.sparkline-container { position: relative; height: 60px; }
+
+.sparkline-container svg { width: 100%; height: 100%; }
+
+.secure-section {
+  padding: 8rem 0 12rem;
+}
+
+.secure-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1px;
+  background: var(--glass-border);
+  border: 1px solid var(--glass-border);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 3.5rem;
+}
+
+.secure-cell {
+  padding: 2rem 1.8rem;
+  background: var(--titanium-base);
+  position: relative;
+  overflow: hidden;
+  transition: background .4s;
+}
+
+.secure-cell::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at var(--cx,50%) var(--cy,50%), oklch(68% 0.16 220 / 0.07) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity .4s;
+}
+
+.secure-cell:hover { background: var(--titanium-mid); }
+.secure-cell:hover::before { opacity: 1; }
+
+.secure-icon {
+  font-size: 1.4rem;
+  margin-bottom: 1.2rem;
+  display: block;
+}
+
+.secure-title {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 0.6rem;
+  letter-spacing: -0.01em;
+}
+
+.secure-desc {
+  font-size: 0.73rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  font-weight: 300;
+}
+
+.secure-stat {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.58rem;
+  color: var(--cyan-dim);
+  margin-top: 1rem;
+  letter-spacing: 0.08em;
+}
+
+.flare-h {
+  position: absolute;
+  height: 1px;
+  pointer-events: none;
+}
+
+.flare-v {
+  position: absolute;
+  width: 1px;
+  pointer-events: none;
+}
+
+.footer-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 1rem 3.5rem;
+  background: oklch(7% 0.01 250 / 0.85);
+  backdrop-filter: blur(24px);
+  border-top: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-copy {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.55rem;
+  color: var(--text-tertiary);
+  letter-spacing: 0.12em;
+}
+
+.footer-status {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.status-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.status-chip .dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+}
+
+.dot-amber { background: var(--amber); box-shadow: 0 0 6px 1px var(--amber-glow); }
+.dot-cyan { background: var(--cyan); box-shadow: 0 0 6px 1px var(--cyan-glow); }
+.dot-green { background: oklch(68% 0.18 145); box-shadow: 0 0 6px 1px oklch(68% 0.18 145 / 0.5); }
+
+.scroll-progress {
+  position: fixed;
+  top: 0; left: 0;
+  width: 0%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--amber), var(--cyan));
+  z-index: 200;
+  transition: width .1s linear;
+  box-shadow: 0 0 12px 2px var(--amber-glow);
+}
+
+@keyframes scan-v {
+  from { top: -100px; }
+  to { top: 100vh; }
+}
+
+.data-scan {
+  position: fixed;
+  left: 0; right: 0;
+  height: 100px;
+  background: linear-gradient(180deg, transparent, oklch(72% 0.18 85 / 0.03), transparent);
+  pointer-events: none;
+  z-index: 3;
+  animation: scan-v 12s linear infinite;
+}
+
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.ticker-wrap {
+  position: fixed;
+  bottom: 40px;
+  left: 0;
+  width: 52vw;
+  overflow: hidden;
+  z-index: 50;
+  pointer-events: none;
+  border-top: 1px solid var(--glass-border);
+  background: oklch(7% 0.01 250 / 0.6);
+  backdrop-filter: blur(16px);
+}
+
+.ticker-inner {
+  display: flex;
+  gap: 0;
+  animation: ticker 28s linear infinite;
+  white-space: nowrap;
+}
+
+.ticker-item {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  padding: 0.5rem 2.5rem 0.5rem 0;
+}
+
+.ticker-item span { color: var(--amber); margin-left: 0.4rem; }
+
+.optical-flare {
+  position: fixed;
+  pointer-events: none;
+  z-index: 6;
+  border-radius: 50%;
+  filter: blur(1px);
+  animation: flare-pulse 4s ease-in-out infinite;
+  mix-blend-mode: plus-lighter;
+}
+
+@keyframes flare-pulse {
+  0%,100% { opacity: 0.4; transform: translate(-50%,-50%) scale(1); }
+  50% { opacity: 0.7; transform: translate(-50%,-50%) scale(1.15); }
+}
+
+.depth-shadow {
+  box-shadow:
+    0 0 0 1px var(--glass-border),
+    0 4px 6px oklch(0% 0 0 / 0.25),
+    0 16px 48px oklch(0% 0 0 / 0.4),
+    0 0 80px oklch(72% 0.18 85 / 0.04);
+}
+
+</style>
+</head>
+<body>
+
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<div class="noise"></div>
+<div class="data-scan"></div>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<div class="ambient-orb orb-amber"></div>
+<div class="ambient-orb orb-cyan"></div>
+
+<div class="optical-flare" style="width:6px;height:6px;background:var(--amber);top:28vh;left:49vw;"></div>
+<div class="optical-flare" style="width:4px;height:4px;background:var(--cyan);top:62vh;left:47vw;animation-delay:-2s;"></div>
+
+<div class="vault-portal">
+  <video class="vault-video" id="vaultVideo" autoplay muted loop playsinline>
+    <source src="./video.mp4" type="video/mp4">
+  </video>
+</div>
+<div class="light-corridor"></div>
+<div class="vault-edge-flare"></div>
+
+<div class="ticker-wrap">
+  <div class="ticker-inner" id="ticker">
+    <div class="ticker-item">Secure Element · AES-256<span>ACTIVE</span></div>
+    <div class="ticker-item">Biometric Auth<span>ENROLLED</span></div>
+    <div class="ticker-item">Neural Fraud Engine<span>99.97%</span></div>
+    <div class="ticker-item">Ledger Sync<span>2.1ms</span></div>
+    <div class="ticker-item">Titanium ISO/IEC 7810<span>CERTIFIED</span></div>
+    <div class="ticker-item">Real-Time Settlement<span>LIVE</span></div>
+    <div class="ticker-item">Secure Enclave · T2<span>LOCKED</span></div>
+    <div class="ticker-item">Secure Element · AES-256<span>ACTIVE</span></div>
+    <div class="ticker-item">Biometric Auth<span>ENROLLED</span></div>
+    <div class="ticker-item">Neural Fraud Engine<span>99.97%</span></div>
+    <div class="ticker-item">Ledger Sync<span>2.1ms</span></div>
+    <div class="ticker-item">Titanium ISO/IEC 7810<span>CERTIFIED</span></div>
+    <div class="ticker-item">Real-Time Settlement<span>LIVE</span></div>
+    <div class="ticker-item">Secure Enclave · T2<span>LOCKED</span></div>
+  </div>
+</div>
+
+<nav>
+  <div class="nav-logo">
+    <span class="nav-apple">&#63743;</span>
+    <div class="nav-divider"></div>
+    <span class="nav-product">Apple Card</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#">Overview</a></li>
+    <li><a href="#">Security</a></li>
+    <li><a href="#">Rewards</a></li>
+    <li><a href="#">Privacy</a></li>
+  </ul>
+  <button class="nav-cta">Apply Now</button>
+</nav>
+
+<main>
+  <div class="content-rail">
+
+    <section class="hero-section">
+      <div class="hero-eyebrow">
+        <div class="eyebrow-line"></div>
+        <span class="eyebrow-text">Titanium · Intelligence · 2025</span>
+      </div>
+
+      <h1 class="hero-title">
+        The Card<br>
+        for the <em>Future</em><br>
+        <span class="line-thin">of Money</span>
+      </h1>
+
+      <p class="hero-sub">
+        Precision-milled titanium alloy with Secure Element encryption and neural-link fraud detection. A financial instrument engineered to the same standard as the device in your hand.
+      </p>
+
+      <div class="hero-actions">
+        <button class="btn-primary" id="btnPrimary">Apply for Apple Card</button>
+        <button class="btn-secondary">Learn More</button>
+      </div>
+
+      <div class="hero-stat-row">
+        <div class="stat-item">
+          <div class="stat-value">3<span>%</span></div>
+          <div class="stat-label">Daily Cash · Apple</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">2<span>%</span></div>
+          <div class="stat-label">Apple Pay · All</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">0<span>%</span></div>
+          <div class="stat-label">Fees — None</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">∞</div>
+          <div class="stat-label">Secure Enclave</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="anodized-section">
+      <div class="section-label">Core Architecture</div>
+      <h2 class="section-title">Anodized<br><em>Dark Titanium</em><br>Infrastructure</h2>
+
+      <div class="anodized-grid inner-shadow-card" id="bentoGrid">
+
+        <div class="anodized-cell inner-shadow-card" data-hover>
+          <div class="cell-icon">🔐</div>
+          <div class="cell-label">Secure Element</div>
+          <div class="cell-title">AES-256 Hardware Encryption</div>
+          <div class="cell-body">Your card number is never stored on device or Apple servers. Generated per-transaction cryptographic tokens ensure zero-exposure payment architecture.</div>
+        </div>
+
+        <div class="anodized-cell inner-shadow-card" data-hover>
+          <div class="cell-icon">⚡</div>
+          <div class="cell-label">Biometric Auth-Flow</div>
+          <div class="cell-title">Face ID · Neural Engine</div>
+          <div class="cell-body">Every transaction is authorized through the Secure Enclave using biometric hash comparison. Sub-200ms auth with liveness detection at the hardware level.</div>
+        </div>
+
+        <div class="anodized-cell inner-shadow-card accent" data-hover style="grid-column:1/-1;">
+          <div class="cell-label">Real-Time Ledger Telemetry</div>
+          <div style="display:flex; gap:3rem; align-items:flex-end; margin-bottom:1.5rem;">
+            <div>
+              <div class="cell-metric">$18,240</div>
+              <div class="cell-metric-unit">Available Credit</div>
+            </div>
+            <div>
+              <div class="cell-metric" style="font-size:1.8rem; color:var(--amber)">$2,840</div>
+              <div class="cell-metric-unit">Balance · Cycle</div>
+            </div>
+            <div style="margin-left:auto;">
+              <div class="ledger-live"><div class="pulse-dot"></div> Live Sync</div>
+            </div>
+          </div>
+          <div class="telemetry-bar">
+            <div class="telem-row">
+              <span class="telem-key">Auth Speed</span>
+              <div class="telem-track"><div class="telem-fill" style="width:94%"></div></div>
+              <span class="telem-val">189ms</span>
+            </div>
+            <div class="telem-row">
+              <span class="telem-key">Fraud Score</span>
+              <div class="telem-track"><div class="telem-fill" style="width:99%;"></div></div>
+              <span class="telem-val">99.97%</span>
+            </div>
+            <div class="telem-row">
+              <span class="telem-key">Encryption</span>
+              <div class="telem-track"><div class="telem-fill" style="width:100%"></div></div>
+              <span class="telem-val">AES-256</span>
+            </div>
+            <div class="telem-row">
+              <span class="telem-key">Ledger Lag</span>
+              <div class="telem-track"><div class="telem-fill" style="width:12%;background:var(--cyan);"></div></div>
+              <span class="telem-val" style="color:var(--cyan)">2.1ms</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="anodized-cell inner-shadow-card" data-hover>
+          <div class="cell-label">Neural Fraud Detection</div>
+          <div class="cell-metric" style="font-size:2rem;">12M</div>
+          <div class="cell-metric-unit">Signals per second analyzed</div>
+          <div class="cell-body" style="margin-top:0.8rem; font-size:0.73rem;">On-device ML model trained on behavioral patterns catches anomalous transactions before they settle.</div>
+        </div>
+
+        <div class="anodized-cell inner-shadow-card" data-hover>
+          <div class="cell-label">Titanium Alloy</div>
+          <div class="cell-metric" style="font-size:2rem;">Grade 5</div>
+          <div class="cell-metric-unit">Ti-6Al-4V · Aerospace</div>
+          <div class="cell-body" style="margin-top:0.8rem; font-size:0.73rem;">The same alloy used in surgical instruments and spacecraft. Laser-etched with no exposed numbers.</div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="assembly-section">
+      <div class="section-label">Auth-Flow Protocol</div>
+      <h2 class="section-title">Biometric<br><em>Assembly</em> Sequence</h2>
+
+      <div class="circuit-row" id="circuitList">
+        <div class="circuit-item" data-circuit>
+          <div class="circuit-num">01</div>
+          <div class="circuit-content">
+            <div class="circuit-title">Biometric Capture</div>
+            <div class="circuit-desc">Face ID or Touch ID initiates a cryptographic challenge to the Secure Enclave. Liveness detection prevents spoofing at the hardware level.</div>
+          </div>
+          <div class="circuit-badge active">189ms</div>
+        </div>
+        <div class="circuit-item" data-circuit>
+          <div class="circuit-num">02</div>
+          <div class="circuit-content">
+            <div class="circuit-title">Secure Enclave Verification</div>
+            <div class="circuit-desc">The T2 chip compares the biometric hash against the enrolled template. No biometric data ever leaves the device or transits the network.</div>
+          </div>
+          <div class="circuit-badge active">0.3ms</div>
+        </div>
+        <div class="circuit-item" data-circuit>
+          <div class="circuit-num">03</div>
+          <div class="circuit-content">
+            <div class="circuit-title">Token Generation</div>
+            <div class="circuit-desc">A one-time cryptographic token replaces the card number for each transaction. The actual PAN is never transmitted.</div>
+          </div>
+          <div class="circuit-badge active">AES-256</div>
+        </div>
+        <div class="circuit-item" data-circuit>
+          <div class="circuit-num">04</div>
+          <div class="circuit-content">
+            <div class="circuit-title">Neural Fraud Analysis</div>
+            <div class="circuit-desc">On-device ML evaluates 12 million behavioral signals in parallel before authorizing. Anomaly detection happens before the network call.</div>
+          </div>
+          <div class="circuit-badge active">99.97%</div>
+        </div>
+        <div class="circuit-item" data-circuit>
+          <div class="circuit-num">05</div>
+          <div class="circuit-content">
+            <div class="circuit-title">Real-Time Settlement</div>
+            <div class="circuit-desc">Approved transactions post to your ledger in 2.1ms. Daily Cash is calculated and applied within the same settlement cycle.</div>
+          </div>
+          <div class="circuit-badge active">2.1ms</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ledger-section">
+      <div class="section-label">Live Ledger</div>
+      <h2 class="section-title"><em>Real-Time</em><br>Transaction Stream</h2>
+
+      <div class="ledger-display inner-shadow-card">
+        <div class="ledger-header">
+          <span class="ledger-title-bar">Ledger · Telemetry Feed</span>
+          <div class="ledger-live"><div class="pulse-dot"></div> Real-Time</div>
+        </div>
+
+        <div class="ledger-entries" id="ledgerEntries">
+          <div class="ledger-entry">
+            <div class="entry-stream"></div>
+            <div class="entry-icon">🛒</div>
+            <div><div class="entry-merchant">Apple Store</div><div class="entry-category">Electronics · Secure Pay</div></div>
+            <div class="entry-time">Just now</div>
+            <div class="entry-amount debit">−$1,299.00</div>
+          </div>
+          <div class="ledger-entry">
+            <div class="entry-stream"></div>
+            <div class="entry-icon">☕</div>
+            <div><div class="entry-merchant">Blue Bottle Coffee</div><div class="entry-category">Food & Drink</div></div>
+            <div class="entry-time">12:42</div>
+            <div class="entry-amount debit">−$8.50</div>
+          </div>
+          <div class="ledger-entry">
+            <div class="entry-stream"></div>
+            <div class="entry-icon">💰</div>
+            <div><div class="entry-merchant">Daily Cash Reward</div><div class="entry-category">3% · Apple · Credit</div></div>
+            <div class="entry-time">12:42</div>
+            <div class="entry-amount credit">+$38.97</div>
+          </div>
+          <div class="ledger-entry">
+            <div class="entry-stream"></div>
+            <div class="entry-icon">🚕</div>
+            <div><div class="entry-merchant">Uber</div><div class="entry-category">Transport · Apple Pay</div></div>
+            <div class="entry-time">11:18</div>
+            <div class="entry-amount debit">−$24.30</div>
+          </div>
+          <div class="ledger-entry">
+            <div class="entry-stream"></div>
+            <div class="entry-icon">🛡️</div>
+            <div><div class="entry-merchant">Fraud Check Passed</div><div class="entry-category">Neural Engine · 12M Signals</div></div>
+            <div class="entry-time">11:18</div>
+            <div class="entry-amount" style="color:var(--cyan);font-size:0.75rem;font-family:'JetBrains Mono',monospace;letter-spacing:.08em;">CLEARED</div>
+          </div>
+        </div>
+
+        <div class="chart-area">
+          <div class="chart-label">Spending Velocity · 30 Days</div>
+          <div class="sparkline-container">
+            <svg viewBox="0 0 600 60" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="sg" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="oklch(72% 0.18 85)" stop-opacity="0.35"/>
+                  <stop offset="100%" stop-color="oklch(72% 0.18 85)" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <path d="M0,45 C30,38 50,50 80,32 C110,15 130,42 160,28 C190,14 210,38 240,22 C270,8 290,35 320,20 C350,6 370,30 400,18 C430,6 450,28 480,15 C510,3 530,22 560,12 C580,6 590,16 600,10" fill="url(#sg)" stroke="none"/>
+              <path d="M0,45 C30,38 50,50 80,32 C110,15 130,42 160,28 C190,14 210,38 240,22 C270,8 290,35 320,20 C350,6 370,30 400,18 C430,6 450,28 480,15 C510,3 530,22 560,12 C580,6 590,16 600,10" fill="none" stroke="oklch(72% 0.18 85)" stroke-width="1.5" opacity="0.9"/>
+              <circle cx="600" cy="10" r="3" fill="oklch(72% 0.18 85)" opacity="0.9">
+                <animate attributeName="opacity" values="0.9;0.2;0.9" dur="1.5s" repeatCount="indefinite"/>
+              </circle>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="secure-section">
+      <div class="section-label">Security Architecture</div>
+      <h2 class="section-title">Built on the<br><em>Secure Enclave</em></h2>
+
+      <div class="secure-grid inner-shadow-card" id="secureGrid">
+        <div class="secure-cell" data-hover>
+          <span class="secure-icon">🔒</span>
+          <div class="secure-title">Zero Knowledge</div>
+          <div class="secure-desc">Apple never knows what you buy, where you buy it, or how much you pay. Goldman Sachs never receives your purchase data.</div>
+          <div class="secure-stat">PAN: NEVER STORED</div>
+        </div>
+        <div class="secure-cell" data-hover>
+          <span class="secure-icon">🧬</span>
+          <div class="secure-title">Biometric Binding</div>
+          <div class="secure-desc">Your biometric template is mathematically bound to the Secure Enclave chip. It cannot be extracted or transmitted.</div>
+          <div class="secure-stat">ENCLAVE: T2 · FIPS 140-2</div>
+        </div>
+        <div class="secure-cell" data-hover>
+          <span class="secure-icon">🛸</span>
+          <div class="secure-title">Neural Fraud AI</div>
+          <div class="secure-desc">On-device machine learning evaluates transaction context, behavioral patterns and geolocation delta before any network call.</div>
+          <div class="secure-stat">12M SIGNALS / SEC</div>
+        </div>
+        <div class="secure-cell" data-hover>
+          <span class="secure-icon">⚛️</span>
+          <div class="secure-title">Quantum-Resistant</div>
+          <div class="secure-desc">Post-quantum cryptographic key agreement using CRYSTALS-Kyber lattice-based algorithms. Future-proof by design.</div>
+          <div class="secure-stat">KYBER-1024 · READY</div>
+        </div>
+        <div class="secure-cell" data-hover>
+          <span class="secure-icon">📡</span>
+          <div class="secure-title">Real-Time Alerts</div>
+          <div class="secure-desc">Instant push notification with merchant geotag, amount, and fraud confidence score. Every transaction, every time.</div>
+          <div class="secure-stat">LATENCY: &lt;200ms</div>
+        </div>
+        <div class="secure-cell" data-hover>
+          <span class="secure-icon">🏦</span>
+          <div class="secure-title">Titanium Body</div>
+          <div class="secure-desc">Grade 5 aerospace titanium with laser-etched name. No visible card number. No CVV. No expiry date on the surface.</div>
+          <div class="secure-stat">Ti-6Al-4V · GRADE 5</div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<div class="footer-bar">
+  <span class="footer-copy">© 2025 APPLE INC. · APPLE CARD IS ISSUED BY GOLDMAN SACHS BANK USA</span>
+  <div class="footer-status">
+    <div class="status-chip"><div class="dot dot-green"></div> Secure Enclave Online</div>
+    <div class="status-chip"><div class="dot dot-amber"></div> Ledger Sync 2.1ms</div>
+    <div class="status-chip"><div class="dot dot-cyan"></div> Fraud Engine Active</div>
+  </div>
+</div>
+
+<script>
+const dot = document.getElementById('cursorDot');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  dot.style.left = mx + 'px';
+  dot.style.top = my + 'px';
+
+  document.querySelectorAll('[data-hover]').forEach(el => {
+    const r = el.getBoundingClientRect();
+    el.style.setProperty('--cx', ((mx - r.left) / r.width * 100) + '%');
+    el.style.setProperty('--cy', ((my - r.top) / r.height * 100) + '%');
+  });
+
+  const btn = document.getElementById('btnPrimary');
+  if (btn) {
+    const r = btn.getBoundingClientRect();
+    btn.style.setProperty('--bx', ((mx - r.left) / r.width * 100) + '%');
+    btn.style.setProperty('--by', ((my - r.top) / r.height * 100) + '%');
+  }
+});
+
+(function animRing() {
+  rx += (mx - rx) * 0.11;
+  ry += (my - ry) * 0.11;
+  ring.style.left = rx + 'px';
+  ring.style.top = ry + 'px';
+  requestAnimationFrame(animRing);
+})();
+
+document.querySelectorAll('button, a, [data-hover]').forEach(el => {
+  el.addEventListener('mouseenter', () => ring.classList.add('expanded'));
+  el.addEventListener('mouseleave', () => ring.classList.remove('expanded'));
+});
+
+window.addEventListener('scroll', () => {
+  const p = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+  document.getElementById('scrollProgress').style.width = (p * 100) + '%';
+}, { passive: true });
+
+const circuitItems = document.querySelectorAll('[data-circuit]');
+const io = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      const idx = Array.from(circuitItems).indexOf(e.target);
+      setTimeout(() => e.target.classList.add('assembled'), idx * 140);
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.2 });
+circuitItems.forEach(el => io.observe(el));
+
+const ledgerEntries = [
+  { icon: '☕', merchant: 'Equator Coffees', cat: 'Food & Drink', time: 'Just now', amount: '−$6.25', cls: 'debit' },
+  { icon: '🛡️', merchant: 'Fraud Check Passed', cat: 'Neural Engine · Cleared', time: 'Just now', amount: 'CLEARED', cls: '' },
+  { icon: '🎵', merchant: 'Apple Music', cat: 'Subscription · 3% Cash', time: '09:00', amount: '−$10.99', cls: 'debit' },
+  { icon: '💰', merchant: 'Daily Cash', cat: 'Auto-Applied · Credit', time: '09:00', amount: '+$0.33', cls: 'credit' },
+];
+let ledgerIdx = 0;
+setInterval(() => {
+  const container = document.getElementById('ledgerEntries');
+  const entry = ledgerEntries[ledgerIdx % ledgerEntries.length];
+  const div = document.createElement('div');
+  div.className = 'ledger-entry';
+  div.style.opacity = '0';
+  div.style.transform = 'translateY(-8px)';
+  div.style.transition = 'opacity .5s, transform .5s';
+  div.innerHTML = `
+    <div class="entry-stream"></div>
+    <div class="entry-icon">${entry.icon}</div>
+    <div><div class="entry-merchant">${entry.merchant}</div><div class="entry-category">${entry.cat}</div></div>
+    <div class="entry-time">${entry.time}</div>
+    <div class="entry-amount ${entry.cls}" ${entry.cls === '' ? 'style="color:var(--cyan);font-size:.75rem;font-family:\'JetBrains Mono\',monospace;letter-spacing:.08em;"' : ''}>${entry.amount}</div>
+  `;
+  container.prepend(div);
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      div.style.opacity = '1';
+      div.style.transform = 'translateY(0)';
+    });
+  });
+  const all = container.querySelectorAll('.ledger-entry');
+  if (all.length > 6) all[all.length - 1].remove();
+  ledgerIdx++;
+}, 4000);
+
+const secCells = document.querySelectorAll('.secure-cell');
+const io2 = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const i = Array.from(secCells).indexOf(e.target);
+      e.target.style.opacity = '0';
+      e.target.style.transform = 'translateY(16px)';
+      e.target.style.transition = `opacity .6s ${i * 0.08}s cubic-bezier(.16,1,.3,1), transform .6s ${i * 0.08}s cubic-bezier(.16,1,.3,1)`;
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }));
+      io2.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+secCells.forEach(el => io2.observe(el));
+
+const bentoCells = document.querySelectorAll('.anodized-cell');
+const io3 = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const i = Array.from(bentoCells).indexOf(e.target);
+      e.target.style.opacity = '0';
+      e.target.style.transform = 'translateY(12px)';
+      e.target.style.transition = `opacity .7s ${i * 0.12}s cubic-bezier(.16,1,.3,1), transform .7s ${i * 0.12}s cubic-bezier(.16,1,.3,1)`;
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }));
+      io3.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+bentoCells.forEach(el => io3.observe(el));
+</script>
+</body>
+</html>

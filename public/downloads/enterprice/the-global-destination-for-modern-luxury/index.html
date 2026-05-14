@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Farfetch | The Global Destination For Modern Luxury</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root {
+    --studio-pearl: oklch(97% 0.01 240);
+    --holo-blue: oklch(60% 0.15 250);
+    --pure-light: oklch(100% 0 0);
+  }
+
+  body {
+    background-color: var(--studio-pearl);
+    color: oklch(20% 0.05 240);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    overflow-x: hidden;
+    overscroll-behavior: none;
+  }
+
+  .fractal-container {
+    container-type: inline-size;
+    container-name: spatial-canvas;
+    min-height: 200vh;
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: clamp(1rem, 5cqi, 4rem);
+  }
+
+  .video-anchor {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 60vw;
+    height: 100vh;
+    z-index: 0;
+    pointer-events: none;
+    mask-image: radial-gradient(ellipse 150% 120% at 100% 50%, black 60%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 150% 120% at 100% 50%, black 60%, transparent 100%);
+  }
+
+  .video-anchor video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(1.1) contrast(1.05); 
+  }
+
+  .glass-portal {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top right, rgba(255,255,255,0.3) 0%, transparent 40%);
+    mix-blend-mode: soft-light;
+  }
+
+  .sculpted-volume {
+    background: var(--studio-pearl);
+    box-shadow: 
+      inset 4px 4px 10px rgba(255,255,255,0.9),
+      inset -4px -4px 15px rgba(0,0,0,0.03),
+      10px 20px 40px rgba(0,0,0,0.04);
+    border-radius: 2rem;
+    transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.5s ease;
+  }
+
+  .sculpted-volume:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 
+      inset 6px 6px 15px rgba(255,255,255,1),
+      inset -6px -6px 20px rgba(0,0,0,0.02),
+      15px 30px 50px rgba(0,0,0,0.06);
+  }
+
+  .liquid-mercury-btn {
+    background: linear-gradient(135deg, var(--pure-light), var(--studio-pearl));
+    box-shadow: 
+      inset 2px 2px 4px rgba(255,255,255,1),
+      inset -2px -2px 6px rgba(0,0,0,0.05),
+      0 4px 10px rgba(0,0,0,0.05);
+    color: var(--holo-blue);
+    border-radius: 9999px;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .liquid-mercury-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+    transition: left 0.6s ease;
+  }
+
+  .liquid-mercury-btn:hover::before {
+    left: 100%;
+  }
+
+  .liquid-mercury-btn:active {
+    box-shadow: 
+      inset 4px 4px 8px rgba(0,0,0,0.08),
+      inset -4px -4px 8px rgba(255,255,255,0.9),
+      0 1px 2px rgba(0,0,0,0.02);
+    transform: scale(0.98);
+  }
+
+  .gradient-text {
+    background: linear-gradient(120deg, oklch(20% 0.05 240), var(--holo-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  @keyframes parallax-float {
+    from { transform: translateY(0); }
+    to { transform: translateY(-15vh); }
+  }
+
+  @keyframes parallax-deep {
+    from { transform: translateY(0) scale(0.95); }
+    to { transform: translateY(-30vh) scale(1.05); }
+  }
+
+  .z-plane-1 {
+    animation: parallax-float linear;
+    animation-timeline: scroll();
+  }
+
+  .z-plane-2 {
+    animation: parallax-deep linear;
+    animation-timeline: scroll();
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.8s;
+    animation-timing-function: cubic-bezier(0.25, 1, 0.3, 1);
+  }
+
+  .spatial-sku {
+    view-transition-name: active-sku;
+  }
+</style>
+</head>
+<body class="antialiased selection:bg-[var(--holo-blue)] selection:text-white">
+
+<div class="video-anchor">
+  <video autoplay loop muted playsinline>
+    <source src="./video.mp4" type="video/mp4">
+  </video>
+  <div class="absolute inset-0 glass-portal"></div>
+</div>
+
+<nav class="fixed top-0 w-full z-50 px-8 py-6 mix-blend-difference text-white flex justify-between items-center pointer-events-none">
+  <div class="text-xs tracking-widest uppercase font-semibold">Headless Architecture</div>
+  <div class="text-sm font-medium tracking-tight">Farfetch Spatial</div>
+  <div class="text-xs tracking-widest uppercase font-semibold">Low-Latency Node</div>
+</nav>
+
+<main class="fractal-container pt-32 px-4 md:px-12 lg:px-24 z-10">
+  
+  <header class="col-span-12 md:col-span-7 mt-20 z-plane-1">
+    <h1 class="text-6xl md:text-8xl font-light tracking-tighter leading-[0.9] gradient-text pb-4">
+      Augmented<br>Conversion<br>Metrics.
+    </h1>
+    <p class="mt-8 text-xl max-w-md font-light leading-relaxed opacity-70">
+      Orchestrating immersive B2B marketplaces through spatial SKU visualization and high-fidelity depth mapping.
+    </p>
+    <button class="liquid-mercury-btn mt-12 px-8 py-4 text-sm tracking-wide font-medium" id="init-engine">
+      Initialize Commerce Engine
+    </button>
+  </header>
+
+  <div class="col-span-12 md:col-start-8 md:col-span-4 mt-40 z-plane-2 relative">
+    <div class="sculpted-volume p-8 aspect-[3/4] flex flex-col justify-between spatial-sku" id="primary-sku">
+      <div class="flex justify-between items-start">
+        <span class="text-xs uppercase tracking-widest opacity-50">SKU-0992</span>
+        <div class="h-2 w-2 rounded-full bg-[var(--holo-blue)] shadow-[0_0_10px_var(--holo-blue)]"></div>
+      </div>
+      <div class="w-full h-full my-6 bg-gradient-to-tr from-transparent to-[rgba(255,255,255,0.5)] rounded-xl relative overflow-hidden">
+         <div class="absolute inset-0 backdrop-blur-md mix-blend-overlay"></div>
+      </div>
+      <div>
+        <h2 class="text-2xl font-light tracking-tight">Aero-Silk Trench</h2>
+        <div class="flex justify-between items-end mt-2">
+          <span class="text-lg font-medium text-[var(--holo-blue)]">$2,450</span>
+          <button class="liquid-mercury-btn px-4 py-2 text-xs">Acquire</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-span-12 md:col-start-2 md:col-span-5 mt-64 z-plane-1 relative">
+    <div class="sculpted-volume p-10 aspect-square flex flex-col justify-center items-start">
+      <h3 class="text-3xl font-light gradient-text mb-4">Volume Over Plane</h3>
+      <p class="text-sm opacity-60 leading-relaxed">
+        Fractal asymmetric grids define our continuous layout structure. Edges dissolve into light gradients, replacing solid boundaries with perceptual depth.
+      </p>
+    </div>
+  </div>
+
+  <div class="col-span-12 md:col-start-9 md:col-span-3 mt-96 z-plane-2">
+     <div class="sculpted-volume p-6 flex items-center gap-4 cursor-pointer" id="secondary-sku">
+        <div class="w-16 h-16 rounded-full bg-[var(--studio-pearl)] shadow-[inset_2px_2px_5px_white,inset_-2px_-2px_5px_rgba(0,0,0,0.05)] flex items-center justify-center">
+          <div class="w-8 h-8 rounded-full bg-[var(--holo-blue)] blur-[2px]"></div>
+        </div>
+        <div>
+          <div class="text-sm font-medium">Holographic Visor</div>
+          <div class="text-xs opacity-50 mt-1">Real-time AR overlay</div>
+        </div>
+     </div>
+  </div>
+
+</main>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const engineBtn = document.getElementById('init-engine');
+    const primarySku = document.getElementById('primary-sku');
+    const secondarySku = document.getElementById('secondary-sku');
+
+    const triggerSpatialTransition = async (element) => {
+      if (!document.startViewTransition) {
+        element.style.transform = 'scale(1.05)';
+        setTimeout(() => element.style.transform = '', 300);
+        return;
+      }
+
+      const transition = document.startViewTransition(() => {
+        element.style.viewTransitionName = 'active-sku';
+        element.classList.toggle('scale-110');
+        element.classList.toggle('z-50');
+      });
+
+      await transition.finished;
+      element.style.viewTransitionName = '';
+    };
+
+    engineBtn.addEventListener('click', (e) => {
+      triggerSpatialTransition(primarySku);
+    });
+
+    secondarySku.addEventListener('click', () => {
+      triggerSpatialTransition(secondarySku);
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = 1;
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.sculpted-volume').forEach(el => {
+      observer.observe(el);
+    });
+  });
+</script>
+</body>
+</html>

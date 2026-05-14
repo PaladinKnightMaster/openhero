@@ -1,0 +1,247 @@
+<!DOCTYPE html> 
+<html lang="es" class="dark"> 
+<head> 
+<meta charset="UTF-8"> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+<meta name="view-transition" content="same-origin"> 
+<title>High-Performance Automotive Dynamics</title> 
+<script src="https://unpkg.com/@tailwindcss/browser@4"></script> 
+<style> 
+:root { 
+  --neon-blue: oklch(65% 0.3 260); 
+  --flame-red: oklch(60% 0.3 20); 
+  --carbon-base: oklch(15% 0.01 260); 
+  --glass-edge: rgba(255, 255, 255, 0.05); 
+} 
+
+body { 
+  background-color: #050505; 
+  color: #fff; 
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+  overflow-x: hidden; 
+  overscroll-behavior: none; 
+} 
+
+::view-transition-old(root), 
+::view-transition-new(root) { 
+  animation-duration: 0.8s; 
+  animation-timing-function: cubic-bezier(0.25, 1, 0, 1); 
+} 
+
+.portal-container { 
+  position: fixed; 
+  inset: -10vh -10vw; 
+  z-index: 0; 
+  clip-path: polygon(0 0, 88% 8%, 100% 100%, 12% 92%); 
+  pointer-events: none; 
+  transform: scale(1.05); 
+} 
+
+/* CORRECCIÓN APLICADA AQUÍ */
+.portal-backdrop { 
+  position: absolute; 
+  inset: 0; 
+  /* Se reemplaza el blur destructivo por un gradiente radial que funde los bordes pero deja el centro nítido */
+  background: radial-gradient(circle at center, rgba(0,0,0,0.1) 0%, rgba(5,5,5,0.8) 60%, rgba(5,5,5,1) 100%);
+} 
+
+@keyframes kinetic-shimmer { 
+  0% { background-position: 200% center; } 
+  100% { background-position: -200% center; } 
+} 
+
+.text-kinetic { 
+  background: linear-gradient( 
+    90deg, 
+    var(--neon-blue) 0%, 
+    #ffffff 25%, 
+    var(--flame-red) 50%, 
+    #ffffff 75%, 
+    var(--neon-blue) 100% 
+  ); 
+  background-size: 200% auto; 
+  color: transparent; 
+  -webkit-background-clip: text; 
+  background-clip: text; 
+  animation: kinetic-shimmer 6s cubic-bezier(0.4, 0, 0.2, 1) infinite; 
+} 
+
+.debossed-surface { 
+  background: linear-gradient(145deg, var(--carbon-base), #020202); 
+  box-shadow: 
+    inset 3px 3px 8px rgba(0, 0, 0, 0.9), 
+    inset -2px -2px 6px rgba(255, 255, 255, 0.03), 
+    0 10px 30px rgba(0,0,0,0.5); 
+  border-radius: 24px; 
+  position: relative; 
+  overflow: hidden; 
+} 
+
+.debossed-surface::before { 
+  content: ""; 
+  position: absolute; 
+  inset: 0; 
+  border-radius: inherit; 
+  padding: 1px; 
+  background: linear-gradient( 
+    135deg, 
+    rgba(255,255,255,0.05) 0%, 
+    transparent 40%, 
+    transparent 60%, 
+    rgba(255,255,255,0.02) 100% 
+  ); 
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); 
+  -webkit-mask-composite: xor; 
+  mask-composite: exclude; 
+  pointer-events: none; 
+} 
+
+.glow-edge { 
+  position: absolute; 
+  inset: 0; 
+  background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), var(--neon-blue) 0%, transparent 50%); 
+  opacity: 0; 
+  transition: opacity 0.3s; 
+  mix-blend-mode: screen; 
+  pointer-events: none; 
+} 
+
+.debossed-surface:hover .glow-edge { 
+  opacity: 0.15; 
+} 
+
+.liquid-mercury-btn { 
+  background: linear-gradient(135deg, #d4d4d4 0%, #8a8a8a 50%, #e5e5e5 100%); 
+  color: #000; 
+  font-weight: 600; 
+  padding: 1rem 2.5rem; 
+  border-radius: 9999px; 
+  box-shadow: 
+    0 10px 20px rgba(0,0,0,0.5), 
+    inset 0 2px 4px rgba(255,255,255,0.9), 
+    inset 0 -2px 4px rgba(0,0,0,0.3); 
+  transform-style: preserve-3d; 
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+  position: relative; 
+} 
+
+.liquid-mercury-btn:hover { 
+  transform: translateY(-4px) translateZ(32px) scale(1.02); 
+  box-shadow: 
+    0 25px 40px rgba(0,0,0,0.6), 
+    0 0 30px var(--neon-blue), 
+    inset 0 2px 4px rgba(255,255,255,0.9), 
+    inset 0 -2px 4px rgba(0,0,0,0.3); 
+} 
+
+@keyframes scroll-reveal { 
+  from { 
+    opacity: 0; 
+    transform: translateY(80px) scale(0.95); 
+  } 
+  to { 
+    opacity: 1; 
+    transform: translateY(0) scale(1); 
+  } 
+} 
+
+.native-scroll-timeline { 
+  animation: scroll-reveal linear both; 
+  animation-timeline: view(); 
+  animation-range: entry 10% cover 30%; 
+} 
+
+.bento-grid { 
+  display: grid; 
+  grid-template-columns: repeat(12, 1fr); 
+  grid-auto-rows: minmax(100px, auto); 
+  gap: 1.5rem; 
+} 
+
+.col-span-8 { grid-column: span 8; } 
+.col-span-4 { grid-column: span 4; } 
+.col-span-12 { grid-column: span 12; } 
+
+@media (max-width: 1024px) { 
+  .col-span-8, .col-span-4 { grid-column: span 12; } 
+} 
+</style> 
+</head> 
+<body class="antialiased selection:bg-white selection:text-black"> 
+
+<div class="portal-container"> 
+  <video autoplay loop muted playsinline class="w-full h-full object-cover"> 
+    <source src="./video.mp4" type="video/mp4"> 
+  </video> 
+  <div class="portal-backdrop"></div> </div> 
+  <div class="relative z-10 w-full min-h-screen flex flex-col justify-center px-8 md:px-24 pt-32 pb-16"> 
+    
+    <header class="mb-24 max-w-5xl"> 
+      <h2 class="text-sm tracking-[0.3em] uppercase text-zinc-500 mb-4 font-semibold">AERO – Precision Engineering</h2> 
+      <h1 class="text-6xl md:text-9xl font-bold tracking-tighter leading-none mb-8 text-kinetic"> 
+        AERODYNAMIC<br>DYNAMICS 
+      </h1> 
+      <p class="text-xl text-zinc-400 max-w-2xl leading-relaxed mb-12"> 
+        Fluid engineering meeting liquid asphalt. The culmination of aerodynamic downforce and raw kinetic energy seamlessly forged into high-fidelity chassis architecture. 
+      </p> 
+      <button class="liquid-mercury-btn"> Initiate Sequence </button> 
+    </header> 
+    
+    <main class="w-full max-w-7xl mx-auto bento-grid native-scroll-timeline"> 
+      
+      <div class="debossed-surface col-span-8 p-10 flex flex-col justify-between min-h-[400px]"> 
+        <div class="glow-edge"></div> 
+        <div class="flex justify-between items-start"> 
+          <h3 class="text-2xl font-medium tracking-tight text-white">Torque Vectoring</h3> 
+          <span class="text-xs font-mono text-zinc-500 border border-zinc-800 rounded-full px-3 py-1">SYS.ACTIVE</span> 
+        </div> 
+        <div class="mt-8 flex gap-4 items-end"> 
+          <div class="text-7xl font-light tracking-tighter">840</div> 
+          <div class="text-xl text-zinc-500 mb-2 font-mono">Nm</div> 
+        </div> 
+        <div class="w-full h-1 bg-zinc-900 rounded-full mt-8 overflow-hidden shadow-inner"> 
+          <div class="h-full bg-gradient-to-r from-[var(--neon-blue)] to-[var(--flame-red)] w-[78%]"></div> 
+        </div> 
+      </div> 
+      
+      <div class="debossed-surface col-span-4 p-10 flex flex-col justify-between min-h-[400px]"> 
+        <div class="glow-edge"></div> 
+        <h3 class="text-2xl font-medium tracking-tight text-white mb-4">Core Temp</h3> 
+        <div class="flex-1 flex items-center justify-center relative"> 
+          <div class="absolute w-48 h-48 rounded-full border border-zinc-800 opacity-50"></div> 
+          <div class="absolute w-32 h-32 rounded-full border border-zinc-700 shadow-[0_0_30px_var(--flame-red)]"></div> 
+          <div class="text-5xl font-light z-10 text-kinetic">98°</div> 
+        </div> 
+      </div> 
+      
+      <div class="debossed-surface col-span-4 p-10 min-h-[300px]"> 
+        <div class="glow-edge"></div> 
+        <h3 class="text-xl text-zinc-400 mb-2">Downforce</h3> 
+        <div class="text-4xl font-semibold mb-6">1.2G</div> 
+        <p class="text-sm text-zinc-600">Active aero deployment maintaining absolute surface adhesion during high-velocity cornering.</p> 
+      </div> 
+      
+      <div class="debossed-surface col-span-8 p-10 min-h-[300px] flex items-center justify-center relative overflow-hidden"> 
+        <div class="glow-edge"></div> 
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.03)_0%,transparent_70%)]"></div> 
+        <h2 class="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-b from-zinc-100 to-zinc-800 text-center tracking-tighter"> 
+          DEFY<br>RESISTANCE 
+        </h2> 
+      </div> 
+      
+    </main> 
+</div> 
+
+<script> 
+  document.querySelectorAll('.debossed-surface').forEach(surface => { 
+    surface.addEventListener('mousemove', e => { 
+      const rect = surface.getBoundingClientRect(); 
+      const x = e.clientX - rect.left; 
+      const y = e.clientY - rect.top; 
+      surface.style.setProperty('--x', `${x}px`); 
+      surface.style.setProperty('--y', `${y}px`); 
+    }); 
+  }); 
+</script> 
+</body> 
+</html>
