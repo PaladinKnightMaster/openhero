@@ -139,7 +139,7 @@ function FrameworkDropdown({ active, onChange }: { active: Framework; onChange: 
   );
 }
 
-function TabCodeContent({ code, lang, loading, video, format }: { code: string; lang: Language; loading: boolean; video: HeroVideo; format: string }) {
+function TabCodeContent({ code, lang, loading, format }: { code: string; lang: Language; loading: boolean; format: string }) {
   const [copied, setCopied] = useState(false);
 
   const handleCopyCode = async () => {
@@ -192,6 +192,38 @@ function TabCodeContent({ code, lang, loading, video, format }: { code: string; 
   );
 }
 
+function InstallCommand({ slug }: { slug: string }) {
+  const [copied, setCopied] = useState(false);
+  const command = `pnpm dlx @cristian-olivera/openhero add ${slug}`;
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(command);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Clipboard API unavailable — silently ignore
+    }
+  };
+
+  return (
+    <div className="mt-3 flex items-center gap-2 rounded-lg border border-white/10 bg-white/3 px-3 py-2">
+      <Icon icon="simple-icons:pnpm" width="11" className="shrink-0 text-white/35" />
+      <code className="flex-1 truncate font-mono text-[11px] text-white/60" title={command}>
+        {command}
+      </code>
+      <button
+        onClick={handleCopy}
+        aria-label={copied ? "Copied!" : "Copy install command"}
+        title={copied ? "Copied!" : "Copy install command"}
+        className="shrink-0 rounded-md p-1 text-white/40 transition-colors hover:bg-white/10 hover:text-white"
+      >
+        <Icon icon={copied ? "material-symbols:check-rounded" : "solar:copy-linear"} width="12" />
+      </button>
+    </div>
+  );
+}
+
 interface VideoModalProps {
   video: HeroVideo;
   onClose: () => void;
@@ -199,7 +231,7 @@ interface VideoModalProps {
 
 export function VideoModal({ video, onClose }: VideoModalProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [mobileTab, setMobileTab] = useState<Framework>("nextjs");
+  const [activeFramework, setActiveFramework] = useState<Framework>("nextjs");
   const [codes, setCodes] = useState<Record<Framework, string>>({ nextjs: "", html: "" });
   const [loading, setLoading] = useState(true);
 
@@ -262,7 +294,7 @@ export function VideoModal({ video, onClose }: VideoModalProps) {
     label: FW_CONFIG[fw].label,
     value: fw,
     icon: FW_CONFIG[fw].icon,
-    content: <TabCodeContent code={codes[fw]} lang={FW_CONFIG[fw].lang} loading={loading} video={video} format={FW_CONFIG[fw].format} />,
+    content: <TabCodeContent code={codes[fw]} lang={FW_CONFIG[fw].lang} loading={loading} format={FW_CONFIG[fw].format} />,
   }));
 
   return (
@@ -307,7 +339,7 @@ export function VideoModal({ video, onClose }: VideoModalProps) {
                 <Icon icon="solar:download-minimalistic-linear" width="12" />
                 Download Video
               </a>
-              <DownloadZipButton video={video} format={mobileTab} />
+              <DownloadZipButton video={video} format={activeFramework} />
               <a
                 href={`/preview/${video.category}/${video.slug}`}
                 target="_blank"
@@ -318,23 +350,27 @@ export function VideoModal({ video, onClose }: VideoModalProps) {
                 Preview
               </a>
             </div>
+
+            {activeFramework === "nextjs" && video.hasDownloads && (
+              <InstallCommand slug={video.slug} />
+            )}
           </div>
 
           <div className="flex min-h-0 flex-1 flex-col">
             <div className="hidden sm:flex flex-1 flex-col min-h-0">
-              <VercelTabs tabs={vercelTabsData} defaultTab="nextjs" className="flex flex-col h-full min-h-0" contentClassName="flex-1 min-h-0 mt-3" />
+              <VercelTabs tabs={vercelTabsData} value={activeFramework} onValueChange={(val) => setActiveFramework(val as Framework)} className="flex flex-col h-full min-h-0" contentClassName="flex-1 min-h-0 mt-3" />
             </div>
 
             <div className="flex flex-col sm:hidden min-h-0 flex-1">
               <div className="mb-3 shrink-0">
-                <FrameworkDropdown active={mobileTab} onChange={setMobileTab} />
+                <FrameworkDropdown active={activeFramework} onChange={setActiveFramework} />
               </div>
               <div className="relative h-48 min-h-0 flex-1 overflow-auto custom-scroll rounded-lg border border-white/5 lg:h-auto">
-                <div className="absolute top-2 right-2 z-10 flex items-center gap-1.5 sticky">
+                <div className="absolute top-2 right-2 z-10 flex items-center gap-1.5">
                   <button
                     onClick={async () => {
-                      if (!codes[mobileTab]) return;
-                      await navigator.clipboard.writeText(codes[mobileTab]);
+                      if (!codes[activeFramework]) return;
+                      await navigator.clipboard.writeText(codes[activeFramework]);
                     }}
                     className="flex items-center gap-1 rounded-lg border border-white/10 bg-black/80 backdrop-blur-sm px-2 py-1 text-[10px] text-white transition-colors hover:bg-white/10"
                   >
@@ -342,11 +378,11 @@ export function VideoModal({ video, onClose }: VideoModalProps) {
                   </button>
                   <button
                     onClick={() => {
-                      const blob = new Blob([codes[mobileTab]], { type: "text/plain" });
+                      const blob = new Blob([codes[activeFramework]], { type: "text/plain" });
                       const url = URL.createObjectURL(blob);
                       const link = document.createElement("a");
                       link.href = url;
-                      link.download = FW_CONFIG[mobileTab].filename;
+                      link.download = FW_CONFIG[activeFramework].filename;
                       document.body.appendChild(link);
                       link.click();
                       document.body.removeChild(link);
@@ -360,7 +396,7 @@ export function VideoModal({ video, onClose }: VideoModalProps) {
                 {loading ? (
                   <div className="flex h-full items-center justify-center text-xs text-white/30">Loading…</div>
                 ) : (
-                  <CodeBlock code={codes[mobileTab]} lang={FW_CONFIG[mobileTab].lang} />
+                  <CodeBlock code={codes[activeFramework]} lang={FW_CONFIG[activeFramework].lang} />
                 )}
               </div>
             </div>

@@ -15,13 +15,25 @@ interface TabData {
 interface VercelTabsProps {
   tabs: TabData[];
   defaultTab?: string;
+  value?: string;
+  onValueChange?: (value: string) => void;
   className?: string;
   contentClassName?: string;
 }
 
-export function VercelTabs({ tabs, defaultTab, className, contentClassName }: VercelTabsProps) {
+export function VercelTabs({ tabs, defaultTab, value, onValueChange, className, contentClassName }: VercelTabsProps) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const [activeTab, setActiveTab] = useState(defaultTab || tabs[0]?.value);
+  const [internalTab, setInternalTab] = useState(defaultTab || tabs[0]?.value);
+  
+  const isControlled = value !== undefined;
+  const activeTab = isControlled ? value : internalTab;
+  
+  const handleTabChange = (newValue: string) => {
+    if (!isControlled) {
+      setInternalTab(newValue);
+    }
+    onValueChange?.(newValue);
+  };
   const [hoverStyle, setHoverStyle] = useState({});
   const [activeStyle, setActiveStyle] = useState({ left: "0px", width: "0px" });
 
@@ -68,20 +80,20 @@ export function VercelTabs({ tabs, defaultTab, className, contentClassName }: Ve
 
   return (
     <Tabs
-      defaultValue={activeTab}
-      onValueChange={setActiveTab}
+      value={activeTab}
+      onValueChange={handleTabChange}
       className={`flex w-full flex-col ${className || ""}`}
     >
-      <TabsList className="relative h-auto self-center select-none gap-[6px] bg-transparent p-0">
+      <TabsList className="relative h-auto self-center select-none gap-1.5 bg-transparent p-0">
         <div
-          className="absolute top-0 left-0 flex h-[30px] items-center rounded-[6px] bg-white/10 transition-all duration-300 ease-out"
+          className="absolute top-0 left-0 flex h-7.5 items-center rounded-md bg-white/10 transition-all duration-300 ease-out"
           style={{
             ...hoverStyle,
             opacity: hoveredIndex !== null ? 1 : 0,
           }}
         />
         <div
-          className="absolute bottom-[-6px] h-[2px] bg-white transition-all duration-300 ease-out"
+          className="absolute -bottom-1.5 h-0.5 bg-white transition-all duration-300 ease-out"
           style={activeStyle}
         />
         {tabs.map((tab, index) => (
@@ -91,7 +103,7 @@ export function VercelTabs({ tabs, defaultTab, className, contentClassName }: Ve
             ref={(el: HTMLButtonElement | null) => {
               tabRefs.current[index] = el;
             }}
-            className={`z-10 h-[30px] cursor-pointer rounded-md border-0 bg-transparent px-3 py-2 outline-none transition-colors duration-300 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 data-[state=active]:bg-transparent data-[state=active]:shadow-none ${
+            className={`z-10 h-7.5 cursor-pointer rounded-md border-0 bg-transparent px-3 py-2 outline-none transition-colors duration-300 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 data-[state=active]:bg-transparent data-[state=active]:shadow-none ${
               activeTab === tab.value ? "text-white" : "text-white/50"
             }`}
             onMouseEnter={() => setHoveredIndex(index)}

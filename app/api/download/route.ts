@@ -2,14 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import JSZip from "jszip";
 import fs from "fs";
 import path from "path";
-import { getNextjsCode, getReactCode, getHtmlCode } from "@/lib/hero-templates";
+import { getNextjsCode, getHtmlCode } from "@/lib/hero-templates";
 import { slugToName } from "@/lib/utils";
 
-type Format = "nextjs" | "react" | "html";
+type Format = "nextjs" | "html";
 
 const FORMAT_CONFIG: Record<Format, { filename: string; staticFile: string }> = {
   nextjs: { filename: "page.tsx",   staticFile: "page.tsx"   },
-  react:  { filename: "Hero.jsx",   staticFile: "app.jsx"    },
   html:   { filename: "index.html", staticFile: "index.html" },
 };
 
@@ -38,9 +37,7 @@ export async function GET(request: NextRequest) {
     code = fs.readFileSync(staticFilePath, "utf-8");
   } else {
     const opts = { name, slug, videoSrc, category };
-    code = format === "html" ? getHtmlCode(opts)
-         : format === "react" ? getReactCode(opts)
-         : getNextjsCode(opts);
+    code = format === "html" ? getHtmlCode(opts) : getNextjsCode(opts);
   }
 
   const zip = new JSZip();
