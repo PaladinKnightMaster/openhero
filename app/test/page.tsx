@@ -1,567 +1,447 @@
-"use client"
-import { useEffect, useRef } from "react";
+"use client";
+
+import { useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
 
-export default function AnthropicBioTechInterface() {
-    const portalRef = useRef<HTMLDivElement>(null);
+export default function Page() {
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
-    useEffect(() => {
-        const root = document.documentElement;
-        let ticking = false;
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 50);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
-        const updateFluidCoordinates = (
-            e: MouseEvent,
-            el?: HTMLElement,
-            isRoot = false
-        ) => {
-            const target = isRoot ? root : el;
-            if (!target) return;
-
-            const rect = isRoot
-                ? { left: 0, top: 0 }
-                : el!.getBoundingClientRect();
-
-            target.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
-            target.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
-        };
-
-        const handleMouseMove = (e: MouseEvent) => {
-            updateFluidCoordinates(e, undefined, true);
-        };
-
-        const fluidNodes = document.querySelectorAll(".fluid-node");
-
-        const handleScroll = () => {
-            if (!ticking) {
-                requestAnimationFrame(() => {
-                    const scrolled = window.scrollY;
-
-                    if (portalRef.current) {
-                        portalRef.current.style.transform = `
-              translate3d(0, ${scrolled * 0.12}px, 0)
-              scale(${1 + scrolled * 0.0004})
-              rotate(${scrolled * 0.01}deg)
-            `;
-                    }
-
-                    ticking = false;
-                });
-
-                ticking = true;
-            }
-        };
-
-        window.addEventListener("mousemove", handleMouseMove, {
-            passive: true,
-        });
-
-        fluidNodes.forEach((el) => {
-            el.addEventListener(
-                "mousemove",
-                (e: Event) => {
-                    updateFluidCoordinates(
-                        e as MouseEvent,
-                        el as HTMLElement
-                    );
-                },
-                { passive: true }
-            );
-        });
-
-        window.addEventListener("scroll", handleScroll, {
-            passive: true,
-        });
-
-        return () => {
-            window.removeEventListener("mousemove", handleMouseMove);
-            window.removeEventListener("scroll", handleScroll);
-        };
-    }, []);
-
-    const toggleTheme = () => {
-        const synthesize = () => {
-            document.body.getAttribute("data-theme") === "synthesized"
-                ? document.body.removeAttribute("data-theme")
-                : document.body.setAttribute("data-theme", "synthesized");
-        };
-
-        const startViewTransition = (document as Document & {
-            startViewTransition?: (cb: () => void) => void;
-        }).startViewTransition;
-
-        startViewTransition ? startViewTransition(synthesize) : synthesize();
-    };
-    
-    return (
-        <>
-            <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap');
-
-        :root {
-          --obsidian: oklch(12% 0.05 280);
-          --electric-violet: oklch(60% 0.25 300);
-          --amber-glow: oklch(75% 0.15 50);
-          --text-core: oklch(98% 0.01 280);
-          --text-dim: oklch(65% 0.05 280);
-          --surface-top: oklch(25% 0.08 280 / 0.4);
-          --surface-bottom: oklch(15% 0.05 280 / 0.6);
-          --shadow-dark: oklch(5% 0.05 280 / 0.9);
-          --shadow-light: oklch(80% 0.15 300 / 0.15);
-          --mouse-x: 50%;
-          --mouse-y: 50%;
-          color-scheme: dark;
-        }
-
-        [data-theme="synthesized"] {
-          --obsidian: oklch(95% 0.02 280);
-          --text-core: oklch(15% 0.05 280);
-          --text-dim: oklch(45% 0.05 280);
-          --surface-top: oklch(100% 0.02 280 / 0.5);
-          --surface-bottom: oklch(90% 0.02 280 / 0.7);
-          --shadow-dark: oklch(60% 0.1 280 / 0.2);
-          --shadow-light: oklch(100% 0 0 / 1);
+  return (
+    <main className="min-h-screen bg-[#09090b] text-zinc-50 antialiased selection:bg-[#c5e197] selection:text-black">
+      <style jsx global>{`
+        html {
+          scroll-behavior: smooth;
         }
 
         body {
-          background-color: var(--obsidian);
-          color: var(--text-core);
-          font-family: 'Inter', sans-serif;
-          overflow-x: hidden;
-          overscroll-behavior: none;
-          -webkit-font-smoothing: antialiased;
-          transition: background-color 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+          margin: 0;
+          background-color: #09090b;
+          color: #fafafa;
+          font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         }
 
-        ::view-transition-old(root),
-        ::view-transition-new(root) {
-          animation: 1.2s cubic-bezier(0.16, 1, 0.3, 1) both organic-fade;
+        .glass-nav {
+          backdrop-filter: blur(5px);
+          -webkit-backdrop-filter: blur(5px);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        @keyframes organic-fade {
-          0% {
-            opacity: 0;
-            filter: blur(40px) contrast(150%);
-            transform: scale(0.95);
-          }
-          100% {
-            opacity: 1;
-            filter: blur(0) contrast(100%);
-            transform: scale(1);
-          }
+        .glass-card {
+          background: rgba(24, 24, 27, 0.5);
+          backdrop-filter: blur(8px);
+          border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        .bio-portal {
-          position: fixed;
-          top: 0;
-          right: -5vw;
-          width: 45vw;
-          height: 100vh;
-          z-index: 0;
-          pointer-events: none;
-          -webkit-mask-image: radial-gradient(
-            ellipse at 70% 50%,
-            black 10%,
-            rgba(0,0,0,0.6) 40%,
-            transparent 80%
-          );
-          mask-image: radial-gradient(
-            ellipse at 70% 50%,
-            black 10%,
-            rgba(0,0,0,0.6) 40%,
-            transparent 80%
-          );
-          will-change: transform;
-        }
-
-        .bio-portal video {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          filter: saturate(140%) contrast(120%) hue-rotate(15deg);
-          transform: scale(1.1);
-          mix-blend-mode: screen;
-        }
-
-        .organic-volume {
-          background: linear-gradient(
-            160deg,
-            var(--surface-top),
-            var(--surface-bottom)
-          );
-
-          backdrop-filter: blur(80px) saturate(180%);
-          -webkit-backdrop-filter: blur(80px) saturate(180%);
-          border-radius: 2.5rem;
-          position: relative;
-          isolation: isolate;
-          box-shadow:
-            inset 1px 1px 3px var(--shadow-light),
-            inset -2px -2px 12px var(--shadow-dark),
-            0 30px 60px rgba(0,0,0,0.4);
-
-          transition:
-            transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-            border-radius 0.8s ease;
-        }
-
-        .organic-volume::before {
-          content: "";
-          position: absolute;
-          inset: -1px;
-          border-radius: inherit;
-          background: radial-gradient(
-            800px circle at var(--mouse-x) var(--mouse-y),
-            var(--electric-violet),
-            transparent 40%
-          );
-          opacity: 0;
-          mix-blend-mode: screen;
-          transition: opacity 0.5s ease;
-          pointer-events: none;
-          z-index: 10;
-        }
-
-        .organic-volume:hover {
-          transform: translateY(-5px) scale(1.005);
-          border-radius: 2.2rem;
-        }
-
-        .organic-volume:hover::before {
-          opacity: 0.4;
-        }
-
-        .bio-elastic-btn {
-          position: relative;
-          overflow: hidden;
-          border-radius: 999px;
-          padding: 1.2rem 2.5rem;
-          font-weight: 500;
-          letter-spacing: -0.01em;
-          color: var(--text-core);
-          background: linear-gradient(
-            145deg,
-            rgba(255,255,255,0.08),
-            rgba(255,255,255,0.02)
-          );
-
-          backdrop-filter: blur(40px);
-
-          box-shadow:
-            inset 0 2px 4px rgba(255,255,255,0.15),
-            inset 0 -4px 10px rgba(0,0,0,0.5),
-            0 10px 20px rgba(0,0,0,0.2);
-
-          cursor: pointer;
-
-          transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .bio-elastic-btn::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          border-radius: inherit;
-
-          background: radial-gradient(
-            circle at var(--mouse-x) var(--mouse-y),
-            var(--amber-glow) 0%,
-            transparent 60%
-          );
-
-          opacity: 0;
-          mix-blend-mode: color-dodge;
-          transition: opacity 0.4s ease;
-          pointer-events: none;
-        }
-
-        .bio-elastic-btn:hover {
-          transform: scale(1.05) translateY(-2px);
-          border-radius: 1rem;
-        }
-
-        .bio-elastic-btn:hover::before {
-          opacity: 0.5;
-        }
-
-        @keyframes synaptic-pulse {
-          to {
-            background-position: 200% center;
-          }
-        }
-
-        .synaptic-shimmer {
-          background: linear-gradient(
-            120deg,
-            var(--text-core) 0%,
-            var(--electric-violet) 25%,
-            var(--text-core) 50%,
-            var(--amber-glow) 75%,
-            var(--text-core) 100%
-          );
-
-          background-size: 200% auto;
+        .text-gradient {
+          background: linear-gradient(to right, #e2e8f0, #c5e197);
           -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
           background-clip: text;
-          color: transparent;
-
-          animation: synaptic-pulse linear;
-          animation-timeline: scroll(root block);
         }
 
-        .neural-stat {
-          font-family:
-            ui-monospace,
-            SFMono-Regular,
-            Menlo,
-            Monaco,
-            Consolas,
-            monospace;
-
-          letter-spacing: -0.04em;
+        .hide-scroll::-webkit-scrollbar {
+          display: none;
         }
 
-        .bio-toggle {
-          width: 52px;
-          height: 28px;
-          border-radius: 999px;
-          background: var(--surface-bottom);
-
-          box-shadow:
-            inset 0 2px 6px var(--shadow-dark),
-            0 0 0 1px rgba(255,255,255,0.05);
-
-          position: relative;
-          cursor: pointer;
-          overflow: hidden;
-        }
-
-        .bio-toggle::before {
-          content: "";
-          position: absolute;
-          top: 3px;
-          left: 3px;
-          width: 22px;
-          height: 22px;
-          border-radius: 50%;
-          background: var(--amber-glow);
-          box-shadow: 0 0 10px var(--amber-glow);
-
-          transition:
-            transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-            background 0.6s;
-        }
-
-        [data-theme="synthesized"] .bio-toggle::before {
-          transform: translateX(24px);
-          background: var(--electric-violet);
-        }
-
-        .chromatic-aberration {
-          text-shadow:
-            -1px 0 2px rgba(255, 0, 0, 0.3),
-            1px 0 2px rgba(0, 255, 255, 0.3);
+        .hide-scroll {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
         }
       `}</style>
 
-            <div className="min-h-[220vh] bg-[var(--obsidian)] text-[var(--text-core)]">
-                <div
-                    ref={portalRef}
-                    className="bio-portal"
-                    id="organic-breach"
-                >
-                    <video autoPlay muted loop playsInline>
-                        <source src="/video.mp4" type="video/mp4" />
-                    </video>
-                </div>
+      <nav
+        className={`fixed top-0 z-50 w-full transition-all duration-300 ${
+          scrolled ? "glass-nav bg-[#09090b]/90" : "glass-nav bg-[#09090b]/70"
+        }`}
+      >
+        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
+          <a href="#home" className="group flex items-center gap-2">
+            <Icon
+              icon="lucide:aperture"
+              className="text-2xl text-white transition-transform duration-500 group-hover:rotate-90"
+            />
+            <span className="text-lg font-semibold uppercase tracking-widest">Lumina</span>
+          </a>
 
-                <nav className="fixed top-0 inset-x-0 z-50 px-10 py-8 mix-blend-plus-lighter">
-                    <div className="max-w-[1800px] mx-auto flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center backdrop-blur-md shadow-[0_0_20px_var(--electric-violet)]">
-                                <div className="w-3 h-3 rounded-full bg-[var(--amber-glow)] shadow-[0_0_10px_var(--amber-glow)] animate-pulse"></div>
-                            </div>
+          <div className="hidden items-center gap-8 text-sm font-medium text-zinc-300 md:flex">
+            <a href="#features" className="flex items-center gap-1 transition-colors hover:text-white">
+              Features
+              <Icon icon="lucide:chevron-down" className="text-xs opacity-70" />
+            </a>
+            <a href="#gallery" className="transition-colors hover:text-white">
+              Gallery
+            </a>
+            <a href="#pricing" className="transition-colors hover:text-white">
+              Pricing
+            </a>
+            <a href="#" className="flex items-center gap-1 transition-colors hover:text-white">
+              API
+              <Icon icon="lucide:chevron-down" className="text-xs opacity-70" />
+            </a>
+            <a href="#" className="flex items-center gap-1 transition-colors hover:text-white">
+              Resources
+              <Icon icon="lucide:chevron-down" className="text-xs opacity-70" />
+            </a>
+          </div>
 
-                            <div className="flex flex-col">
-                                <span className="font-medium tracking-tighter text-xl">
-                                    ANTHROPIC
-                                </span>
+          <div className="flex items-center gap-4 sm:gap-6">
+            <a href="#" className="hidden text-sm font-medium text-zinc-300 transition-colors hover:text-white sm:block">
+              Sign in
+            </a>
+            <a
+              href="#"
+              className="rounded-full border border-zinc-700 px-5 py-2.5 text-sm font-medium transition-all duration-300 hover:bg-white hover:text-black"
+            >
+              Get Started
+            </a>
+            <button
+              type="button"
+              aria-label="Toggle menu"
+              onClick={() => setMobileOpen((v) => !v)}
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-zinc-800 bg-white/5 text-white md:hidden"
+            >
+              <Icon icon={mobileOpen ? "lucide:x" : "lucide:menu"} className="text-xl" />
+            </button>
+          </div>
+        </div>
 
-                                <span className="text-[0.65rem] uppercase tracking-[0.4em] text-[var(--electric-violet)]">
-                                    Neural Orchestrator
-                                </span>
-                            </div>
-                        </div>
+        <div className={`${mobileOpen ? "block" : "hidden"} border-t border-zinc-900/80 bg-[#09090b]/95 md:hidden`}>
+          <div className="mx-auto flex max-w-7xl flex-col gap-2 px-6 py-4 text-sm text-zinc-300">
+            <a href="#features" onClick={() => setMobileOpen(false)} className="rounded-xl px-4 py-3 transition-colors hover:bg-white/5 hover:text-white">
+              Features
+            </a>
+            <a href="#gallery" onClick={() => setMobileOpen(false)} className="rounded-xl px-4 py-3 transition-colors hover:bg-white/5 hover:text-white">
+              Gallery
+            </a>
+            <a href="#pricing" onClick={() => setMobileOpen(false)} className="rounded-xl px-4 py-3 transition-colors hover:bg-white/5 hover:text-white">
+              Pricing
+            </a>
+          </div>
+        </div>
+      </nav>
 
-                        <button
-                            onClick={toggleTheme}
-                            className="bio-toggle"
-                        />
-                    </div>
-                </nav>
+      <header id="home" className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden pt-20">
+        <video autoPlay loop muted playsInline className="absolute inset-0 z-0 h-full w-full object-cover">
+          <source src="/video.mp4" type="video/mp4" />
+        </video>
 
-                <main className="relative z-10 max-w-[1800px] mx-auto px-10 pt-48 pb-40">
-                    <header className="max-w-5xl mb-40 relative z-20">
-                        <span className="text-xs uppercase tracking-[0.4em] text-[var(--text-dim)] font-medium mb-8 block chromatic-aberration">
-                            Bio-Tech Computing Layer
-                        </span>
+        <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/5 via-black/10 to-[#09090b97]" />
 
-                        <h1 className="text-[6rem] md:text-[8.5rem] font-light tracking-tighter leading-[0.85] synaptic-shimmer mb-12">
-                            Constitutional
-                            <br />
-                            Luminance.
-                        </h1>
+        <div className="relative z-20 mx-auto mt-12 flex max-w-4xl flex-col items-center px-4 text-center">
+          <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-zinc-700/50 bg-black/30 px-4 py-1.5 backdrop-blur-md">
+            <Icon icon="lucide:sparkles" className="text-xs text-[#c5e197]" />
+            <span className="text-xs font-medium uppercase tracking-wide text-zinc-300">
+              AI Image Generation
+            </span>
+          </div>
 
-                        <p className="text-2xl text-[var(--text-dim)] max-w-3xl leading-relaxed mb-16 font-light">
-                            Abstracting rigid data structures into organic mesh routing.
-                            Compute density simulated through bioluminescent refraction
-                            rather than static primitives.
-                        </p>
+          <h1 className="mb-6 text-5xl font-bold tracking-tight text-white md:text-7xl lg:text-8xl">
+            Ideas become <span className="text-gradient">images.</span>
+          </h1>
 
-                        <div className="flex items-center gap-10">
-                            <button className="bio-elastic-btn fluid-node">
-                                Initialize Core
-                            </button>
+          <p className="mb-10 max-w-2xl text-lg font-light leading-relaxed text-white md:text-xl">
+            Generate stunning, high-resolution images from text. <br className="hidden md:block" />
+            Fast, intuitive, and built for creators.
+          </p>
 
-                            <div className="flex flex-col border-l border-white/10 pl-8">
-                                <span className="neural-stat text-3xl text-[var(--text-core)]">
-                                    8.4
-                                    <span className="text-sm text-[var(--amber-glow)] ml-1">
-                                        pb/s
-                                    </span>
-                                </span>
+          <a
+            href="#pricing"
+            className="group inline-flex items-center justify-center gap-2 rounded-full bg-[#c5e197] px-8 py-4 text-lg font-medium text-zinc-950 transition-colors duration-300 hover:bg-[#d4edaa]"
+          >
+            Start Creating
+            <Icon icon="lucide:arrow-right" className="transition-transform group-hover:translate-x-1" />
+          </a>
+        </div>
 
-                                <span className="text-xs text-[var(--text-dim)] uppercase tracking-[0.2em] mt-1">
-                                    Synaptic Bandwidth
-                                </span>
-                            </div>
-                        </div>
-                    </header>
+        <div className="relative z-20 mt-auto flex w-full flex-col items-center px-4 pb-12 pt-24">
+          <p className="mb-8 text-xs font-semibold uppercase tracking-widest text-white">
+            Trusted by creators at
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-8 opacity-60 grayscale transition-all duration-500 md:gap-16 hover:grayscale-0">
+            <span className="flex items-center gap-1 text-xl font-bold">
+              <Icon icon="simple-icons:openai" />
+              OpenAI
+            </span>
+            <span className="text-xl font-bold">Midjourney</span>
+            <span className="flex items-center gap-1 text-xl font-bold">
+              <Icon icon="simple-icons:adobe" />
+              Adobe
+            </span>
+            <span className="flex items-center gap-1 text-xl font-bold">
+              <Icon icon="simple-icons:runway" />
+              Runway
+            </span>
+            <span className="flex items-center gap-1 text-xl font-bold">
+              <Icon icon="simple-icons:canva" />
+              Canva
+            </span>
+          </div>
+        </div>
+      </header>
 
-                    <section className="grid grid-cols-1 xl:grid-cols-12 gap-8 auto-rows-auto">
-                        <div className="organic-volume xl:col-span-8 p-12 md:p-16 fluid-node flex flex-col justify-between min-h-[450px]">
-                            <div className="flex justify-between items-start mb-24">
-                                <span className="text-[var(--text-dim)] text-xs uppercase tracking-[0.3em] font-medium">
-                                    Neuro-Symbolic Load
-                                </span>
+      <section id="features" className="relative border-t border-zinc-900 bg-[#09090b] px-6 py-32">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-20 text-center">
+            <h2 className="mb-6 text-3xl font-bold md:text-5xl">Unleash your creativity</h2>
+            <p className="mx-auto max-w-2xl text-lg text-zinc-400">
+              Powerful tools designed to transform your workflow and bring your wildest concepts to life in seconds.
+            </p>
+          </div>
 
-                                <Icon
-                                    icon="solar:dollar-bold-duotone"
-                                    className="text-2xl text-[var(--electric-violet)]"
-                                />
-                            </div>
-
-                            <div>
-                                <h2 className="text-5xl tracking-tight mb-6 font-light">
-                                    Organic Mesh Routing
-                                </h2>
-
-                                <p className="text-[var(--text-dim)] max-w-lg leading-relaxed text-lg font-light">
-                                    Borders dissolved into light leaks. Volumes sculpted from
-                                    digital fluid to handle dynamic constitutional inference
-                                    loads without geometric friction.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="organic-volume xl:col-span-4 p-12 fluid-node flex flex-col justify-between">
-                            <span className="text-[var(--text-dim)] text-xs uppercase tracking-[0.3em] font-medium">
-                                Latency
-                            </span>
-
-                            <div className="mt-20">
-                                <div className="text-[5.5rem] font-light tracking-tighter neural-stat mb-2 text-[var(--amber-glow)] drop-shadow-[0_0_15px_rgba(200,150,50,0.4)]">
-                                    0.02
-                                </div>
-
-                                <div className="text-sm text-[var(--text-core)] uppercase tracking-[0.2em]">
-                                    Milliseconds
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="organic-volume xl:col-span-5 p-12 fluid-node">
-                            <div className="flex flex-col h-full justify-between">
-                                <div className="flex items-center justify-between">
-                                    <span className="text-[var(--text-dim)] text-xs uppercase tracking-[0.3em] font-medium">
-                                        Asymmetric Anchor
-                                    </span>
-
-                                    <Icon
-                                        icon="solar:atom-bold-duotone"
-                                        className="text-2xl text-[var(--amber-glow)]"
-                                    />
-                                </div>
-
-                                <div className="mt-16 w-full h-1 bg-[var(--shadow-dark)] rounded-full overflow-hidden relative">
-                                    <div className="absolute top-0 left-0 h-full w-[85%] bg-gradient-to-r from-[var(--electric-violet)] to-[var(--amber-glow)] blur-[2px]" />
-
-                                    <div className="absolute top-0 left-0 h-full w-[85%] bg-gradient-to-r from-[var(--electric-violet)] to-[var(--amber-glow)]" />
-                                </div>
-
-                                <p className="text-lg mt-8 text-[var(--text-dim)] font-light">
-                                    Fluid intelligence requires interface malleability.
-                                    Tension replaces structure.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="organic-volume xl:col-span-7 p-12 md:p-16 fluid-node flex items-center overflow-hidden group relative">
-                            <div className="absolute inset-0 bg-gradient-to-br from-transparent to-[var(--electric-violet)] opacity-0 group-hover:opacity-10 transition-opacity duration-1000 mix-blend-color-dodge" />
-
-                            <div className="relative z-10 flex items-start gap-6">
-                                <Icon
-                                    icon="solar:chat-round-bold-duotone"
-                                    className="text-5xl text-[var(--electric-violet)] shrink-0 mt-2"
-                                />
-
-                                <h3 className="text-4xl md:text-[3rem] font-light tracking-tight leading-[1.1] chromatic-aberration">
-                                    &ldquo;If a solid edge is detected, the biomorphic system has failed.&rdquo;
-                                </h3>
-
-                            </div>
-                        </div>
-                    </section>
-
-                    <footer className="mt-40 border-t border-white/10 pt-16 flex flex-col md:flex-row items-center justify-between gap-10">
-                        <div>
-                            <h4 className="text-lg tracking-tight mb-2">
-                                Anthropic Interface Systems
-                            </h4>
-
-                            <p className="text-sm text-[var(--text-dim)]">
-                                Adaptive constitutional bio-tech framework.
-                            </p>
-                        </div>
-
-                        <div className="flex items-center gap-4">
-                            <button className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:border-[var(--electric-violet)] transition-all duration-500">
-                                <Icon
-                                    icon="mdi:github"
-                                    className="text-xl"
-                                />
-                            </button>
-
-                            <button className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:border-[var(--electric-violet)] transition-all duration-500">
-                                <Icon
-                                    icon="mdi:twitter"
-                                    className="text-xl"
-                                />
-                            </button>
-
-                            <button className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:border-[var(--electric-violet)] transition-all duration-500">
-                                <Icon
-                                    icon="mdi:linkedin"
-                                    className="text-xl"
-                                />
-                            </button>
-                        </div>
-                    </footer>
-                </main>
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+            <div className="glass-card group rounded-2xl p-8 transition-colors hover:bg-zinc-900/80">
+              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-zinc-800 transition-transform group-hover:scale-110">
+                <Icon icon="lucide:zap" className="text-xl text-[#c5e197]" />
+              </div>
+              <h3 className="mb-3 text-xl font-semibold">Lightning Fast</h3>
+              <p className="leading-relaxed text-zinc-400">
+                Generate batches of high-resolution images in under 3 seconds. Our optimized architecture ensures you never lose your flow state.
+              </p>
             </div>
-        </>
-    );
+
+            <div className="glass-card group relative overflow-hidden rounded-2xl p-8 transition-colors hover:bg-zinc-900/80">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#c5e197]/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+              <div className="relative z-10 mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-zinc-800 transition-transform group-hover:scale-110">
+                <Icon icon="lucide:maximize" className="text-xl text-[#c5e197]" />
+              </div>
+              <h3 className="relative z-10 mb-3 text-xl font-semibold">Infinite Upscaling</h3>
+              <p className="relative z-10 leading-relaxed text-zinc-400">
+                Enhance details and scale your images up to 8K resolution without losing quality, perfect for print and high-end digital media.
+              </p>
+            </div>
+
+            <div className="glass-card group rounded-2xl p-8 transition-colors hover:bg-zinc-900/80">
+              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-zinc-800 transition-transform group-hover:scale-110">
+                <Icon icon="lucide:layers" className="text-xl text-[#c5e197]" />
+              </div>
+              <h3 className="mb-3 text-xl font-semibold">Style Control</h3>
+              <p className="leading-relaxed text-zinc-400">
+                Direct the exact aesthetic you need. From photorealism to specific artistic movements, maintain consistency across all your generations.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="gallery" className="border-t border-zinc-900 bg-zinc-950 px-6 py-24">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-12 flex flex-col items-end justify-between gap-6 md:flex-row md:items-end">
+            <div>
+              <h2 className="mb-4 text-3xl font-bold md:text-4xl">Made with Lumina</h2>
+              <p className="text-zinc-400">Explore what our community is creating right now.</p>
+            </div>
+            <a href="#" className="flex items-center gap-2 font-medium text-[#c5e197] transition-colors hover:text-[#d4edaa]">
+              View all creations
+              <Icon icon="lucide:arrow-right" />
+            </a>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+            <div className="group relative aspect-square overflow-hidden rounded-xl bg-zinc-900">
+              <img
+                src="https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?q=80&w=800&auto=format&fit=crop"
+                alt="Gallery image"
+                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/80 via-transparent to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <p className="text-sm font-medium">&quot;Cinematic mountain landscape...&quot;</p>
+              </div>
+            </div>
+
+            <div className="group relative aspect-square overflow-hidden rounded-xl bg-zinc-900 md:col-span-2">
+              <img
+                src="https://images.unsplash.com/photo-1678912443026-6674e2d7870d?q=80&w=1600&auto=format&fit=crop"
+                alt="Gallery image"
+                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/80 via-transparent to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <p className="text-sm font-medium">&quot;Cyberpunk city glowing at night...&quot;</p>
+              </div>
+            </div>
+
+            <div className="group relative aspect-square overflow-hidden rounded-xl bg-zinc-900">
+              <img
+                src="https://images.unsplash.com/photo-1683009427666-340595e57e43?q=80&w=800&auto=format&fit=crop"
+                alt="Gallery image"
+                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/80 via-transparent to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <p className="text-sm font-medium">&quot;Abstract fluid simulation...&quot;</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="pricing" className="border-t border-zinc-900 bg-[#09090b] px-6 py-32">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-20 text-center">
+            <h2 className="mb-6 text-3xl font-bold md:text-5xl">Simple, transparent pricing</h2>
+            <p className="mx-auto max-w-xl text-lg text-zinc-400">
+              Start creating for free, then scale up as your imagination demands.
+            </p>
+          </div>
+
+          <div className="mx-auto grid max-w-5xl grid-cols-1 gap-8 md:grid-cols-3">
+            <div className="glass-card flex flex-col rounded-2xl p-8">
+              <h3 className="mb-2 text-xl font-medium text-zinc-300">Hobby</h3>
+              <div className="mb-6 flex items-baseline gap-1">
+                <span className="text-4xl font-bold">$0</span>
+                <span className="text-zinc-500">/mo</span>
+              </div>
+              <ul className="mb-8 flex-1 space-y-4 text-zinc-400">
+                <li className="flex items-center gap-3">
+                  <Icon icon="lucide:check" className="text-[#c5e197]" />
+                  50 generations / month
+                </li>
+                <li className="flex items-center gap-3">
+                  <Icon icon="lucide:check" className="text-[#c5e197]" />
+                  Standard resolution
+                </li>
+                <li className="flex items-center gap-3">
+                  <Icon icon="lucide:check" className="text-[#c5e197]" />
+                  Community gallery access
+                </li>
+              </ul>
+              <a href="#" className="w-full rounded-xl border border-zinc-700 py-3 text-center font-medium transition-colors hover:bg-zinc-800">
+                Start Free
+              </a>
+            </div>
+
+            <div className="glass-card relative flex flex-col rounded-2xl border-[#c5e197]/30 bg-zinc-900/80 p-8 md:-translate-y-4">
+              <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#c5e197] px-3 py-1 text-xs font-bold uppercase tracking-wide text-zinc-950">
+                Most Popular
+              </div>
+              <h3 className="mb-2 text-xl font-medium text-zinc-300">Pro</h3>
+              <div className="mb-6 flex items-baseline gap-1">
+                <span className="text-4xl font-bold">$15</span>
+                <span className="text-zinc-500">/mo</span>
+              </div>
+              <ul className="mb-8 flex-1 space-y-4 text-zinc-300">
+                <li className="flex items-center gap-3">
+                  <Icon icon="lucide:check" className="text-[#c5e197]" />
+                  1000 generations / month
+                </li>
+                <li className="flex items-center gap-3">
+                  <Icon icon="lucide:check" className="text-[#c5e197]" />
+                  Up to 4K resolution
+                </li>
+                <li className="flex items-center gap-3">
+                  <Icon icon="lucide:check" className="text-[#c5e197]" />
+                  Commercial usage rights
+                </li>
+                <li className="flex items-center gap-3">
+                  <Icon icon="lucide:check" className="text-[#c5e197]" />
+                  Private mode
+                </li>
+              </ul>
+              <a href="#" className="w-full rounded-xl bg-white py-3 text-center font-medium text-black transition-colors hover:bg-zinc-200">
+                Upgrade to Pro
+              </a>
+            </div>
+
+            <div className="glass-card flex flex-col rounded-2xl p-8">
+              <h3 className="mb-2 text-xl font-medium text-zinc-300">Studio</h3>
+              <div className="mb-6 flex items-baseline gap-1">
+                <span className="text-4xl font-bold">$49</span>
+                <span className="text-zinc-500">/mo</span>
+              </div>
+              <ul className="mb-8 flex-1 space-y-4 text-zinc-400">
+                <li className="flex items-center gap-3">
+                  <Icon icon="lucide:check" className="text-[#c5e197]" />
+                  Unlimited generations
+                </li>
+                <li className="flex items-center gap-3">
+                  <Icon icon="lucide:check" className="text-[#c5e197]" />
+                  8K infinite upscaling
+                </li>
+                <li className="flex items-center gap-3">
+                  <Icon icon="lucide:check" className="text-[#c5e197]" />
+                  API access
+                </li>
+                <li className="flex items-center gap-3">
+                  <Icon icon="lucide:check" className="text-[#c5e197]" />
+                  Priority GPU queue
+                </li>
+              </ul>
+              <a href="#" className="w-full rounded-xl border border-zinc-700 py-3 text-center font-medium transition-colors hover:bg-zinc-800">
+                Contact Sales
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer className="border-t border-zinc-900 bg-[#09090b] px-6 pb-10 pt-20">
+        <div className="mx-auto mb-16 grid max-w-7xl grid-cols-2 gap-10 md:grid-cols-5">
+          <div className="col-span-2">
+            <a href="#home" className="mb-6 flex items-center gap-2">
+              <Icon icon="lucide:aperture" className="text-2xl text-white" />
+              <span className="text-lg font-semibold uppercase tracking-widest">Lumina</span>
+            </a>
+            <p className="mb-6 max-w-xs text-zinc-500">
+              Transforming the way creators work with artificial intelligence. Built for the future of digital art.
+            </p>
+            <div className="flex gap-4">
+              <a href="#" className="glass-card flex h-10 w-10 items-center justify-center rounded-full text-zinc-400 transition-all hover:border-zinc-500 hover:text-white">
+                <Icon icon="lucide:twitter" />
+              </a>
+              <a href="#" className="glass-card flex h-10 w-10 items-center justify-center rounded-full text-zinc-400 transition-all hover:border-zinc-500 hover:text-white">
+                <Icon icon="lucide:github" />
+              </a>
+              <a href="#" className="glass-card flex h-10 w-10 items-center justify-center rounded-full text-zinc-400 transition-all hover:border-zinc-500 hover:text-white">
+                <Icon icon="simple-icons:discord" />
+              </a>
+            </div>
+          </div>
+
+          <div>
+            <h4 className="mb-6 font-semibold">Product</h4>
+            <ul className="space-y-4 text-sm text-zinc-400">
+              <li><a href="#" className="transition-colors hover:text-white">Features</a></li>
+              <li><a href="#" className="transition-colors hover:text-white">Pricing</a></li>
+              <li><a href="#" className="transition-colors hover:text-white">Gallery</a></li>
+              <li><a href="#" className="transition-colors hover:text-white">API</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="mb-6 font-semibold">Resources</h4>
+            <ul className="space-y-4 text-sm text-zinc-400">
+              <li><a href="#" className="transition-colors hover:text-white">Documentation</a></li>
+              <li><a href="#" className="transition-colors hover:text-white">Blog</a></li>
+              <li><a href="#" className="transition-colors hover:text-white">Community</a></li>
+              <li><a href="#" className="transition-colors hover:text-white">Help Center</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="mb-6 font-semibold">Company</h4>
+            <ul className="space-y-4 text-sm text-zinc-400">
+              <li><a href="#" className="transition-colors hover:text-white">About</a></li>
+              <li><a href="#" className="transition-colors hover:text-white">Careers</a></li>
+              <li><a href="#" className="transition-colors hover:text-white">Privacy</a></li>
+              <li><a href="#" className="transition-colors hover:text-white">Terms</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 border-t border-zinc-900 pt-8 text-sm text-zinc-600 md:flex-row">
+          <p>&copy; 2026 Lumina Inc. All rights reserved.</p>
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-emerald-500" />
+            Systems Operational
+          </div>
+        </div>
+      </footer>
+    </main>
+  );
 }

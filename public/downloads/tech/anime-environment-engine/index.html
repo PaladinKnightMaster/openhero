@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senkei - Anime Environment Engine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            light: '#86efac',
+                            DEFAULT: '#22c55e',
+                            dark: '#16a34a',
+                        },
+                        darkbase: '#020617'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #020617;
+            color: #f8fafc;
+        }
+
+        .glass-card {
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .text-gradient {
+            position: relative;
+            display: inline-block;
+            background: linear-gradient(to right, #4ade80, #facc15);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Este pseudo-elemento genera la sombra limpia por detrás */
+        .text-gradient::after {
+            content: attr(data-text);
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: -1;
+            -webkit-text-fill-color: initial;
+            text-shadow: 0 0 15px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 0, 0, 0.7);
+        }
+
+        .hide-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scroll {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+
+<body class="antialiased selection:bg-brand selection:text-white">
+
+    <nav class="fixed top-0 w-full z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-2 group">
+                <iconify-icon icon="lucide:wind"
+                    class="text-2xl text-brand group-hover:translate-x-1 transition-transform duration-500"></iconify-icon>
+                <span class="font-semibold text-lg tracking-widest uppercase">Senkei</span>
+            </a>
+
+            <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
+                <a href="#features" class="hover:text-white flex items-center gap-1 transition-colors">Features
+                    <iconify-icon icon="lucide:chevron-down" class="text-xs opacity-70"></iconify-icon></a>
+                <a href="#worlds" class="hover:text-white transition-colors">Worlds</a>
+                <a href="#pricing" class="hover:text-white transition-colors">Pricing</a>
+                <a href="#" class="hover:text-white flex items-center gap-1 transition-colors">Engine <iconify-icon
+                        icon="lucide:chevron-down" class="text-xs opacity-70"></iconify-icon></a>
+                <a href="#" class="hover:text-white flex items-center gap-1 transition-colors">Assets <iconify-icon
+                        icon="lucide:chevron-down" class="text-xs opacity-70"></iconify-icon></a>
+            </div>
+
+            <div class="flex items-center gap-6">
+                <a href="#"
+                    class="hidden sm:block text-sm font-medium text-slate-300 hover:text-white transition-colors">Sign
+                    in</a>
+                <a href="#"
+                    class="px-5 py-2.5 rounded-full border border-white text-sm font-medium hover:bg-brand hover:border-brand hover:text-white transition-all duration-300">Start
+                    Journey</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="relative min-h-screen flex flex-col items-center justify-center pt-20 overflow-hidden ">
+
+        <video autoplay loop muted playsinline
+            class="absolute inset-0 w-full h-full object-cover z-0 [mask-image:linear-gradient(to_bottom,rgba(0,0,0,1)_60%,rgba(0,0,0,0)_100%)] [webkit-mask-image:linear-gradient(to_bottom,rgba(0,0,0,1)_60%,rgba(0,0,0,0)_100%)]">
+            <source src="./video.mp4" type="video/mp4">
+        </video>
+
+        <div class="relative z-20 flex flex-col items-center text-center px-4 max-w-4xl mx-auto mt-12">
+
+            <h1
+                class="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-6 text-white filter [filter:drop-shadow(0_0_15px_rgba(0,0,0,0.5))_drop-shadow(0_0_30px_rgba(0,0,0,0.4))]">
+                Breathe life into your <br>
+                <span class="text-gradient">worlds.</span>
+            </h1>
+            <p
+                class="text-lg md:text-xl text-white mb-10 max-w-2xl font-light leading-relaxed [text-shadow:0_0_8px_rgba(0,0,0,1),0_0_12px_rgba(0,0,0,1),0_0_24px_rgba(0,0,0,1),0_0_40px_rgba(0,0,0,0.8)]">
+                Generate breathtaking anime landscapes, dynamic weather, and majestic lighting. <br
+                    class="hidden md:block"> Build epic scenes built for true storytelling.
+            </p>
+
+            <a href="#pricing"
+                class="group relative inline-flex items-center justify-center gap-2 px-8 py-4 bg-brand text-white rounded-full font-semibold text-lg hover:bg-brand-light hover:text-slate-900 transition-all duration-300 shadow-[0_0_30px_-5px_rgba(34,197,94,0.5)]">
+                Create Your Scene
+                <iconify-icon icon="lucide:arrow-right"
+                    class="group-hover:translate-x-1 transition-transform"></iconify-icon>
+            </a>
+        </div>
+
+        <div class="relative z-20 mt-auto pb-12 pt-24 flex flex-col items-center w-full px-4">
+            <p class="text-xs font-semibold tracking-widest text-slate-300 uppercase mb-8 drop-shadow-md">Trusted by
+                visual creators at</p>
+            <div
+                class="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-70 grayscale hover:grayscale-0 transition-all duration-500 text-white">
+                <span class="text-xl font-bold flex items-center gap-2"><iconify-icon
+                        icon="simple-icons:unrealengine"></iconify-icon> Unreal Engine</span>
+                <span class="text-xl font-bold flex items-center gap-2"><iconify-icon
+                        icon="simple-icons:unity"></iconify-icon> Unity</span>
+                <span class="text-xl font-bold flex items-center gap-2"><iconify-icon
+                        icon="simple-icons:blender"></iconify-icon> Blender</span>
+                <span class="text-xl font-bold flex items-center gap-2"><iconify-icon
+                        icon="simple-icons:wacom"></iconify-icon> Wacom</span>
+                <span class="text-xl font-bold flex items-center gap-2"><iconify-icon
+                        icon="simple-icons:adobe"></iconify-icon> Adobe</span>
+            </div>
+        </div>
+    </header>
+
+    <section id="features" class="py-32 px-6 relative bg-[#020617]">
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="text-center mb-20">
+                <h2 class="text-3xl md:text-5xl font-bold mb-6">Forge your narrative</h2>
+                <p class="text-slate-400 max-w-2xl mx-auto text-lg">Powerful rendering tools designed to match the
+                    emotional weight of your characters and the epic scale of their journeys.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="glass-card p-8 rounded-2xl hover:bg-slate-800/80 transition-colors group">
+                    <div
+                        class="h-12 w-12 rounded-full bg-slate-800 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-brand/20">
+                        <iconify-icon icon="lucide:cloud-sun" class="text-brand text-xl"></iconify-icon>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-white">Cinematic Atmosphere</h3>
+                    <p class="text-slate-400 leading-relaxed">Simulate volumetric lighting, god rays, and atmospheric
+                        scattering to give your landscapes that authentic, studio-quality warmth.</p>
+                </div>
+
+                <div
+                    class="glass-card p-8 rounded-2xl hover:bg-slate-800/80 transition-colors group relative overflow-hidden">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-br from-brand/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                    </div>
+                    <div
+                        class="h-12 w-12 rounded-full bg-slate-800 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform relative z-10 shadow-lg shadow-yellow-400/20">
+                        <iconify-icon icon="lucide:wind" class="text-yellow-400 text-xl"></iconify-icon>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 relative z-10 text-white">Dynamic Physics</h3>
+                    <p class="text-slate-400 leading-relaxed relative z-10">Control the flow of the wind, falling
+                        leaves, rushing water, and floating embers with intuitive particle system generators.</p>
+                </div>
+
+                <div class="glass-card p-8 rounded-2xl hover:bg-slate-800/80 transition-colors group">
+                    <div
+                        class="h-12 w-12 rounded-full bg-slate-800 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-brand/20">
+                        <iconify-icon icon="lucide:mountain-snow" class="text-brand text-xl"></iconify-icon>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-white">Epic Scale Generation</h3>
+                    <p class="text-slate-400 leading-relaxed">Instantly populate endless mountain ranges, dense bamboo
+                        forests, and tranquil hidden lakes using advanced procedural generation.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute top-1/2 left-0 w-96 h-96 bg-brand/10 rounded-full blur-[120px] -z-0 pointer-events-none">
+        </div>
+        <div
+            class="absolute bottom-0 right-0 w-96 h-96 bg-yellow-400/5 rounded-full blur-[100px] -z-0 pointer-events-none">
+        </div>
+    </section>
+
+    <section id="worlds" class="py-24 px-6 bg-slate-900 border-t border-slate-800 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">Discovered Worlds</h2>
+                    <p class="text-slate-400">Explore breathtaking realms forged by our community.</p>
+                </div>
+                <a href="#"
+                    class="text-brand hover:text-brand-light font-medium flex items-center gap-2 transition-colors">
+                    View all landscapes <iconify-icon icon="lucide:arrow-right"></iconify-icon>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="group relative aspect-square rounded-xl overflow-hidden bg-slate-800">
+                    <img src="https://images.unsplash.com/photo-1542224566-6e85f2e6772f?q=80&w=800&auto=format&fit=crop"
+                        alt="Mountain Landscape"
+                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-90 group-hover:opacity-100 mix-blend-luminosity group-hover:mix-blend-normal">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5">
+                        <p class="text-sm font-medium text-white">"Hidden Valley Shrine..."</p>
+                    </div>
+                </div>
+                <div class="group relative aspect-square rounded-xl overflow-hidden bg-slate-800 md:col-span-2">
+                    <img src="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?q=80&w=1600&auto=format&fit=crop"
+                        alt="Lush Forest"
+                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                        <p class="text-lg font-bold text-white mb-1">Morning Dew</p>
+                        <p class="text-sm font-medium text-slate-300">"Sunlight piercing through a dense ancient
+                            forest..."</p>
+                    </div>
+                </div>
+                <div class="group relative aspect-square rounded-xl overflow-hidden bg-slate-800">
+                    <img src="https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?q=80&w=800&auto=format&fit=crop"
+                        alt="Water Landscape"
+                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-90 group-hover:opacity-100 mix-blend-luminosity group-hover:mix-blend-normal">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5">
+                        <p class="text-sm font-medium text-white">"Tranquil Lake at dusk..."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing" class="py-32 px-6 border-t border-slate-800 bg-[#020617] relative">
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="text-center mb-20">
+                <h2 class="text-3xl md:text-5xl font-bold mb-6">Equip your arsenal</h2>
+                <p class="text-slate-400 max-w-xl mx-auto text-lg">Begin your journey for free, and unlock legendary
+                    powers as your story grows.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <div class="glass-card p-8 rounded-2xl flex flex-col border-slate-800">
+                    <h3 class="text-xl font-medium text-slate-300 mb-2">Wanderer</h3>
+                    <div class="flex items-baseline gap-1 mb-6">
+                        <span class="text-4xl font-bold text-white">$0</span>
+                        <span class="text-slate-500">/mo</span>
+                    </div>
+                    <ul class="space-y-4 mb-8 flex-1 text-slate-400">
+                        <li class="flex items-center gap-3"><iconify-icon icon="lucide:check"
+                                class="text-brand"></iconify-icon> 50 generations / month</li>
+                        <li class="flex items-center gap-3"><iconify-icon icon="lucide:check"
+                                class="text-brand"></iconify-icon> Standard 1080p resolution</li>
+                        <li class="flex items-center gap-3"><iconify-icon icon="lucide:check"
+                                class="text-brand"></iconify-icon> Access to public biomes</li>
+                    </ul>
+                    <a href="#"
+                        class="w-full py-3 rounded-xl border border-slate-700 font-medium text-center hover:bg-slate-800 transition-colors text-white">Start
+                        Free</a>
+                </div>
+
+                <div
+                    class="glass-card p-8 rounded-2xl flex flex-col relative border-brand/50 bg-slate-900 shadow-[0_0_40px_-10px_rgba(34,197,94,0.15)] transform md:-translate-y-4">
+                    <div
+                        class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-brand text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wide shadow-lg">
+                        Most Popular</div>
+                    <h3 class="text-xl font-medium text-brand-light mb-2">Adventurer</h3>
+                    <div class="flex items-baseline gap-1 mb-6">
+                        <span class="text-4xl font-bold text-white">$19</span>
+                        <span class="text-slate-500">/mo</span>
+                    </div>
+                    <ul class="space-y-4 mb-8 flex-1 text-slate-200">
+                        <li class="flex items-center gap-3"><iconify-icon icon="lucide:check"
+                                class="text-brand"></iconify-icon> 1000 generations / month</li>
+                        <li class="flex items-center gap-3"><iconify-icon icon="lucide:check"
+                                class="text-brand"></iconify-icon> 4K Cinematic upscaling</li>
+                        <li class="flex items-center gap-3"><iconify-icon icon="lucide:check"
+                                class="text-brand"></iconify-icon> Commercial rights included</li>
+                        <li class="flex items-center gap-3"><iconify-icon icon="lucide:check"
+                                class="text-brand"></iconify-icon> Custom particle physics</li>
+                    </ul>
+                    <a href="#"
+                        class="w-full py-3 rounded-xl bg-brand text-white font-semibold text-center hover:bg-brand-light hover:text-slate-900 transition-all shadow-lg shadow-brand/20">Become
+                        an Adventurer</a>
+                </div>
+
+                <div class="glass-card p-8 rounded-2xl flex flex-col border-slate-800">
+                    <h3 class="text-xl font-medium text-slate-300 mb-2">Legend</h3>
+                    <div class="flex items-baseline gap-1 mb-6">
+                        <span class="text-4xl font-bold text-white">$65</span>
+                        <span class="text-slate-500">/mo</span>
+                    </div>
+                    <ul class="space-y-4 mb-8 flex-1 text-slate-400">
+                        <li class="flex items-center gap-3"><iconify-icon icon="lucide:check"
+                                class="text-brand"></iconify-icon> Unlimited generation</li>
+                        <li class="flex items-center gap-3"><iconify-icon icon="lucide:check"
+                                class="text-brand"></iconify-icon> 8K Export & Raw passes</li>
+                        <li class="flex items-center gap-3"><iconify-icon icon="lucide:check"
+                                class="text-brand"></iconify-icon> Unreal Engine API Plugin</li>
+                        <li class="flex items-center gap-3"><iconify-icon icon="lucide:check"
+                                class="text-brand"></iconify-icon> Priority GPU access</li>
+                    </ul>
+                    <a href="#"
+                        class="w-full py-3 rounded-xl border border-slate-700 font-medium text-center hover:bg-slate-800 transition-colors text-white">Contact
+                        Guild</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="border-t border-slate-800 bg-[#020617] pt-20 pb-10 px-6">
+        <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-10 mb-16">
+            <div class="col-span-2">
+                <a href="#" class="flex items-center gap-2 mb-6">
+                    <iconify-icon icon="lucide:wind" class="text-2xl text-brand"></iconify-icon>
+                    <span class="font-semibold text-lg tracking-widest uppercase text-white">Senkei</span>
+                </a>
+                <p class="text-slate-400 max-w-xs mb-6">Crafting the next generation of visual storytelling tools.
+                    Immerse your audience in worlds they will never want to leave.</p>
+                <div class="flex gap-4">
+                    <a href="#"
+                        class="w-10 h-10 rounded-full glass-card flex items-center justify-center text-slate-400 hover:text-brand hover:border-brand transition-all"><iconify-icon
+                            icon="lucide:twitter"></iconify-icon></a>
+                    <a href="#"
+                        class="w-10 h-10 rounded-full glass-card flex items-center justify-center text-slate-400 hover:text-brand hover:border-brand transition-all"><iconify-icon
+                            icon="lucide:github"></iconify-icon></a>
+                    <a href="#"
+                        class="w-10 h-10 rounded-full glass-card flex items-center justify-center text-slate-400 hover:text-brand hover:border-brand transition-all"><iconify-icon
+                            icon="simple-icons:discord"></iconify-icon></a>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="font-semibold mb-6 text-white">Platform</h4>
+                <ul class="space-y-4 text-slate-400 text-sm">
+                    <li><a href="#" class="hover:text-brand transition-colors">Features</a></li>
+                    <li><a href="#" class="hover:text-brand transition-colors">Pricing</a></li>
+                    <li><a href="#" class="hover:text-brand transition-colors">Showcase</a></li>
+                    <li><a href="#" class="hover:text-brand transition-colors">API Access</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-semibold mb-6 text-white">Resources</h4>
+                <ul class="space-y-4 text-slate-400 text-sm">
+                    <li><a href="#" class="hover:text-brand transition-colors">Documentation</a></li>
+                    <li><a href="#" class="hover:text-brand transition-colors">Tutorials</a></li>
+                    <li><a href="#" class="hover:text-brand transition-colors">Community Forum</a></li>
+                    <li><a href="#" class="hover:text-brand transition-colors">Support Grimoire</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-semibold mb-6 text-white">Guild</h4>
+                <ul class="space-y-4 text-slate-400 text-sm">
+                    <li><a href="#" class="hover:text-brand transition-colors">About Us</a></li>
+                    <li><a href="#" class="hover:text-brand transition-colors">Careers</a></li>
+                    <li><a href="#" class="hover:text-brand transition-colors">Privacy Policy</a></li>
+                    <li><a href="#" class="hover:text-brand transition-colors">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div
+            class="max-w-7xl mx-auto pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-500">
+            <p>&copy; 2026 Senkei Engine. All rights reserved.</p>
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
+                Servers Stable
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('py-0');
+                nav.style.background = 'rgba(2, 6, 23, 0.8)';
+            } else {
+                nav.classList.remove('py-0');
+                nav.style.background = 'rgba(2, 6, 23, 0.4)';
+            }
+        });
+    </script>
+</body>
+
+</html>

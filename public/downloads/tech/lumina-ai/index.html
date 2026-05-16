@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumina - AI Image Generation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            light: '#d4edaa',
+                            DEFAULT: '#c5e197',
+                            dark: '#b0cc80',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #09090b;
+            color: #fafafa;
+        }
+        .glass-nav {
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .glass-card {
+            background: rgba(24, 24, 27, 0.5);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .text-gradient {
+            background: linear-gradient(to right, #e2e8f0, #c5e197);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hide-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scroll {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-brand selection:text-black">
+
+    <nav class="fixed top-0 w-full z-50 glass-nav transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-2 group">
+                <iconify-icon icon="lucide:aperture" class="text-2xl text-white group-hover:rotate-90 transition-transform duration-500"></iconify-icon>
+                <span class="font-semibold text-lg tracking-widest uppercase">Lumina</span>
+            </a>
+
+            <div class="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-300">
+                <a href="#features" class="hover:text-white flex items-center gap-1 transition-colors">Features <iconify-icon icon="lucide:chevron-down" class="text-xs opacity-70"></iconify-icon></a>
+                <a href="#gallery" class="hover:text-white transition-colors">Gallery</a>
+                <a href="#pricing" class="hover:text-white transition-colors">Pricing</a>
+                <a href="#" class="hover:text-white flex items-center gap-1 transition-colors">API <iconify-icon icon="lucide:chevron-down" class="text-xs opacity-70"></iconify-icon></a>
+                <a href="#" class="hover:text-white flex items-center gap-1 transition-colors">Resources <iconify-icon icon="lucide:chevron-down" class="text-xs opacity-70"></iconify-icon></a>
+            </div>
+
+            <div class="flex items-center gap-6">
+                <a href="#" class="hidden sm:block text-sm font-medium text-zinc-300 hover:text-white transition-colors">Sign in</a>
+                <a href="#" class="px-5 py-2.5 rounded-full border border-zinc-700 text-sm font-medium hover:bg-white hover:text-black transition-all duration-300">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="relative min-h-screen flex flex-col items-center justify-center pt-20 overflow-hidden">
+        
+        <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0">
+            <source src="./video.mp4" type="video/mp4">
+        </video>
+        
+        <div class="absolute inset-0 bg-gradient-to-b from-black/5 via-black/10 to-[#09090b97] z-10"></div>
+
+        <div class="relative z-20 flex flex-col items-center text-center px-4 max-w-4xl mx-auto mt-12">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-zinc-700/50 bg-black/30 backdrop-blur-md mb-8">
+                <iconify-icon icon="lucide:sparkles" class="text-xs text-brand"></iconify-icon>
+                <span class="text-xs font-medium tracking-wide text-zinc-300 uppercase">AI Image Generation</span>
+            </div>
+
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-6">
+                Ideas become <span class="text-gradient">images.</span>
+            </h1>
+
+            <p class="text-lg md:text-xl text-white mb-10 max-w-2xl font-light leading-relaxed">
+                Generate stunning, high-resolution images from text. <br class="hidden md:block"> Fast, intuitive, and built for creators.
+            </p>
+
+            <a href="#pricing" class="group relative inline-flex items-center justify-center gap-2 px-8 py-4 bg-brand text-zinc-950 rounded-full font-medium text-lg hover:bg-brand-light transition-colors duration-300">
+                Start Creating
+                <iconify-icon icon="lucide:arrow-right" class="group-hover:translate-x-1 transition-transform"></iconify-icon>
+            </a>
+        </div>
+
+        <div class="relative z-20 mt-auto pb-12 pt-24 flex flex-col items-center w-full px-4">
+            <p class="text-xs font-semibold tracking-widest text-white uppercase mb-8">Trusted by creators at</p>
+            <div class="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
+                <span class="text-xl font-bold flex items-center gap-1"><iconify-icon icon="simple-icons:openai"></iconify-icon> OpenAI</span>
+                <span class="text-xl font-bold">Midjourney</span>
+                <span class="text-xl font-bold flex items-center gap-1"><iconify-icon icon="simple-icons:adobe"></iconify-icon> Adobe</span>
+                <span class="text-xl font-bold flex items-center gap-1"><iconify-icon icon="simple-icons:runway"></iconify-icon> Runway</span>
+                <span class="text-xl font-bold flex items-center gap-1"><iconify-icon icon="simple-icons:canva"></iconify-icon> Canva</span>
+            </div>
+        </div>
+    </header>
+
+    <section id="features" class="py-32 px-6 relative border-t border-zinc-900 bg-[#09090b]">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-20">
+                <h2 class="text-3xl md:text-5xl font-bold mb-6">Unleash your creativity</h2>
+                <p class="text-zinc-400 max-w-2xl mx-auto text-lg">Powerful tools designed to transform your workflow and bring your wildest concepts to life in seconds.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="glass-card p-8 rounded-2xl hover:bg-zinc-900/80 transition-colors group">
+                    <div class="h-12 w-12 rounded-full bg-zinc-800 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <iconify-icon icon="lucide:zap" class="text-brand text-xl"></iconify-icon>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Lightning Fast</h3>
+                    <p class="text-zinc-400 leading-relaxed">Generate batches of high-resolution images in under 3 seconds. Our optimized architecture ensures you never lose your flow state.</p>
+                </div>
+
+                <div class="glass-card p-8 rounded-2xl hover:bg-zinc-900/80 transition-colors group relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-brand/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="h-12 w-12 rounded-full bg-zinc-800 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform relative z-10">
+                        <iconify-icon icon="lucide:maximize" class="text-brand text-xl"></iconify-icon>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 relative z-10">Infinite Upscaling</h3>
+                    <p class="text-zinc-400 leading-relaxed relative z-10">Enhance details and scale your images up to 8K resolution without losing quality, perfect for print and high-end digital media.</p>
+                </div>
+
+                <div class="glass-card p-8 rounded-2xl hover:bg-zinc-900/80 transition-colors group">
+                    <div class="h-12 w-12 rounded-full bg-zinc-800 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <iconify-icon icon="lucide:layers" class="text-brand text-xl"></iconify-icon>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Style Control</h3>
+                    <p class="text-zinc-400 leading-relaxed">Direct the exact aesthetic you need. From photorealism to specific artistic movements, maintain consistency across all your generations.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="gallery" class="py-24 px-6 bg-zinc-950 border-t border-zinc-900">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">Made with Lumina</h2>
+                    <p class="text-zinc-400">Explore what our community is creating right now.</p>
+                </div>
+                <a href="#" class="text-brand hover:text-brand-light font-medium flex items-center gap-2">
+                    View all creations <iconify-icon icon="lucide:arrow-right"></iconify-icon>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="group relative aspect-square rounded-xl overflow-hidden bg-zinc-900">
+                    <img src="https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?q=80&w=800&auto=format&fit=crop" alt="Gallery image" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+                        <p class="text-sm font-medium">"Cinematic mountain landscape..."</p>
+                    </div>
+                </div>
+                <div class="group relative aspect-square rounded-xl overflow-hidden bg-zinc-900 md:col-span-2">
+                    <img src="https://images.unsplash.com/photo-1678912443026-6674e2d7870d?q=80&w=1600&auto=format&fit=crop" alt="Gallery image" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+                        <p class="text-sm font-medium">"Cyberpunk city glowing at night..."</p>
+                    </div>
+                </div>
+                <div class="group relative aspect-square rounded-xl overflow-hidden bg-zinc-900">
+                    <img src="https://images.unsplash.com/photo-1683009427666-340595e57e43?q=80&w=800&auto=format&fit=crop" alt="Gallery image" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
+                        <p class="text-sm font-medium">"Abstract fluid simulation..."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing" class="py-32 px-6 border-t border-zinc-900 bg-[#09090b]">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-20">
+                <h2 class="text-3xl md:text-5xl font-bold mb-6">Simple, transparent pricing</h2>
+                <p class="text-zinc-400 max-w-xl mx-auto text-lg">Start creating for free, then scale up as your imagination demands.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <div class="glass-card p-8 rounded-2xl flex flex-col">
+                    <h3 class="text-xl font-medium text-zinc-300 mb-2">Hobby</h3>
+                    <div class="flex items-baseline gap-1 mb-6">
+                        <span class="text-4xl font-bold">$0</span>
+                        <span class="text-zinc-500">/mo</span>
+                    </div>
+                    <ul class="space-y-4 mb-8 flex-1 text-zinc-400">
+                        <li class="flex items-center gap-3"><iconify-icon icon="lucide:check" class="text-brand"></iconify-icon> 50 generations / month</li>
+                        <li class="flex items-center gap-3"><iconify-icon icon="lucide:check" class="text-brand"></iconify-icon> Standard resolution</li>
+                        <li class="flex items-center gap-3"><iconify-icon icon="lucide:check" class="text-brand"></iconify-icon> Community gallery access</li>
+                    </ul>
+                    <a href="#" class="w-full py-3 rounded-xl border border-zinc-700 font-medium text-center hover:bg-zinc-800 transition-colors">Start Free</a>
+                </div>
+
+                <div class="glass-card p-8 rounded-2xl flex flex-col relative border-brand/30 bg-zinc-900/80">
+                    <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-brand text-zinc-950 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">Most Popular</div>
+                    <h3 class="text-xl font-medium text-zinc-300 mb-2">Pro</h3>
+                    <div class="flex items-baseline gap-1 mb-6">
+                        <span class="text-4xl font-bold">$15</span>
+                        <span class="text-zinc-500">/mo</span>
+                    </div>
+                    <ul class="space-y-4 mb-8 flex-1 text-zinc-300">
+                        <li class="flex items-center gap-3"><iconify-icon icon="lucide:check" class="text-brand"></iconify-icon> 1000 generations / month</li>
+                        <li class="flex items-center gap-3"><iconify-icon icon="lucide:check" class="text-brand"></iconify-icon> Up to 4K resolution</li>
+                        <li class="flex items-center gap-3"><iconify-icon icon="lucide:check" class="text-brand"></iconify-icon> Commercial usage rights</li>
+                        <li class="flex items-center gap-3"><iconify-icon icon="lucide:check" class="text-brand"></iconify-icon> Private mode</li>
+                    </ul>
+                    <a href="#" class="w-full py-3 rounded-xl bg-white text-black font-medium text-center hover:bg-zinc-200 transition-colors">Upgrade to Pro</a>
+                </div>
+
+                <div class="glass-card p-8 rounded-2xl flex flex-col">
+                    <h3 class="text-xl font-medium text-zinc-300 mb-2">Studio</h3>
+                    <div class="flex items-baseline gap-1 mb-6">
+                        <span class="text-4xl font-bold">$49</span>
+                        <span class="text-zinc-500">/mo</span>
+                    </div>
+                    <ul class="space-y-4 mb-8 flex-1 text-zinc-400">
+                        <li class="flex items-center gap-3"><iconify-icon icon="lucide:check" class="text-brand"></iconify-icon> Unlimited generations</li>
+                        <li class="flex items-center gap-3"><iconify-icon icon="lucide:check" class="text-brand"></iconify-icon> 8K infinite upscaling</li>
+                        <li class="flex items-center gap-3"><iconify-icon icon="lucide:check" class="text-brand"></iconify-icon> API access</li>
+                        <li class="flex items-center gap-3"><iconify-icon icon="lucide:check" class="text-brand"></iconify-icon> Priority GPU queue</li>
+                    </ul>
+                    <a href="#" class="w-full py-3 rounded-xl border border-zinc-700 font-medium text-center hover:bg-zinc-800 transition-colors">Contact Sales</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="border-t border-zinc-900 bg-[#09090b] pt-20 pb-10 px-6">
+        <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-10 mb-16">
+            <div class="col-span-2">
+                <a href="#" class="flex items-center gap-2 mb-6">
+                    <iconify-icon icon="lucide:aperture" class="text-2xl text-white"></iconify-icon>
+                    <span class="font-semibold text-lg tracking-widest uppercase">Lumina</span>
+                </a>
+                <p class="text-zinc-500 max-w-xs mb-6">Transforming the way creators work with artificial intelligence. Built for the future of digital art.</p>
+                <div class="flex gap-4">
+                    <a href="#" class="w-10 h-10 rounded-full glass-card flex items-center justify-center text-zinc-400 hover:text-white hover:border-zinc-500 transition-all"><iconify-icon icon="lucide:twitter"></iconify-icon></a>
+                    <a href="#" class="w-10 h-10 rounded-full glass-card flex items-center justify-center text-zinc-400 hover:text-white hover:border-zinc-500 transition-all"><iconify-icon icon="lucide:github"></iconify-icon></a>
+                    <a href="#" class="w-10 h-10 rounded-full glass-card flex items-center justify-center text-zinc-400 hover:text-white hover:border-zinc-500 transition-all"><iconify-icon icon="simple-icons:discord"></iconify-icon></a>
+                </div>
+            </div>
+            
+            <div>
+                <h4 class="font-semibold mb-6">Product</h4>
+                <ul class="space-y-4 text-zinc-400 text-sm">
+                    <li><a href="#" class="hover:text-white transition-colors">Features</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Pricing</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Gallery</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">API</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h4 class="font-semibold mb-6">Resources</h4>
+                <ul class="space-y-4 text-zinc-400 text-sm">
+                    <li><a href="#" class="hover:text-white transition-colors">Documentation</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Blog</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Community</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Help Center</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h4 class="font-semibold mb-6">Company</h4>
+                <ul class="space-y-4 text-zinc-400 text-sm">
+                    <li><a href="#" class="hover:text-white transition-colors">About</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Careers</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Privacy</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Terms</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="max-w-7xl mx-auto pt-8 border-t border-zinc-900 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-zinc-600">
+            <p>&copy; 2026 Lumina Inc. All rights reserved.</p>
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                Systems Operational
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('py-0');
+            } else {
+                nav.classList.remove('py-0');
+            }
+        });
+    </script>
+</body>
+</html>

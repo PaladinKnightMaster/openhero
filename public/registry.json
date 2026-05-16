@@ -52,6 +52,8 @@
     { "slug": "new-era-of-spatial-computing",                "category": "tech", "dependencies": ["@iconify/react"] },
     { "slug": "reactive-forest-intelligence",                "category": "tech", "dependencies": [] },
     { "slug": "red-planet-architecture",                     "category": "tech", "dependencies": ["@iconify/react"] },
-    { "slug": "swiss-luxury-watches-and-chronographs",       "category": "tech", "dependencies": ["@iconify/react"] }
+    { "slug": "swiss-luxury-watches-and-chronographs",       "category": "tech", "dependencies": ["@iconify/react"] },
+    { "slug": "anime-environment-engine",                     "category": "tech", "dependencies": ["@iconify/react"] },
+    { "slug": "lumina-ai",                                    "category": "tech", "dependencies": ["@iconify/react"] }
   ]
 }
