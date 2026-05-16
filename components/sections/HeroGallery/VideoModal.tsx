@@ -332,7 +332,7 @@ export function VideoModal({ video, onClose }: VideoModalProps) {
 
             <div className="mt-4 flex flex-wrap gap-2">
               <a
-                href={`/downloads/${video.category}/${video.slug}/video.mp4`}
+                href={`https://raw.githubusercontent.com/CristianOlivera1/openhero/main/public/videos/${video.category}/${video.slug}.mp4`}
                 download="video.mp4"
                 className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white transition-colors hover:bg-white/10"
               >

@@ -8,15 +8,18 @@ import { slugToName } from "@/lib/utils";
 type Format = "nextjs" | "html";
 
 const FORMAT_CONFIG: Record<Format, { filename: string; staticFile: string }> = {
-  nextjs: { filename: "page.tsx",   staticFile: "page.tsx"   },
-  html:   { filename: "index.html", staticFile: "index.html" },
+  nextjs: { filename: "page.tsx", staticFile: "page.tsx" },
+  html: { filename: "index.html", staticFile: "index.html" },
 };
+
+const GITHUB_RAW =
+  "https://raw.githubusercontent.com/CristianOlivera1/openhero/main";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const category = searchParams.get("category") ?? "";
-  const slug     = searchParams.get("slug") ?? "";
-  const format   = (searchParams.get("format") ?? "nextjs") as Format;
+  const slug = searchParams.get("slug") ?? "";
+  const format = (searchParams.get("format") ?? "nextjs") as Format;
 
   if (!category || !slug || !FORMAT_CONFIG[format]) {
     return NextResponse.json({ error: "Invalid parameters" }, { status: 400 });
@@ -27,16 +30,12 @@ export async function GET(request: NextRequest) {
 
   const downloadsDir = path.join(process.cwd(), "public", "downloads", category, slug);
   const staticFilePath = path.join(downloadsDir, staticFile);
-  const downloadVideoPath = path.join(downloadsDir, "video.mp4");
-  
-  const previewVideoPath = path.join(process.cwd(), "public", "videos", category, `${slug}.mp4`);
-  const videoSrc = fs.existsSync(previewVideoPath) ? `/videos/${category}/${slug}.mp4` : "";
 
   let code: string;
   if (fs.existsSync(staticFilePath)) {
     code = fs.readFileSync(staticFilePath, "utf-8");
   } else {
-    const opts = { name, slug, videoSrc, category };
+    const opts = { name, slug, videoSrc: "", category };
     code = format === "html" ? getHtmlCode(opts) : getNextjsCode(opts);
   }
 
@@ -44,12 +43,16 @@ export async function GET(request: NextRequest) {
   const folder = zip.folder(`${slug}-${format}`) as JSZip;
   folder.file(filename, code);
 
-  const videoToInclude = fs.existsSync(downloadVideoPath) ? downloadVideoPath : 
-                         fs.existsSync(previewVideoPath) ? previewVideoPath : null;
+  const githubVideoUrl = `${GITHUB_RAW}/public/videos/${category}/${slug}.mp4`;
+  let videoArrayBuffer: ArrayBuffer | null = null;
+  try {
+    const videoRes = await fetch(githubVideoUrl);
+    if (videoRes.ok) videoArrayBuffer = await videoRes.arrayBuffer();
+  } catch {
+  }
 
-  if (videoToInclude) {
-    const videoBuffer = fs.readFileSync(videoToInclude);
-    folder.file("video.mp4", videoBuffer);
+  if (videoArrayBuffer) {
+    folder.file("video.mp4", new Uint8Array(videoArrayBuffer));
   } else {
     folder.file(
       "README.txt",
@@ -57,8 +60,11 @@ export async function GET(request: NextRequest) {
         `Hero: ${name}`,
         `Category: ${category}`,
         ``,
+        `Video source (GitHub raw CDN):`,
+        `  ${githubVideoUrl}`,
+        ``,
         `To use:`,
-        `  1. Obtain a video file (e.g., from a stock site)`,
+        `  1. Download the video from the URL above (or provide your own).`,
         `  2. Rename it to: video.mp4`,
         `  3. Place it in the same folder as ${filename}`,
         `  4. The code already references "./video.mp4" (relative path).`,
