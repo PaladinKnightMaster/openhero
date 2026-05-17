@@ -67,10 +67,10 @@ function CodeBlock({ code, lang }: { code: string; lang: Language }) {
 function DownloadZipButton({ video, format }: { video: HeroVideo; format: string }) {
   const handleDownload = () => {
     const url = `/api/download?category=${encodeURIComponent(video.category)}&slug=${encodeURIComponent(video.slug)}&format=${encodeURIComponent(format)}`;
-    
+
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", `${video.slug}.zip`); 
+    link.setAttribute("download", `${video.slug}.zip`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -234,6 +234,28 @@ export function VideoModal({ video, onClose }: VideoModalProps) {
   const [codes, setCodes] = useState<Record<Framework, string>>({ nextjs: "", html: "" });
   const [loading, setLoading] = useState(true);
 
+  async function getVideoDownloadUrl(video: HeroVideo): Promise<void> {
+    try {
+      const videoUrl = `https://videos.openhero.art/downloads/${video.category}/${video.slug}/video.mp4`;
+
+      const response = await fetch(videoUrl);
+      const blob = await response.blob();
+
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "video.mp4");
+      document.body.appendChild(link);
+
+      link.click();
+
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error en la descarga directa:", error);
+    }
+  }
+
   useEffect(() => {
     let isMounted = true;
     const fetchCodes = async () => {
@@ -330,14 +352,14 @@ export function VideoModal({ video, onClose }: VideoModalProps) {
             </div>
 
             <div className="mt-4 flex flex-wrap gap-2">
-              <a
-                href={`https://videos.openhero.art/downloads/${video.category}/${video.slug}/video.mp4`}
-                download="video.mp4"
+              <button
+                onClick={() => getVideoDownloadUrl(video)}
                 className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white transition-colors hover:bg-white/10"
               >
                 <Icon icon="solar:download-minimalistic-linear" width="12" />
                 Download Video
-              </a>
+              </button>
+
               <DownloadZipButton video={video} format={activeFramework} />
               <a
                 href={`/preview/${video.category}/${video.slug}`}
