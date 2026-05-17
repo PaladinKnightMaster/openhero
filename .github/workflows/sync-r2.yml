@@ -1,0 +1,50 @@
+name: Sync videos to Cloudflare R2
+
+on:
+  push:
+    branches: [main, dev]
+    paths:
+      - "public/videos/**"
+      - "public/downloads/**/*.mp4"
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Sync gallery videos (public/videos → r2://videos/)
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+        run: |
+          aws s3 sync public/videos/ s3://openhero-assets/videos/ \
+            --endpoint-url "$R2_ENDPOINT" \
+            --size-only \
+            --cache-control "public, max-age=31536000, immutable" \
+            --content-type "video/mp4" \
+            --no-progress
+
+      - name: Sync download videos (public/downloads/**/video.mp4 → r2://downloads/)
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+        run: |
+          # find every video.mp4 nested under public/downloads and upload it
+          # preserving the category/slug directory structure.
+          find public/downloads -name "video.mp4" | while IFS= read -r file; do
+            # file  = public/downloads/category/slug/video.mp4
+            # key   =          downloads/category/slug/video.mp4
+            key="${file#public/}"
+            aws s3 cp "$file" "s3://openhero-assets/$key" \
+              --endpoint-url "$R2_ENDPOINT" \
+              --content-type "video/mp4" \
+              --cache-control "public, max-age=31536000, immutable" \
+              --no-progress
+          done

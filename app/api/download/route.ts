@@ -12,8 +12,7 @@ const FORMAT_CONFIG: Record<Format, { filename: string; staticFile: string }> = 
   html: { filename: "index.html", staticFile: "index.html" },
 };
 
-const GITHUB_RAW =
-  "https://raw.githubusercontent.com/CristianOlivera1/openhero/main";
+const R2_BASE = "https://videos.openhero.art";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -43,10 +42,10 @@ export async function GET(request: NextRequest) {
   const folder = zip.folder(`${slug}-${format}`) as JSZip;
   folder.file(filename, code);
 
-  const githubVideoUrl = `${GITHUB_RAW}/public/videos/${category}/${slug}.mp4`;
+  const r2VideoUrl = `${R2_BASE}/videos/${category}/${slug}.mp4`;
   let videoArrayBuffer: ArrayBuffer | null = null;
   try {
-    const videoRes = await fetch(githubVideoUrl);
+    const videoRes = await fetch(r2VideoUrl);
     if (videoRes.ok) videoArrayBuffer = await videoRes.arrayBuffer();
   } catch {
   }
@@ -60,8 +59,8 @@ export async function GET(request: NextRequest) {
         `Hero: ${name}`,
         `Category: ${category}`,
         ``,
-        `Video source (GitHub raw CDN):`,
-        `  ${githubVideoUrl}`,
+        `Video source (Cloudflare R2):`,
+        `  ${r2VideoUrl}`,
         ``,
         `To use:`,
         `  1. Download the video from the URL above (or provide your own).`,
