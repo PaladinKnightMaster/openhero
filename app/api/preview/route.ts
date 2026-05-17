@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 
-const GITHUB_RAW =
-  "https://raw.githubusercontent.com/CristianOlivera1/openhero/main";
+const R2_BASE = "https://videos.openhero.art";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -27,14 +26,16 @@ export async function GET(request: NextRequest) {
     return new NextResponse("Not found", { status: 404 });
   }
 
-  const githubVideoUrl = `${GITHUB_RAW}/public/downloads/${category}/${slug}/video.mp4`;
+  // Downloads-folder videos live at downloads/{category}/{slug}/video.mp4 in R2.
+  const r2VideoUrl = `${R2_BASE}/downloads/${category}/${slug}/video.mp4`;
 
   let html = fs.readFileSync(htmlPath, "utf-8");
 
+  // Replace every variant of the local video src with the R2 URL.
   html = html
-    .replace(/src=["']\.\/video\.mp4["']/gi, `src="${githubVideoUrl}"`)
-    .replace(/src=["']\/video\.mp4["']/gi, `src="${githubVideoUrl}"`)
-    .replace(/src=["']\/downloads\/[^"']+["']/gi, `src="${githubVideoUrl}"`);
+    .replace(/src=["']\.\/video\.mp4["']/gi, `src="${r2VideoUrl}"`)
+    .replace(/src=["']\/video\.mp4["']/gi, `src="${r2VideoUrl}"`)
+    .replace(/src=["']\/downloads\/[^"']+["']/gi, `src="${r2VideoUrl}"`);
 
   return new NextResponse(html, {
     headers: {
@@ -43,3 +44,4 @@ export async function GET(request: NextRequest) {
     },
   });
 }
+

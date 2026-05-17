@@ -14,8 +14,7 @@ export interface VideoCatalog {
   categories: string[];
 }
 
-const GITHUB_RAW =
-  "https://raw.githubusercontent.com/CristianOlivera1/openhero/main";
+const R2_BASE = "https://videos.openhero.art";
 
 export function getVideoCatalog(): VideoCatalog {
   const heroes = registryJson.heroes;
@@ -26,7 +25,7 @@ export function getVideoCatalog(): VideoCatalog {
     slug: hero.slug,
     name: slugToName(hero.slug),
     category: hero.category,
-    videoSrc: `${GITHUB_RAW}/public/videos/${hero.category}/${hero.slug}.mp4`,
+    videoSrc: `${R2_BASE}/videos/${hero.category}/${hero.slug}.mp4`,
     hasDownloads: true,
   }));
 
