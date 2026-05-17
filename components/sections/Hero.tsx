@@ -3,6 +3,7 @@
 import { Icon } from "@iconify/react";
 import MetallicPaint from "../ui/MetallicPaint";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 export default function Hero() {
 
@@ -51,12 +52,13 @@ export default function Hero() {
                         <span className="font-medium text-neutral-200">Next.js</span>
                     </p>
                     <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-                        <a href="#gallery" className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-semibold text-neutral-950 shadow-lg transition-colors hover:bg-neutral-100">
-                            <Icon icon="solar:play-circle-bold" width="16" />
-                            Browse Gallery
-                        </a>
+                        <Link href="/donate" className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-semibold text-neutral-950 shadow-lg transition-colors hover:bg-neutral-100">
+                            <Icon icon="carbon:cafe" width="20" />
+                            Donate
+                        </Link>
                         <a href="https://github.com/CristianOlivera1/openhero" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl border border-neutral-700 px-6 py-3 text-sm font-semibold text-white transition-colors hover:border-neutral-500 hover:bg-neutral-900">
-                            ⭐ Star on GitHub
+                            <Icon icon="streamline-stickies-color:star" width="20" />
+                            Star on GitHub
                         </a>
                     </div>
                 </div>

@@ -6,7 +6,7 @@ import { Icon } from "@iconify/react";
 type Status = "idle" | "loading" | "success" | "error";
 
 const ALLOWED_ZIP_TYPES = ["application/zip", "application/x-zip-compressed", "application/x-zip"];
-const MAX_SIZE_MB = 5;
+const MAX_SIZE_MB = 7;
 
 interface Props {
     onClose: () => void;
@@ -101,7 +101,7 @@ export function SubmitModal({ onClose }: Props) {
                         <h2 className="text-lg font-semibold tracking-tight text-white">
                             Share your hero section
                         </h2>
-                        <p className="mt-1 text-xs text-white/40">
+                        <p className="mt-1 text-xs text-white/70">
                             ZIP with <code className="rounded bg-white/8 px-1 text-white/60">index.html</code>{" "}
                             + <code className="rounded bg-white/8 px-1 text-white/60">video.mp4</code>
                         </p>
@@ -132,8 +132,8 @@ export function SubmitModal({ onClose }: Props) {
                 ) : (
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
-                            <label className="mb-1.5 block text-[11px] font-medium text-white/40">
-                                Title <span className="text-white/25">(required)</span>
+                            <label className="mb-1.5 block text-[11px] font-medium text-white/70">
+                                Title <span className="text-white/40">(required)</span>
                             </label>
                             <input
                                 type="text"
@@ -147,8 +147,8 @@ export function SubmitModal({ onClose }: Props) {
                         </div>
 
                         <div>
-                            <label className="mb-1.5 block text-[11px] font-medium text-white/40">
-                                Description <span className="text-white/25">(optional)</span>
+                            <label className="mb-1.5 block text-[11px] font-medium text-white/70">
+                                Description <span className="text-white/40">(optional)</span>
                             </label>
                             <textarea
                                 value={description}
@@ -161,8 +161,8 @@ export function SubmitModal({ onClose }: Props) {
                         </div>
 
                         <div>
-                            <label className="mb-1.5 block text-[11px] font-medium text-white/40">
-                                ZIP File <span className="text-white/25">(max {MAX_SIZE_MB} MB)</span>
+                            <label className="mb-1.5 block text-[11px] font-medium text-white/70">
+                                ZIP File <span className="text-white/40">(max {MAX_SIZE_MB} MB)</span>
                             </label>
                             <div
                                 onClick={() => fileInputRef.current?.click()}
@@ -179,7 +179,7 @@ export function SubmitModal({ onClose }: Props) {
                                 <Icon
                                     icon={file ? "solar:file-check-linear" : "solar:upload-linear"}
                                     width="20"
-                                    className={file ? "text-green-400" : "text-white/25"}
+                                    className={file ? "text-green-400" : "text-white/40"}
                                 />
                                 {file ? (
                                     <>
@@ -190,14 +190,14 @@ export function SubmitModal({ onClose }: Props) {
                                         <button
                                             type="button"
                                             onClick={(e) => { e.stopPropagation(); setFile(null); }}
-                                            className="text-[11px] text-white/25 transition-colors hover:text-white/50"
+                                            className="text-[11px] text-white/40 transition-colors hover:text-white/70"
                                         >
                                             Remove
                                         </button>
                                     </>
                                 ) : (
                                     <p className="text-xs text-white/35">
-                                        Drop <span className="text-white/50">.zip</span> here or{" "}
+                                        Drop <span className="text-white/70">.zip</span> here or{" "}
                                         <span className="text-white/60 underline underline-offset-2">browse</span>
                                     </p>
                                 )}
@@ -236,7 +236,7 @@ export function SubmitModal({ onClose }: Props) {
                             )}
                         </button>
 
-                        <p className="text-center text-[10px] text-white/30">
+                        <p className="text-center text-[10px] text-white/50">
                             Max 2 submissions every 30 days · Reviewed manually before publishing
                         </p>
                     </form>
