@@ -40,6 +40,38 @@ export default function VideoCard({ video }: { video: HeroVideo }) {
       .catch(() => {});
   }, [video.slug]);
 
+  useEffect(() => {
+    const videoEl = videoRef.current;
+    if (!videoEl) return;
+
+    if (typeof window === "undefined" || !("IntersectionObserver" in window)) {
+      videoEl.play().catch(() => {});
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            videoEl.play().catch(() => {});
+          } else {
+            videoEl.pause();
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: "50px 0px 50px 0px",
+      }
+    );
+
+    observer.observe(videoEl);
+
+    return () => {
+      observer.unobserve(videoEl);
+    };
+  }, [video.videoSrc]);
+
   function handleMouseEnter() {
     videoRef.current?.play().catch(() => {});
   }
@@ -109,7 +141,6 @@ export default function VideoCard({ video }: { video: HeroVideo }) {
             muted
             loop
             playsInline
-            autoPlay
             preload="metadata"
             className="h-full w-full squircle object-cover transition-transform duration-500 group-hover:scale-[1.03]"
           />
