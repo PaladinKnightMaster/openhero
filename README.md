@@ -1,6 +1,6 @@
 ﻿<div align="center">
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 <img width="1280" height="720" alt="export-1778593653300 (1) (1)" src="https://github.com/user-attachments/assets/4c50b909-aa20-49fb-a0ce-7b10d3dd82f4" />
@@ -113,6 +113,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://linktr.ee/coderagam001"><img src="https://avatars.githubusercontent.com/u/65022540?v=4?s=100" width="100px;" alt="Agamdeep Singh"/><br /><sub><b>Agamdeep Singh</b></sub></a><br /><a href="https://github.com/CristianOlivera1/openhero/commits?author=CoderAgam001" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://portfolio-phuoctai.vercel.app/"><img src="https://avatars.githubusercontent.com/u/113773744?v=4?s=100" width="100px;" alt="phuoctai"/><br /><sub><b>phuoctai</b></sub></a><br /><a href="https://github.com/CristianOlivera1/openhero/commits?author=phuoctaiismee" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
