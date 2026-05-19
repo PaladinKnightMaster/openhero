@@ -1,0 +1,26 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "commitType": "docs",
+  "commitConvention": "angular",
+  "contributors": [
+    {
+      "login": "CoderAgam001",
+      "name": "Agamdeep Singh",
+      "avatar_url": "https://avatars.githubusercontent.com/u/65022540?v=4",
+      "profile": "https://linktr.ee/coderagam001",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "skipCi": true,
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "projectName": "openhero",
+  "projectOwner": "CristianOlivera1"
+}
