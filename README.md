@@ -1,7 +1,4 @@
 ﻿<div align="center">
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 <img width="1280" height="720" alt="export-1778593653300 (1) (1)" src="https://github.com/user-attachments/assets/4c50b909-aa20-49fb-a0ce-7b10d3dd82f4" />
 
@@ -103,9 +100,6 @@ MIT - use freely in personal and commercial projects. See [LICENSE](./LICENSE) f
 Assets downloaded from openhero may have their own licenses - check the modal for per-video details.
 
 ## Contributors ✨
-
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
-
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
@@ -122,5 +116,3 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
-
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
