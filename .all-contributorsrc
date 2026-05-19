@@ -8,24 +8,6 @@
   "commitConvention": "angular",
   "contributors": [
     {
-      "login": "CoderAgam001",
-      "name": "Agamdeep Singh",
-      "avatar_url": "https://avatars.githubusercontent.com/u/65022540?v=4",
-      "profile": "https://linktr.ee/coderagam001",
-      "contributions": [
-        "code"
-      ]
-    },
-    {
-      "login": "phuoctaiismee",
-      "name": "phuoctai",
-      "avatar_url": "https://avatars.githubusercontent.com/u/113773744?v=4",
-      "profile": "https://portfolio-phuoctai.vercel.app/",
-      "contributions": [
-        "code"
-      ]
-    },
-    {
       "login": "CristianOlivera1",
       "name": "Cristian Olivera Chávez",
       "avatar_url": "https://avatars.githubusercontent.com/u/171596250?v=4",
@@ -39,6 +21,24 @@
       "name": "Luis Fernando Juarez Peña",
       "avatar_url": "https://avatars.githubusercontent.com/u/122325084?v=4",
       "profile": "https://github.com/FernanDOGozu",
+      "contributions": [
+        "code"
+      ]
+    }
+    {
+      "login": "CoderAgam001",
+      "name": "Agamdeep Singh",
+      "avatar_url": "https://avatars.githubusercontent.com/u/65022540?v=4",
+      "profile": "https://linktr.ee/coderagam001",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "phuoctaiismee",
+      "name": "phuoctai",
+      "avatar_url": "https://avatars.githubusercontent.com/u/113773744?v=4",
+      "profile": "https://portfolio-phuoctai.vercel.app/",
       "contributions": [
         "code"
       ]
