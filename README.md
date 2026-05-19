@@ -92,6 +92,10 @@ Contributions are welcome! The best way to contribute is to **submit a hero sect
 
 For code contributions, open a pull request with a clear description of the change.
 
+<a href="https://github.com/CristianOlivera1/openhero/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=CristianOlivera1/openhero" />
+</a>
+
 ---
 
 ## 📄 License
