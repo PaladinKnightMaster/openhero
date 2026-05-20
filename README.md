@@ -81,25 +81,10 @@ Open [http://localhost:3000](http://localhost:3000) to see it running.
 
 ---
 
-## 🤝 Contributing
-
-Contributions are welcome! The best way to contribute is to **submit a hero section**:
-
-1. Prepare a high-quality looping video (`.mp4`, max 20 MB, 1920×1080 recommended)
-2. Visit [openhero.art](https://openhero.art) and use the Submit section
-3. Fill in the title, category, and description
-4. Upload your ZIP and wait for review
-
+## 🤝 Contributors
 For code contributions, open a pull request with a clear description of the change.
----
 
-## 📄 License
 
-MIT - use freely in personal and commercial projects. See [LICENSE](./LICENSE) for details.
-
-Assets downloaded from openhero may have their own licenses - check the modal for per-video details.
-
-## Contributors ✨
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
@@ -118,3 +103,11 @@ Assets downloaded from openhero may have their own licenses - check the modal fo
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
+
+---
+
+## 📄 License
+
+MIT - use freely in personal and commercial projects. See [LICENSE](./LICENSE) for details.
+
+Assets downloaded from openhero may have their own licenses - check the modal for per-video details.
