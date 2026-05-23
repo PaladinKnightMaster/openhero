@@ -1,0 +1,25 @@
+# openhero
+> The free, open collection of cinematic video hero sections. Browse, preview, copy & download production-ready backgrounds instantly.
+
+## Overview
+openhero is a free gallery of cinematic full-screen video hero sections for the modern web. Users can browse videos, preview them at full resolution, and grab the source code (HTML, React, or Next.js) in one click to drop straight into their projects without attribution.
+
+## Core Features
+- Video Hero Gallery: Browse 60+ cinematic backgrounds across categories like abstract, nature, urban, and sci-fi.
+- Full-Screen Preview: High-quality looping video previews directly in a modal.
+- One-Click Code: Copy production-ready HTML, React, or Next.js code instantly.
+- ZIP Download: Download the video and source code bundled in a ZIP file.
+- Background Library: Access 272 curated background images across 4 categories.
+- Community Submissions: Users can upload and submit their own hero sections (ZIP containing video and code) for review.
+
+## Tech Stack
+- Framework: Next.js 16 (App Router), React, TypeScript.
+- Styling & Fonts: Tailwind CSS, Geist & Geist Mono fonts.
+- Backend & Auth: Supabase.
+
+## Useful Links
+- Official Website: https://openhero.art
+- Browse Videos: https://openhero.art/#gallery
+- Background Library: https://openhero.art/assets
+- Submit a Hero: https://openhero.art/#submit
+- GitHub Repository: https://github.com/CristianOlivera1/openhero

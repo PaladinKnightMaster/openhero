@@ -306,10 +306,10 @@ export function VideoModal({ video, onClose }: VideoModalProps) {
     videoRef.current?.play().catch(() => { });
   }, []);
 
-  const tags = [
+  const tags = Array.from(new Set([
     video.category,
     ...video.slug.split("-").filter((w) => !["the", "a", "of", "in", "on"].includes(w)).slice(0, 5),
-  ];
+  ]));
 
   const vercelTabsData = (Object.keys(FW_CONFIG) as Framework[]).map((fw) => ({
     label: FW_CONFIG[fw].label,
