@@ -81,16 +81,28 @@ Open [http://localhost:3000](http://localhost:3000) to see it running.
 
 ---
 
-## 🤝 Contributing
-
-Contributions are welcome! The best way to contribute is to **submit a hero section**:
-
-1. Prepare a high-quality looping video (`.mp4`, max 20 MB, 1920×1080 recommended)
-2. Visit [openhero.art](https://openhero.art) and use the Submit section
-3. Fill in the title, category, and description
-4. Upload your ZIP and wait for review
-
+## 🤝 Contributors
 For code contributions, open a pull request with a clear description of the change.
+
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://linktr.ee/coderagam001"><img src="https://avatars.githubusercontent.com/u/65022540?v=4?s=100" width="100px;" alt="Agamdeep Singh"/><br /><sub><b>Agamdeep Singh</b></sub></a><br /><a href="https://github.com/CristianOlivera1/openhero/commits?author=CoderAgam001" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://portfolio-phuoctai.vercel.app/"><img src="https://avatars.githubusercontent.com/u/113773744?v=4?s=100" width="100px;" alt="phuoctai"/><br /><sub><b>phuoctai</b></sub></a><br /><a href="https://github.com/CristianOlivera1/openhero/commits?author=phuoctaiismee" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://codeoner.rf.gd/cv/cristian-olivera-chavez"><img src="https://avatars.githubusercontent.com/u/171596250?v=4?s=100" width="100px;" alt="Cristian Olivera Chávez"/><br /><sub><b>Cristian Olivera Chávez</b></sub></a><br /><a href="https://github.com/CristianOlivera1/openhero/commits?author=CristianOlivera1" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/FernanDOGozu"><img src="https://avatars.githubusercontent.com/u/122325084?v=4?s=100" width="100px;" alt="Luis Fernando Juarez Peña"/><br /><sub><b>Luis Fernando Juarez Peña</b></sub></a><br /><a href="https://github.com/CristianOlivera1/openhero/commits?author=FernanDOGozu" title="Code">💻</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 
 ---
 
