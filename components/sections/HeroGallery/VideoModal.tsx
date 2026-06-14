@@ -1,22 +1,38 @@
-﻿"use client";
+"use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Icon } from "@iconify/react";
 import { Highlight, themes, type Language } from "prism-react-renderer";
 import type { HeroVideo } from "@/lib/videos";
 import { capitalize } from "@/lib/utils";
-import { getNextjsCode, getHtmlCode } from "@/lib/hero-templates";
+import {
+  getNextjsCode,
+  getReactCode,
+  getHtmlCode,
+  encodeHeroConfig,
+  type HeroConfig,
+} from "@/lib/hero-templates";
+import { useHeroConfig } from "@/lib/useHeroConfig";
 import { VercelTabs } from "@/components/ui/vercel-tabs";
+import { SegmentedControl } from "@/components/ui/SegmentedControl";
+import { HeroStudio } from "./HeroStudio";
+import { HeroPreviewFrame } from "./HeroPreviewFrame";
 
-type Framework = "nextjs" | "html";
+type Framework = "nextjs" | "react" | "html";
+type Mode = "curated" | "studio";
+type LeftView = "video" | "preview";
 
 const FW_CONFIG: Record<
   Framework,
   { label: string; icon: string; lang: Language; filename: string; format: string }
 > = {
   nextjs: { label: "Next.js", icon: "simple-icons:nextdotjs", lang: "tsx", filename: "page.tsx", format: "nextjs" },
+  react: { label: "React", icon: "simple-icons:react", lang: "jsx", filename: "Hero.jsx", format: "react" },
   html: { label: "HTML", icon: "simple-icons:html5", lang: "markup", filename: "index.html", format: "html" },
 };
+
+const CURATED_FRAMEWORKS: Framework[] = ["nextjs", "html"];
+const STUDIO_FRAMEWORKS: Framework[] = ["nextjs", "react", "html"];
 
 function CodeBlock({ code, lang }: { code: string; lang: Language }) {
   if (!code) return null;
@@ -64,9 +80,23 @@ function CodeBlock({ code, lang }: { code: string; lang: Language }) {
   );
 }
 
-function DownloadZipButton({ video, format }: { video: HeroVideo; format: string }) {
+function DownloadZipButton({
+  video,
+  format,
+  config,
+}: {
+  video: HeroVideo;
+  format: string;
+  config?: HeroConfig;
+}) {
   const handleDownload = () => {
-    const url = `/api/download?category=${encodeURIComponent(video.category)}&slug=${encodeURIComponent(video.slug)}&format=${encodeURIComponent(format)}`;
+    const params = new URLSearchParams({
+      category: video.category,
+      slug: video.slug,
+      format,
+    });
+    if (config) params.set("cfg", encodeHeroConfig(config));
+    const url = `/api/download?${params.toString()}`;
 
     const link = document.createElement("a");
     link.href = url;
@@ -87,7 +117,15 @@ function DownloadZipButton({ video, format }: { video: HeroVideo; format: string
   );
 }
 
-function FrameworkDropdown({ active, onChange }: { active: Framework; onChange: (fw: Framework) => void }) {
+function FrameworkDropdown({
+  active,
+  frameworks,
+  onChange,
+}: {
+  active: Framework;
+  frameworks: Framework[];
+  onChange: (fw: Framework) => void;
+}) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -116,7 +154,7 @@ function FrameworkDropdown({ active, onChange }: { active: Framework; onChange: 
           <div className="border-b border-neutral-800 px-3 py-2">
             <p className="text-[10px] font-semibold uppercase tracking-wider text-neutral-500">Select Framework</p>
           </div>
-          {(Object.keys(FW_CONFIG) as Framework[]).map((fw) => (
+          {frameworks.map((fw) => (
             <button
               key={fw}
               role="option"
@@ -230,64 +268,80 @@ interface VideoModalProps {
 
 export function VideoModal({ video, onClose }: VideoModalProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const { config, update, reset } = useHeroConfig();
+
+  const [mode, setMode] = useState<Mode>(video.hasDownloads ? "curated" : "studio");
+  const [leftView, setLeftView] = useState<LeftView>("video");
   const [activeFramework, setActiveFramework] = useState<Framework>("nextjs");
-  const [codes, setCodes] = useState<Record<Framework, string>>({ nextjs: "", html: "" });
-  const [loading, setLoading] = useState(true);
+
+  // Curated bespoke code (fetched static files). Studio code is generated live.
+  const [curatedCodes, setCuratedCodes] = useState<Record<"nextjs" | "html", string>>({ nextjs: "", html: "" });
+  const [curatedLoading, setCuratedLoading] = useState(video.hasDownloads);
+
+  const studioCodes = useMemo<Record<Framework, string>>(() => {
+    const opts = { name: video.name, slug: video.slug, videoSrc: video.videoSrc, category: video.category, config };
+    return {
+      nextjs: getNextjsCode(opts),
+      react: getReactCode(opts),
+      html: getHtmlCode(opts),
+    };
+  }, [config, video.name, video.slug, video.videoSrc, video.category]);
+
+  const frameworks = mode === "studio" ? STUDIO_FRAMEWORKS : CURATED_FRAMEWORKS;
+
+  // Derive valid values instead of storing-then-correcting (avoids effect churn).
+  const effectiveFramework = frameworks.includes(activeFramework) ? activeFramework : "nextjs";
+  const effectiveLeftView: LeftView = mode === "studio" ? leftView : "video";
+
+  const codes: Record<Framework, string> =
+    mode === "studio"
+      ? studioCodes
+      : { nextjs: curatedCodes.nextjs, react: "", html: curatedCodes.html };
+
+  const loading = mode === "curated" && curatedLoading;
 
   async function getVideoDownloadUrl(video: HeroVideo): Promise<void> {
     try {
       const videoUrl = `https://videos.openhero.art/downloads/${video.category}/${video.slug}/video.mp4`;
-
       const response = await fetch(videoUrl);
       const blob = await response.blob();
-
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute("download", "video.mp4");
       document.body.appendChild(link);
-
       link.click();
-
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error("Error en la descarga directa:", error);
+      console.error("Direct download failed:", error);
     }
   }
 
+  // Fetch curated static code once.
   useEffect(() => {
+    if (!video.hasDownloads) return;
     let isMounted = true;
-    const fetchCodes = async () => {
-      setLoading(true);
-      const opts = { name: video.name, slug: video.slug, videoSrc: video.videoSrc, category: video.category };
-
-      if (video.hasDownloads) {
-        const base = `/downloads/${video.category}/${video.slug}`;
-        try {
-          const [nextjs, html] = await Promise.all([
-            fetch(`${base}/page.tsx`).then((r) => (r.ok ? r.text() : null)),
-            fetch(`${base}/index.html`).then((r) => (r.ok ? r.text() : null)),
-          ]);
-
-          if (isMounted) {
-            setCodes({
-              nextjs: nextjs ?? getNextjsCode(opts),
-              html: html ?? getHtmlCode(opts),
-            });
-          }
-        } catch (error) {
-          console.error("Error fetching codes", error);
-        }
-      } else {
+    const opts = { name: video.name, slug: video.slug, videoSrc: video.videoSrc, category: video.category };
+    const base = `/downloads/${video.category}/${video.slug}`;
+    (async () => {
+      try {
+        const [nextjs, html] = await Promise.all([
+          fetch(`${base}/page.tsx`).then((r) => (r.ok ? r.text() : null)),
+          fetch(`${base}/index.html`).then((r) => (r.ok ? r.text() : null)),
+        ]);
         if (isMounted) {
-          setCodes({ nextjs: getNextjsCode(opts), html: getHtmlCode(opts) });
+          setCuratedCodes({
+            nextjs: nextjs ?? getNextjsCode(opts),
+            html: html ?? getHtmlCode(opts),
+          });
         }
+      } catch (error) {
+        console.error("Error fetching curated codes", error);
+      } finally {
+        if (isMounted) setCuratedLoading(false);
       }
-      if (isMounted) setLoading(false);
-    };
-
-    fetchCodes();
+    })();
     return () => { isMounted = false; };
   }, [video]);
 
@@ -311,7 +365,7 @@ export function VideoModal({ video, onClose }: VideoModalProps) {
     ...video.slug.split("-").filter((w) => !["the", "a", "of", "in", "on"].includes(w)).slice(0, 5),
   ]));
 
-  const vercelTabsData = (Object.keys(FW_CONFIG) as Framework[]).map((fw) => ({
+  const vercelTabsData = frameworks.map((fw) => ({
     label: FW_CONFIG[fw].label,
     value: fw,
     icon: FW_CONFIG[fw].icon,
@@ -325,10 +379,28 @@ export function VideoModal({ video, onClose }: VideoModalProps) {
           <Icon icon="material-symbols:close-rounded" width="16" />
         </button>
 
-        <div className="flex h-[45vh] shrink-0 items-center justify-center overflow-hidden lg:h-full lg:flex-1">
-          <div className="relative h-full w-full">
-            <video ref={videoRef} src={video.videoSrc} loop muted playsInline className="absolute inset-0 h-full w-full object-contain" />
-          </div>
+        <div className="relative flex h-[45vh] shrink-0 items-center justify-center overflow-hidden lg:h-full lg:flex-1">
+          {mode === "studio" && (
+            <div className="absolute left-3 top-3 z-10 w-40">
+              <SegmentedControl
+                label="Left pane view"
+                options={[
+                  { value: "video", label: "Video" },
+                  { value: "preview", label: "Live preview" },
+                ]}
+                value={leftView}
+                onChange={(v) => setLeftView(v as LeftView)}
+              />
+            </div>
+          )}
+
+          {effectiveLeftView === "preview" ? (
+            <HeroPreviewFrame html={studioCodes.html} category={video.category} slug={video.slug} title={video.name} />
+          ) : (
+            <div className="relative h-full w-full">
+              <video ref={videoRef} src={video.videoSrc} loop muted playsInline className="absolute inset-0 h-full w-full object-contain" />
+            </div>
+          )}
         </div>
 
         <aside
@@ -360,7 +432,7 @@ export function VideoModal({ video, onClose }: VideoModalProps) {
                 Download Video
               </button>
 
-              <DownloadZipButton video={video} format={activeFramework} />
+              <DownloadZipButton video={video} format={effectiveFramework} config={mode === "studio" ? config : undefined} />
               <a
                 href={`/preview/${video.category}/${video.slug}`}
                 target="_blank"
@@ -372,26 +444,45 @@ export function VideoModal({ video, onClose }: VideoModalProps) {
               </a>
             </div>
 
-            {activeFramework === "nextjs" && video.hasDownloads && (
+            {/* Code source: curated bespoke vs. Studio generator */}
+            {video.hasDownloads && (
+              <div className="mt-3">
+                <SegmentedControl
+                  label="Code source"
+                  options={[
+                    { value: "curated", label: "Curated" },
+                    { value: "studio", label: "Studio (editable)" },
+                  ]}
+                  value={mode}
+                  onChange={(v) => setMode(v as Mode)}
+                />
+              </div>
+            )}
+
+            {mode === "studio" && (
+              <HeroStudio config={config} onChange={update} onReset={reset} />
+            )}
+
+            {mode === "curated" && effectiveFramework === "nextjs" && video.hasDownloads && (
               <InstallCommand slug={video.slug} />
             )}
           </div>
 
           <div className="flex min-h-0 flex-1 flex-col">
             <div className="hidden sm:flex flex-1 flex-col min-h-0">
-              <VercelTabs tabs={vercelTabsData} value={activeFramework} onValueChange={(val) => setActiveFramework(val as Framework)} className="flex flex-col h-full min-h-0" contentClassName="flex-1 min-h-0 mt-3" />
+              <VercelTabs tabs={vercelTabsData} value={effectiveFramework} onValueChange={(val) => setActiveFramework(val as Framework)} className="flex flex-col h-full min-h-0" contentClassName="flex-1 min-h-0 mt-3" />
             </div>
 
             <div className="flex flex-col sm:hidden min-h-0 flex-1">
               <div className="mb-3 shrink-0">
-                <FrameworkDropdown active={activeFramework} onChange={setActiveFramework} />
+                <FrameworkDropdown active={effectiveFramework} frameworks={frameworks} onChange={setActiveFramework} />
               </div>
               <div className="relative h-48 min-h-0 flex-1 overflow-auto custom-scroll rounded-lg border border-white/5 lg:h-auto">
                 <div className="absolute top-2 right-2 z-10 flex items-center gap-1.5">
                   <button
                     onClick={async () => {
-                      if (!codes[activeFramework]) return;
-                      await navigator.clipboard.writeText(codes[activeFramework]);
+                      if (!codes[effectiveFramework]) return;
+                      await navigator.clipboard.writeText(codes[effectiveFramework]);
                     }}
                     className="flex items-center gap-1 rounded-lg border border-white/10 bg-black/80 backdrop-blur-sm px-2 py-1 text-[10px] text-white transition-colors hover:bg-white/10"
                   >
@@ -399,11 +490,11 @@ export function VideoModal({ video, onClose }: VideoModalProps) {
                   </button>
                   <button
                     onClick={() => {
-                      const blob = new Blob([codes[activeFramework]], { type: "text/plain" });
+                      const blob = new Blob([codes[effectiveFramework]], { type: "text/plain" });
                       const url = URL.createObjectURL(blob);
                       const link = document.createElement("a");
                       link.href = url;
-                      link.download = FW_CONFIG[activeFramework].filename;
+                      link.download = FW_CONFIG[effectiveFramework].filename;
                       document.body.appendChild(link);
                       link.click();
                       document.body.removeChild(link);
@@ -417,7 +508,7 @@ export function VideoModal({ video, onClose }: VideoModalProps) {
                 {loading ? (
                   <div className="flex h-full items-center justify-center text-xs text-white/30">Loading…</div>
                 ) : (
-                  <CodeBlock code={codes[activeFramework]} lang={FW_CONFIG[activeFramework].lang} />
+                  <CodeBlock code={codes[effectiveFramework]} lang={FW_CONFIG[effectiveFramework].lang} />
                 )}
               </div>
             </div>
