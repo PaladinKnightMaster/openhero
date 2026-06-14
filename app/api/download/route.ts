@@ -2,14 +2,27 @@ import { NextRequest, NextResponse } from "next/server";
 import JSZip from "jszip";
 import fs from "fs";
 import path from "path";
-import { getNextjsCode, getHtmlCode } from "@/lib/hero-templates";
+import {
+  getNextjsCode,
+  getReactCode,
+  getHtmlCode,
+  decodeHeroConfig,
+  type TemplateOptions,
+} from "@/lib/hero-templates";
 import { slugToName } from "@/lib/utils";
 
-type Format = "nextjs" | "html";
+type Format = "nextjs" | "react" | "html";
 
-const FORMAT_CONFIG: Record<Format, { filename: string; staticFile: string }> = {
+const FORMAT_CONFIG: Record<Format, { filename: string; staticFile: string | null }> = {
   nextjs: { filename: "page.tsx", staticFile: "page.tsx" },
+  react: { filename: "Hero.jsx", staticFile: null }, // React is generator-only
   html: { filename: "index.html", staticFile: "index.html" },
+};
+
+const GENERATORS: Record<Format, (opts: TemplateOptions) => string> = {
+  nextjs: getNextjsCode,
+  react: getReactCode,
+  html: getHtmlCode,
 };
 
 const R2_BASE = "https://videos.openhero.art";
@@ -19,6 +32,7 @@ export async function GET(request: NextRequest) {
   const category = searchParams.get("category") ?? "";
   const slug = searchParams.get("slug") ?? "";
   const format = (searchParams.get("format") ?? "nextjs") as Format;
+  const cfgParam = searchParams.get("cfg");
 
   if (!category || !slug || !FORMAT_CONFIG[format]) {
     return NextResponse.json({ error: "Invalid parameters" }, { status: 400 });
@@ -28,15 +42,28 @@ export async function GET(request: NextRequest) {
   const { filename, staticFile } = FORMAT_CONFIG[format];
 
   const downloadsDir = path.join(process.cwd(), "public", "downloads", category, slug);
-  const staticFilePath = path.join(downloadsDir, staticFile);
+  const staticFilePath = staticFile ? path.join(downloadsDir, staticFile) : null;
 
+  // When a Studio config is supplied, always generate from templates so the ZIP
+  // matches what the user customized. Otherwise prefer the curated static file.
   let code: string;
-  if (fs.existsSync(staticFilePath)) {
+  let usedGenerator: boolean;
+  const opts: TemplateOptions = { name, slug, videoSrc: "", category };
+  if (!cfgParam && staticFilePath && fs.existsSync(staticFilePath)) {
     code = fs.readFileSync(staticFilePath, "utf-8");
+    usedGenerator = false;
   } else {
-    const opts = { name, slug, videoSrc: "", category };
-    code = format === "html" ? getHtmlCode(opts) : getNextjsCode(opts);
+    code = GENERATORS[format]({ ...opts, config: decodeHeroConfig(cfgParam) });
+    usedGenerator = true;
   }
+
+  // Pack the video where the code actually references it:
+  // - HTML (generated or curated) references ./video.mp4 next to the file.
+  // - Generated React/Next references /videos/{category}/{slug}.mp4 under public/.
+  const videoZipPath =
+    usedGenerator && format !== "html"
+      ? `public/videos/${category}/${slug}.mp4`
+      : "video.mp4";
 
   const zip = new JSZip();
   const folder = zip.folder(`${slug}-${format}`) as JSZip;
@@ -51,7 +78,7 @@ export async function GET(request: NextRequest) {
   }
 
   if (videoArrayBuffer) {
-    folder.file("video.mp4", new Uint8Array(videoArrayBuffer));
+    folder.file(videoZipPath, new Uint8Array(videoArrayBuffer));
   } else {
     folder.file(
       "README.txt",
@@ -64,9 +91,8 @@ export async function GET(request: NextRequest) {
         ``,
         `To use:`,
         `  1. Download the video from the URL above (or provide your own).`,
-        `  2. Rename it to: video.mp4`,
-        `  3. Place it in the same folder as ${filename}`,
-        `  4. The code already references "./video.mp4" (relative path).`,
+        `  2. Save it as: ${videoZipPath}`,
+        `     (relative to this folder — that is where ${filename} references it).`,
       ].join("\n"),
     );
   }
