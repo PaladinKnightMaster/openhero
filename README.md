@@ -39,10 +39,15 @@ openhero is a free gallery of **cinematic full-screen video hero sections** for 
 |---|---|
 | **Video Hero Gallery** | Browse 60+ cinematic backgrounds organized by category (abstract, nature, urban, sci-fi…) |
 | **Full-Screen Preview** | Click any card to open a modal with the video looping in full quality |
-| **One-Click Code** | Copy ready-to-use HTML or Next.js code directly from the modal |
+| **One-Click Code** | Copy ready-to-use HTML, React, or Next.js code directly from the modal |
+| **Hero Studio** | Customize heading, CTA, accent, overlay, performance & motion presets with a live preview — then copy/download the generated hero ([docs](docs/hero-studio.md)) |
 | **ZIP Download** | Download the video + source code as a ZIP in one click |
 | **Background Library** | 272 curated background images across 4 categories |
 | **Submit Your Own** | Upload your hero section as a ZIP for community review |
+
+Every generated hero is **accessibility- and performance-aware**: a poster frame
+for instant first paint, lazy video loading, a keyboard-accessible pause control,
+and `prefers-reduced-motion` handling — all baked into the exported code.
 
 ---
 
@@ -78,6 +83,15 @@ pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to see it running.
+
+### Useful scripts
+
+```bash
+pnpm lint     # eslint
+pnpm test     # hero-template unit tests (node:test)
+pnpm build    # production build
+pnpm posters  # generate video poster frames (requires ffmpeg)
+```
 
 ---
 
