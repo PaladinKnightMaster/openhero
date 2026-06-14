@@ -27,6 +27,24 @@ const GENERATORS: Record<Format, (opts: TemplateOptions) => string> = {
 
 const R2_BASE = "https://videos.openhero.art";
 
+/**
+ * Decide where to pack the video inside the ZIP based on how the hero's code
+ * references it, so the archive is self-consistent for both generated and
+ * curated heroes:
+ *   "./video.mp4"          -> "video.mp4"              (sits next to the file)
+ *   "/video.mp4"           -> "public/video.mp4"       (Next public root)
+ *   "/videos/cat/x.mp4"    -> "public/videos/cat/x.mp4"
+ * Remote URLs (https://…) and unrecognized refs fall back to "video.mp4".
+ */
+function deriveVideoZipPath(code: string): string {
+  const match = code.match(/["'](\.?\/[^"':]*?\.mp4)["']/);
+  const ref = match?.[1];
+  if (!ref) return "video.mp4";
+  if (ref.startsWith("./")) return ref.slice(2);
+  if (ref.startsWith("/")) return `public${ref}`;
+  return "video.mp4";
+}
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const category = searchParams.get("category") ?? "";
@@ -47,23 +65,19 @@ export async function GET(request: NextRequest) {
   // When a Studio config is supplied, always generate from templates so the ZIP
   // matches what the user customized. Otherwise prefer the curated static file.
   let code: string;
-  let usedGenerator: boolean;
   const opts: TemplateOptions = { name, slug, videoSrc: "", category };
   if (!cfgParam && staticFilePath && fs.existsSync(staticFilePath)) {
     code = fs.readFileSync(staticFilePath, "utf-8");
-    usedGenerator = false;
   } else {
     code = GENERATORS[format]({ ...opts, config: decodeHeroConfig(cfgParam) });
-    usedGenerator = true;
   }
 
-  // Pack the video where the code actually references it:
-  // - HTML (generated or curated) references ./video.mp4 next to the file.
-  // - Generated React/Next references /videos/{category}/{slug}.mp4 under public/.
-  const videoZipPath =
-    usedGenerator && format !== "html"
-      ? `public/videos/${category}/${slug}.mp4`
-      : "video.mp4";
+  // Pack the video exactly where the code references it, derived from the code
+  // itself so it is correct for both generated and curated heroes:
+  //   "./video.mp4"            -> video.mp4               (next to the file)
+  //   "/video.mp4"             -> public/video.mp4        (curated Next.js)
+  //   "/videos/cat/slug.mp4"   -> public/videos/cat/...   (generated React/Next)
+  const videoZipPath = deriveVideoZipPath(code);
 
   const zip = new JSZip();
   const folder = zip.folder(`${slug}-${format}`) as JSZip;

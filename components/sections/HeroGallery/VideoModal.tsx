@@ -381,7 +381,7 @@ export function VideoModal({ video, onClose }: VideoModalProps) {
 
         <div className="relative flex h-[45vh] shrink-0 items-center justify-center overflow-hidden lg:h-full lg:flex-1">
           {mode === "studio" && (
-            <div className="absolute left-3 top-3 z-10 w-40">
+            <div className="absolute left-3 top-3 z-20 w-44 rounded-lg bg-black/60 p-0.5 shadow-lg ring-1 ring-white/10 backdrop-blur-md">
               <SegmentedControl
                 label="Left pane view"
                 options={[
