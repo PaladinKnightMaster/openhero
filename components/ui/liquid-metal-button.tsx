@@ -103,7 +103,7 @@ export function LiquidMetalButton({
         const { liquidMetalFragmentShader, ShaderMount } = await import("@paper-design/shaders");
         if (shaderRef.current) {
           if (shaderMount.current?.destroy) shaderMount.current.destroy();
-          shaderMount.current = new (ShaderMount as any)(
+          shaderMount.current = new (ShaderMount as new (...args: unknown[]) => unknown)(
             shaderRef.current,
             liquidMetalFragmentShader,
             {

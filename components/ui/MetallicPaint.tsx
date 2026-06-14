@@ -380,14 +380,18 @@ export default function MetallicPaint({
         textureRef.current = tex; 
     }, []); 
 
-    useEffect(() => { 
-        if (!initGL()) return; 
-        setReady(true); 
-    }, [initGL]); 
+    useEffect(() => {
+        if (!initGL()) return;
+        // Flag readiness once the WebGL context is initialized (one-shot).
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setReady(true);
+    }, [initGL]);
 
-    useEffect(() => { 
-        if (!ready) return; 
-        setTextureReady(false); 
+    useEffect(() => {
+        if (!ready) return;
+        // Reset texture state before re-rendering the text-to-texture pipeline.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setTextureReady(false);
         if (text) { 
             const dpr = window.devicePixelRatio || 1; 
             const textData = renderTextToData(text, fontSize * dpr, fontFamily, String(fontWeight)); 

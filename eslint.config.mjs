@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Curated hero exports are downloadable artifacts, not project source.
+    "public/downloads/**",
   ]),
 ]);
 
