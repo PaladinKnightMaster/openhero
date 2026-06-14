@@ -4,7 +4,10 @@ import Header from "@/components/layout/header";
 import Hero from "@/components/sections/Hero";
 import HeroGallery from "@/components/sections/HeroGallery";
 import { getVideoCatalog } from "@/lib/videos";
-import { createClient } from "@/utils/supabase/server";
+import { createPublicClient } from "@/utils/supabase/public";
+
+// Popularity ordering is a public read; ISR keeps the homepage static and fresh.
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://openhero.art'),
@@ -64,7 +67,7 @@ export default async function Home() {
 
   let sortedVideos = videos;
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const slugs = videos.map((v) => v.slug);
     const { data: stats } = await supabase
       .from("hero_videos")

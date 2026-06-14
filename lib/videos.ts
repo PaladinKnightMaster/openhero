@@ -6,6 +6,7 @@ export interface HeroVideo {
   name: string;
   category: string;
   videoSrc: string;
+  posterSrc: string;
   hasDownloads: boolean;
 }
 
@@ -26,6 +27,7 @@ export function getVideoCatalog(): VideoCatalog {
     name: slugToName(hero.slug),
     category: hero.category,
     videoSrc: `${R2_BASE}/videos/${hero.category}/${hero.slug}.mp4`,
+    posterSrc: `${R2_BASE}/videos/${hero.category}/${hero.slug}.jpg`,
     hasDownloads: true,
   }));
 

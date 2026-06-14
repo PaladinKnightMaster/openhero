@@ -24,6 +24,12 @@ export default function VideoCard({ video }: { video: HeroVideo }) {
   const [likeLoading, setLikeLoading] = useState(false);
   const viewedRef = useRef(false);
 
+  // Poster fallback chain: shimmer → poster image → video frames. If the
+  // poster is missing we fall back to fetching the video's first frame.
+  const [posterLoaded, setPosterLoaded] = useState(false);
+  const [posterFailed, setPosterFailed] = useState(false);
+  const [videoReady, setVideoReady] = useState(false);
+
   useEffect(() => {
     const sessionId = getSessionId();
     if (!sessionId) return;
@@ -44,7 +50,14 @@ export default function VideoCard({ video }: { video: HeroVideo }) {
     const videoEl = videoRef.current;
     if (!videoEl) return;
 
+    // Attach the source lazily so the gallery doesn't fetch video bytes for
+    // off-screen cards — the poster image covers the card until then.
+    const ensureSrc = () => {
+      if (!videoEl.src) videoEl.src = video.videoSrc;
+    };
+
     if (typeof window === "undefined" || !("IntersectionObserver" in window)) {
+      ensureSrc();
       videoEl.play().catch(() => {});
       return;
     }
@@ -53,6 +66,7 @@ export default function VideoCard({ video }: { video: HeroVideo }) {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
+            ensureSrc();
             videoEl.play().catch(() => {});
           } else {
             videoEl.pause();
@@ -72,8 +86,21 @@ export default function VideoCard({ video }: { video: HeroVideo }) {
     };
   }, [video.videoSrc]);
 
+  // Poster missing → restore the original behavior for this card only: fetch
+  // metadata eagerly so the browser can paint the video's first frame.
+  useEffect(() => {
+    if (!posterFailed) return;
+    const videoEl = videoRef.current;
+    if (!videoEl || videoEl.src) return;
+    videoEl.preload = "metadata";
+    videoEl.src = video.videoSrc;
+  }, [posterFailed, video.videoSrc]);
+
   function handleMouseEnter() {
-    videoRef.current?.play().catch(() => {});
+    const videoEl = videoRef.current;
+    if (!videoEl) return;
+    if (!videoEl.src) videoEl.src = video.videoSrc;
+    videoEl.play().catch(() => {});
   }
 
   function handleCardClick() {
@@ -137,13 +164,46 @@ export default function VideoCard({ video }: { video: HeroVideo }) {
         >
           <video
             ref={videoRef}
-            src={video.videoSrc}
             muted
             loop
             playsInline
-            preload="metadata"
+            preload="none"
+            onLoadedData={() => setVideoReady(true)}
+            onPlaying={() => setVideoReady(true)}
             className="h-full w-full squircle object-cover transition-transform duration-500 group-hover:scale-[1.03]"
           />
+
+          {/* Shimmer base layer — visible until the poster or a video frame paints. */}
+          {!posterLoaded && !videoReady && (
+            <div className="absolute inset-0 squircle overflow-hidden" aria-hidden="true">
+              <div className="absolute inset-0 -translate-x-full motion-safe:animate-[shimmer_1.6s_infinite] bg-linear-to-r from-transparent via-white/6 to-transparent" />
+            </div>
+          )}
+
+          {/* Poster overlay — fades in on load, removed on error, fades out once
+              the video paints its own frames. */}
+          {!posterFailed && (
+            // eslint-disable-next-line @next/next/no-img-element -- poster comes from R2, not the Next image pipeline
+            <img
+              ref={(el) => {
+                // Cached images can complete before React attaches load handlers.
+                if (el?.complete) {
+                  if (el.naturalWidth > 0) setPosterLoaded(true);
+                  else if (el.naturalWidth === 0 && el.src) setPosterFailed(true);
+                }
+              }}
+              src={video.posterSrc}
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+              decoding="async"
+              onLoad={() => setPosterLoaded(true)}
+              onError={() => setPosterFailed(true)}
+              className={`pointer-events-none absolute inset-0 h-full w-full squircle object-cover transition-[opacity,transform] duration-300 group-hover:scale-[1.03] ${
+                posterLoaded && !videoReady ? "opacity-100" : "opacity-0"
+              }`}
+            />
+          )}
           <div className="absolute right-2 top-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
             <button
               onClick={handleCardClick}

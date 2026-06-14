@@ -10,6 +10,9 @@ on:
       - "public/downloads/**/*.mp4"
   workflow_dispatch:
 
+# Note: gallery posters (public/videos/**/*.jpg) are synced alongside the videos
+# by the first step below, since it mirrors the whole public/videos/ tree.
+
 jobs:
   sync:
     runs-on: ubuntu-latest
@@ -17,7 +20,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Sync gallery videos (public/videos → r2://videos/)
+      - name: Sync gallery videos (public/videos/**.mp4 → r2://videos/)
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
@@ -27,8 +30,26 @@ jobs:
           aws s3 sync public/videos/ s3://openhero-assets/videos/ \
             --endpoint-url "$R2_ENDPOINT" \
             --size-only \
+            --exclude "*" \
+            --include "*.mp4" \
             --cache-control "public, max-age=31536000, immutable" \
             --content-type "video/mp4" \
+            --no-progress
+
+      - name: Sync gallery posters (public/videos/**.jpg → r2://videos/)
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+        run: |
+          aws s3 sync public/videos/ s3://openhero-assets/videos/ \
+            --endpoint-url "$R2_ENDPOINT" \
+            --size-only \
+            --exclude "*" \
+            --include "*.jpg" \
+            --cache-control "public, max-age=31536000, immutable" \
+            --content-type "image/jpeg" \
             --no-progress
 
       - name: Sync download videos (public/downloads/**/video.mp4 → r2://downloads/)
