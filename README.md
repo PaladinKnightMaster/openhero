@@ -68,7 +68,7 @@ Create a `.env.local` file at the root:
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-SECURITY_IP_HASH_SALT=your-random-secret-salt
+IP_HASH_SALT=your-random-secret-salt
 ```
 
 ### 4. Run the dev server
