@@ -5,16 +5,17 @@ import { Icon } from "@iconify/react";
 import { Highlight, themes, type Language } from "prism-react-renderer";
 import type { HeroVideo } from "@/lib/videos";
 import { capitalize } from "@/lib/utils";
-import { getNextjsCode, getHtmlCode } from "@/lib/hero-templates";
+import { getNextjsCode, getReactCode, getHtmlCode } from "@/lib/hero-templates";
 import { VercelTabs } from "@/components/ui/vercel-tabs";
 
-type Framework = "nextjs" | "html";
+type Framework = "nextjs" | "react" | "html";
 
 const FW_CONFIG: Record<
   Framework,
   { label: string; icon: string; lang: Language; filename: string; format: string }
 > = {
   nextjs: { label: "Next.js", icon: "simple-icons:nextdotjs", lang: "tsx", filename: "page.tsx", format: "nextjs" },
+  react: { label: "React", icon: "simple-icons:react", lang: "jsx", filename: "Hero.jsx", format: "react" },
   html: { label: "HTML", icon: "simple-icons:html5", lang: "markup", filename: "index.html", format: "html" },
 };
 
@@ -231,7 +232,7 @@ interface VideoModalProps {
 export function VideoModal({ video, onClose }: VideoModalProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [activeFramework, setActiveFramework] = useState<Framework>("nextjs");
-  const [codes, setCodes] = useState<Record<Framework, string>>({ nextjs: "", html: "" });
+  const [codes, setCodes] = useState<Record<Framework, string>>({ nextjs: "", react: "", html: "" });
   const [loading, setLoading] = useState(true);
 
   async function getVideoDownloadUrl(video: HeroVideo): Promise<void> {
@@ -273,6 +274,9 @@ export function VideoModal({ video, onClose }: VideoModalProps) {
           if (isMounted) {
             setCodes({
               nextjs: nextjs ?? getNextjsCode(opts),
+              // No curated React file ships per-hero, so the React export is
+              // generated from the shared template.
+              react: getReactCode(opts),
               html: html ?? getHtmlCode(opts),
             });
           }
@@ -281,7 +285,7 @@ export function VideoModal({ video, onClose }: VideoModalProps) {
         }
       } else {
         if (isMounted) {
-          setCodes({ nextjs: getNextjsCode(opts), html: getHtmlCode(opts) });
+          setCodes({ nextjs: getNextjsCode(opts), react: getReactCode(opts), html: getHtmlCode(opts) });
         }
       }
       if (isMounted) setLoading(false);

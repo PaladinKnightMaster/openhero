@@ -2,14 +2,23 @@ import { NextRequest, NextResponse } from "next/server";
 import JSZip from "jszip";
 import fs from "fs";
 import path from "path";
-import { getNextjsCode, getHtmlCode } from "@/lib/hero-templates";
+import { getNextjsCode, getReactCode, getHtmlCode } from "@/lib/hero-templates";
 import { slugToName } from "@/lib/utils";
 
-type Format = "nextjs" | "html";
+type Format = "nextjs" | "react" | "html";
 
-const FORMAT_CONFIG: Record<Format, { filename: string; staticFile: string }> = {
+// `staticFile` is the curated per-hero file to prefer, or null when the format
+// has no curated variant and is always generated from the shared template.
+const FORMAT_CONFIG: Record<Format, { filename: string; staticFile: string | null }> = {
   nextjs: { filename: "page.tsx", staticFile: "page.tsx" },
+  react: { filename: "Hero.jsx", staticFile: null },
   html: { filename: "index.html", staticFile: "index.html" },
+};
+
+const GENERATORS: Record<Format, (opts: { name: string; slug: string; videoSrc: string; category: string }) => string> = {
+  nextjs: getNextjsCode,
+  react: getReactCode,
+  html: getHtmlCode,
 };
 
 const R2_BASE = "https://videos.openhero.art";
@@ -28,14 +37,13 @@ export async function GET(request: NextRequest) {
   const { filename, staticFile } = FORMAT_CONFIG[format];
 
   const downloadsDir = path.join(process.cwd(), "public", "downloads", category, slug);
-  const staticFilePath = path.join(downloadsDir, staticFile);
+  const staticFilePath = staticFile ? path.join(downloadsDir, staticFile) : null;
 
   let code: string;
-  if (fs.existsSync(staticFilePath)) {
+  if (staticFilePath && fs.existsSync(staticFilePath)) {
     code = fs.readFileSync(staticFilePath, "utf-8");
   } else {
-    const opts = { name, slug, videoSrc: "", category };
-    code = format === "html" ? getHtmlCode(opts) : getNextjsCode(opts);
+    code = GENERATORS[format]({ name, slug, videoSrc: "", category });
   }
 
   const zip = new JSZip();
