@@ -3,6 +3,7 @@ import Header from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import AssetsGallery from "@/components/sections/AssetsGallery";
 import { getAssetCatalog, ASSET_TOTAL } from "@/lib/assets";
+import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: `${ASSET_TOTAL}+ Free Background Images — Wallpapers, Gradients & Patterns`,
@@ -18,13 +19,14 @@ export const metadata: Metadata = {
     "high resolution backgrounds",
   ],
   alternates: {
-    canonical: "https://openhero.art/assets",
+    canonical: `${SITE.url}/assets`,
   },
   openGraph: {
-    title: `Free Background Library — ${ASSET_TOTAL} High-Res Images | openhero`,
+    title: `Free Background Library — ${ASSET_TOTAL} High-Res Images | ${SITE.name}`,
     description: `${ASSET_TOTAL} curated backgrounds — wallpapers, gradients, minimal, and patterns. Free to download.`,
-    url: "https://openhero.art/assets",
+    url: `${SITE.url}/assets`,
     type: "website",
+    siteName: SITE.name,
   },
 };
 
@@ -32,11 +34,11 @@ const imageGallerySchema = {
   "@context": "https://schema.org",
   "@type": "ImageGallery",
   name: "Background Image Library — openhero",
-  url: "https://openhero.art/assets",
+  url: `${SITE.url}/assets`,
   description: `${ASSET_TOTAL} curated premium background images across desktop wallpapers, gradients, minimal designs, and pattern textures. Free to download.`,
   numberOfItems: ASSET_TOTAL,
   inLanguage: "en-US",
-  isPartOf: { "@type": "WebSite", name: "openhero", url: "https://openhero.art" },
+  isPartOf: { "@type": "WebSite", name: SITE.name, url: SITE.url },
   about: [
     { "@type": "Thing", name: "Desktop Wallpapers" },
     { "@type": "Thing", name: "Gradient Backgrounds" },

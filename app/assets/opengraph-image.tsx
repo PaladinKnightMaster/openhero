@@ -57,7 +57,7 @@ export default function Image() {
             display: "flex",
           }}
         >
-          openhero.site/assets
+          openhero.art/assets
         </div>
         <div
           style={{
