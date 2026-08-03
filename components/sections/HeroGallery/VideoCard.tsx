@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { Icon } from "@iconify/react";
 import type { HeroVideo } from "@/lib/videos";
 import { VideoModal } from "./VideoModal";
@@ -131,9 +132,18 @@ export default function VideoCard({ video }: { video: HeroVideo }) {
     <>
       <article className="group flex flex-col gap-2.5">
         <div
-          className="relative aspect-video cursor-pointer overflow-hidden bg-neutral-900 border border-neutral-900 squircle"
+          className="group relative aspect-video cursor-pointer overflow-hidden bg-neutral-900 border border-neutral-900 squircle"
           onMouseEnter={handleMouseEnter}
           onClick={handleCardClick}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              handleCardClick();
+            }
+          }}
+          aria-label={`Preview ${video.name}`}
         >
           <video
             ref={videoRef}
@@ -146,9 +156,12 @@ export default function VideoCard({ video }: { video: HeroVideo }) {
           />
           <div className="absolute right-2 top-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
             <button
-              onClick={handleCardClick}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleCardClick();
+              }}
               className="rounded p-1 text-neutral-500 transition-colors hover:bg-white/10 hover:text-white"
-              aria-label="Preview fullscreen"
+              aria-label="Open quick preview"
             >
               <Icon icon="solar:maximize-square-linear" width="16" />
             </button>
@@ -158,7 +171,9 @@ export default function VideoCard({ video }: { video: HeroVideo }) {
         <div className="p-3 bg-white/5 dark:bg-black/50 backdrop-blur-md mt-auto rounded-b-[2rem] border-t border-white/10">
           <div className="flex items-center gap-2">
             <p className="text-[13px] font-semibold leading-none text-white truncate flex-1 drop-shadow-md">
-              {video.name}
+              <Link href={`/preview/${video.category}/${video.slug}`} className="transition-colors hover:text-white/70">
+                {video.name}
+              </Link>
             </p>
           </div>
 
