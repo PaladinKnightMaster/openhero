@@ -37,12 +37,12 @@ export default function Header() {
             <div className="h-10 transition-transform group-hover:scale-105 filter drop-shadow-[0_0_15px_rgba(255,255,255,1)] drop-shadow-[0_0_30px_rgba(183,203,248,0.6)]">
               <img
                 src="/svg/logo-openhero.svg"
-                alt="OpenHero Logo"
+                alt="openhero"
                 className="hidden sm:flex h-full w-auto object-contain"
               />
               <img
                 src="/svg/icon-openhero.svg"
-                alt="OpenHero Logo"
+                alt="openhero"
                 className="flex sm:hidden h-full w-auto object-contain drop-shadow-[0_0_20px_rgba(183,203,248,0.4)]"
               />
             </div>
@@ -55,9 +55,9 @@ export default function Header() {
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
             >
-              <a href="/assets" className="transition-colors hover:text-white py-4">
+              <Link href="/assets" className="transition-colors hover:text-white py-4">
                 Assets
-              </a>
+              </Link>
 
               {isHovered && (
                 <div className="absolute top-full left-1/2 -translate-x-1/2 pt-6 animate-in fade-in zoom-in duration-200 z-50">
@@ -133,18 +133,18 @@ export default function Header() {
               >
                 <img
                   src="/svg/logo-openhero.svg"
-                  alt="OpenHero Logo"
+                  alt="openhero"
                   className="h-12 w-auto object-contain"
                 />
               </motion.div>
 
               <nav className="flex flex-col items-center gap-8 text-2xl font-semibold text-white">
-                <a
+                <Link
                   href="/assets"
                   className="hover:text-accent transition-colors"
                 >
                   Assets
-                </a>
+                </Link>
                 <a
                   href="https://mail.google.com/mail/?view=cm&fs=1&to=oliverachavezcristian@gmail.com"
                   onClick={() => setIsOpen(false)}
