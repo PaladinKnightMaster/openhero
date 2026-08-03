@@ -1,11 +1,23 @@
 import { ImageResponse } from "next/og";
+import { slugToName } from "@/lib/utils";
+import { capitalize } from "@/lib/utils";
 
 export const runtime = "edge";
-export const alt = "openhero — Free Cinematic Video Hero Sections";
+export const alt = "Free Cinematic Video Hero Preview - openhero";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default function Image() {
+interface Props {
+  params: Promise<{
+    category: string;
+    slug: string;
+  }>;
+}
+
+export default async function Image({ params }: Props) {
+  const { category, slug } = await params;
+  const name = slugToName(slug);
+
   return new ImageResponse(
     (
       <div
@@ -68,44 +80,40 @@ export default function Image() {
             border: "1px solid rgba(255,255,255,0.1)",
             borderRadius: "100px",
             background: "rgba(255,255,255,0.05)",
+            color: "rgba(255,255,255,0.45)",
+            fontSize: "11px",
+            letterSpacing: "0.18em",
+            textTransform: "uppercase",
           }}
         >
-          <span
-            style={{
-              color: "rgba(255,255,255,0.45)",
-              fontSize: "11px",
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              display: "flex",
-            }}
-          >
-            Free to use
-          </span>
+          {capitalize(category)} · Free hero section
         </div>
         <div
           style={{
-            fontSize: "82px",
+            fontSize: "58px",
             fontWeight: "700",
             color: "#ffffff",
-            letterSpacing: "-3px",
-            lineHeight: 1.0,
+            letterSpacing: "-2px",
+            lineHeight: 1.05,
             marginBottom: "22px",
+            maxWidth: "1000px",
             display: "flex",
+            textTransform: "capitalize",
           }}
         >
-          openhero
+          {name}
         </div>
         <div
           style={{
-            fontSize: "25px",
+            fontSize: "24px",
             color: "rgba(255,255,255,0.42)",
             fontWeight: "400",
-            maxWidth: "680px",
+            maxWidth: "760px",
             lineHeight: 1.4,
             display: "flex",
           }}
         >
-          Cinematic video hero sections with source code — HTML, React & Next.js
+          Cinematic video hero section with source code — HTML, React & Next.js
         </div>
       </div>
     ),

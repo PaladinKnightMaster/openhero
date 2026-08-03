@@ -1,10 +1,31 @@
 ﻿import Link from "next/link";
 import { Icon } from "@iconify/react";
 import type { Metadata } from "next";
+import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description: "Privacy policy for openhero - learn how we handle data on the free cinematic hero gallery.",
+  alternates: {
+    canonical: `${SITE.url}/privacy`,
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    title: "Privacy Policy | openhero",
+    description: "Privacy policy for openhero - learn how we handle data on the free cinematic hero gallery.",
+    url: `${SITE.url}/privacy`,
+    type: "website",
+    siteName: SITE.name,
+    locale: SITE.locale,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Privacy Policy | openhero",
+    description: "Privacy policy for openhero - learn how we handle data on the free cinematic hero gallery.",
+  },
 };
 
 const LAST_UPDATED = "May 11, 2026";
@@ -103,9 +124,24 @@ const sections = [
 
 type Section = (typeof sections)[number];
 
+const webPageSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: "Privacy Policy",
+  url: `${SITE.url}/privacy`,
+  description: metadata.description,
+  inLanguage: SITE.lang,
+  isPartOf: { "@type": "WebSite", name: SITE.name, url: SITE.url },
+  dateModified: LAST_UPDATED,
+};
+
 export default function PrivacyPage() {
   return (
     <div className="px-4 sm:px-6 lg:px-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }}
+      />
       <div className="mx-auto max-w-3xl">
         <nav className="mb-10" aria-label="Breadcrumb">
           <Link

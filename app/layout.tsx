@@ -1,8 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { SITE } from "@/lib/site";
 import "./globals.css";
-
-const BASE_URL = "https://openhero.art";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,26 +22,29 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL(BASE_URL),
+  metadataBase: new URL(SITE.url),
   title: {
-    default: "openhero - Free Cinematic Video Hero Sections",
-    template: "%s | openhero",
+    default: `${SITE.name} - Free Cinematic Video Hero Sections`,
+    template: `%s | ${SITE.name}`,
   },
-  description:
-    "Browse and download cinematic video hero sections with production-ready source code in HTML, React, and Next.js. Free to use.",
-  keywords: [
-    "video hero section",
-    "hero video background",
-    "cinematic hero template",
-    "next.js hero component",
-    "react hero section",
-    "free hero template",
-    "website hero download",
-    "landing page hero",
-  ],
-  authors: [{ name: "openhero", url: BASE_URL }],
-  creator: "openhero",
-  publisher: "openhero",
+  description: SITE.description,
+  keywords: [...SITE.keywords],
+  authors: [{ name: SITE.name, url: SITE.url }],
+  creator: SITE.name,
+  publisher: SITE.name,
+  icons: {
+    icon: "/images/metadata/favicon.svg",
+    shortcut: "/images/metadata/shortcut.svg",
+    apple: "/images/metadata/apple.svg",
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: SITE.name,
+  },
+  formatDetection: {
+    telephone: false,
+  },
   robots: {
     index: true,
     follow: true,
@@ -56,37 +58,55 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    locale: "en_US",
-    url: BASE_URL,
-    siteName: "openhero",
-    title: "openhero - Free Cinematic Video Hero Sections",
-    description:
-      "Browse and download cinematic video hero sections with production-ready source code in HTML, React, and Next.js.",
+    locale: SITE.locale,
+    url: SITE.url,
+    siteName: SITE.name,
+    title: `${SITE.name} - Free Cinematic Video Hero Sections`,
+    description: SITE.description,
+    images: [
+      {
+        url: `${SITE.url}/images/metadata/preview-openhero.webp`,
+        width: 1200,
+        height: 630,
+        alt: `${SITE.name} - Free Cinematic Video Hero Sections`,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "openhero - Free Cinematic Video Hero Sections",
-    description:
-      "Browse and download cinematic video hero sections with production-ready source code in HTML, React, and Next.js.",
+    title: `${SITE.name} - Free Cinematic Video Hero Sections`,
+    description: SITE.description,
+    images: [`${SITE.url}/images/metadata/preview-openhero.webp`],
+    creator: SITE.creator,
   },
 };
 
 const websiteSchema = {
   "@context": "https://schema.org",
-  "@type": "WebSite",
-  name: "openhero",
-  url: BASE_URL,
-  description:
-    "Browse and download cinematic video hero sections with production-ready source code in HTML, React, and Next.js.",
-  inLanguage: "en-US",
-  potentialAction: {
-    "@type": "SearchAction",
-    target: {
-      "@type": "EntryPoint",
-      urlTemplate: `${BASE_URL}/?q={search_term_string}`,
+  "@graph": [
+    {
+      "@type": "WebSite",
+      name: SITE.name,
+      url: SITE.url,
+      description: SITE.description,
+      inLanguage: SITE.lang,
+      potentialAction: {
+        "@type": "SearchAction",
+        target: {
+          "@type": "EntryPoint",
+          urlTemplate: `${SITE.url}/?q={search_term_string}`,
+        },
+        "query-input": "required name=search_term_string",
+      },
     },
-    "query-input": "required name=search_term_string",
-  },
+    {
+      "@type": "Organization",
+      name: SITE.name,
+      url: SITE.url,
+      logo: `${SITE.url}/images/metadata/favicon.svg`,
+      sameAs: ["https://github.com/CristianOlivera1/openhero"],
+    },
+  ],
 };
 
 export default function RootLayout({
@@ -96,7 +116,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang={SITE.lang}
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">

@@ -15,12 +15,12 @@ export function Footer() {
               <div className="h-8 transition-transform group-hover:scale-105 filter drop-shadow-[0_0_12px_rgba(255,255,255,0.8)] drop-shadow-[0_0_20px_rgba(183,203,248,0.4)]">
                 <img
                   src="/svg/logo-openhero.svg"
-                  alt="OpenHero Logo"
+                  alt="openhero"
                   className="hidden sm:flex h-full w-auto object-contain"
                 />
                 <img
                   src="/svg/icon-openhero.svg"
-                  alt="OpenHero Logo"
+                  alt="openhero"
                   className="flex sm:hidden h-full w-auto object-contain"
                 />
               </div>
@@ -43,12 +43,7 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <a href="#" className="transition-colors hover:text-foreground">
-                  Submit a Hero
-                </a>
-              </li>
-              <li>
-                <a href="/assets" target="_blank" className="transition-colors hover:text-foreground">
+                <a href="/assets" className="transition-colors hover:text-foreground">
                   Assets Library
                 </a>
               </li>
@@ -90,7 +85,6 @@ export function Footer() {
               <li>
                 <a
                   href="/privacy"
-                  target="_blank"
                   className="transition-colors hover:text-foreground"
                 >
                   Privacy
@@ -99,7 +93,6 @@ export function Footer() {
               <li>
                 <a
                   href="/terms"
-                  target="_blank"
                   className="transition-colors hover:text-foreground"
                 >
                   Terms of Service

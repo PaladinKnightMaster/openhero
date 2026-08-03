@@ -1,10 +1,31 @@
 import Link from "next/link";
 import { Icon } from "@iconify/react";
 import type { Metadata } from "next";
+import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
   description: "Terms of service for openhero - the free cinematic video hero section gallery.",
+  alternates: {
+    canonical: `${SITE.url}/terms`,
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    title: "Terms of Service | openhero",
+    description: "Terms of service for openhero - the free cinematic video hero section gallery.",
+    url: `${SITE.url}/terms`,
+    type: "website",
+    siteName: SITE.name,
+    locale: SITE.locale,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Terms of Service | openhero",
+    description: "Terms of service for openhero - the free cinematic video hero section gallery.",
+  },
 };
 
 const LAST_UPDATED = "May 11, 2026";
@@ -83,9 +104,24 @@ const sections = [
   },
 ];
 
+const webPageSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: "Terms of Service",
+  url: `${SITE.url}/terms`,
+  description: metadata.description,
+  inLanguage: SITE.lang,
+  isPartOf: { "@type": "WebSite", name: SITE.name, url: SITE.url },
+  dateModified: LAST_UPDATED,
+};
+
 export default function TermsPage() {
   return (
     <div className="px-4 sm:px-6 lg:px-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }}
+      />
       <div className="mx-auto max-w-3xl">
 
         <nav className="mb-10" aria-label="Breadcrumb">

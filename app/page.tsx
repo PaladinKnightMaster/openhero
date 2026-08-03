@@ -1,13 +1,17 @@
 ﻿import type { Metadata } from "next";
+import { createClient } from "@supabase/supabase-js";
 import { Footer } from "@/components/layout/footer";
 import Header from "@/components/layout/header";
 import Hero from "@/components/sections/Hero";
 import HeroGallery from "@/components/sections/HeroGallery";
 import { getVideoCatalog } from "@/lib/videos";
-import { createClient } from "@/utils/supabase/server";
+import { env } from "@/lib/env";
+import { SITE } from "@/lib/site";
+
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://openhero.art'),
+  metadataBase: new URL(SITE.url),
   title: "Free Cinematic Video Hero Sections - Browse & Download",
   description:
     "Discover cinematic video hero sections for your next website project. Browse by style, preview full-screen, and download the video + source code in HTML, React, or Next.js - completely free.",
@@ -20,7 +24,7 @@ export const metadata: Metadata = {
     "full screen video background",
   ],
   alternates: {
-    canonical: "https://openhero.art",
+    canonical: SITE.url,
   },
   icons: {
     icon: "/images/metadata/favicon.svg",
@@ -28,30 +32,30 @@ export const metadata: Metadata = {
     apple: "/images/metadata/apple.svg",
   },
   openGraph: {
-    title: "openhero - Free Cinematic Video Hero Sections",
+    title: `${SITE.name} - Free Cinematic Video Hero Sections`,
     description:
       "Browse and download cinematic video hero sections with production-ready source code. HTML, React, and Next.js - completely free.",
-    url: "https://openhero.art",
+    url: SITE.url,
     type: "website",
     images: [
       {
-        url: "https://openhero.art/images/metadata/preview-openhero.webp",
+        url: `${SITE.url}/images/metadata/preview-openhero.webp`,
         width: 1200,
         height: 630,
-        alt: "openhero - Free Cinematic Video Hero Sections",
+        alt: `${SITE.name} - Free Cinematic Video Hero Sections`,
       },
     ],
-    locale: "es_ES",
-    siteName: "openhero",
+    locale: SITE.locale,
+    siteName: SITE.name,
   },
   twitter: {
     card: "summary_large_image",
-    title: "openhero - Free Cinematic Video Hero Sections",
+    title: `${SITE.name} - Free Cinematic Video Hero Sections`,
     description:
       "Browse and download cinematic video hero sections with production-ready source code. HTML, React, and Next.js - completely free.",
-    images: ["https://openhero.art/images/metadata/preview-openhero.webp"],
-    creator: "@cristianolivera",
-    site: "@openherodev",
+    images: [`${SITE.url}/images/metadata/preview-openhero.webp`],
+    creator: SITE.creator,
+    site: SITE.twitterHandle,
   },
   other: {
     "msapplication-TileColor": "#1f2937",
@@ -64,7 +68,10 @@ export default async function Home() {
 
   let sortedVideos = videos;
   try {
-    const supabase = await createClient();
+    const supabase = createClient(
+      env.supabase.url,
+      env.supabase.publishableKey,
+    );
     const slugs = videos.map((v) => v.slug);
     const { data: stats } = await supabase
       .from("hero_videos")
@@ -88,12 +95,12 @@ export default async function Home() {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
     name: "Video Hero Gallery - openhero",
-    url: "https://openhero.art",
+    url: SITE.url,
     description:
       "Browse and download cinematic video hero sections with production-ready source code in HTML, React, and Next.js.",
     numberOfItems: sortedVideos.length,
     inLanguage: "en-US",
-    isPartOf: { "@type": "WebSite", name: "openhero", url: "https://openhero.art" },
+    isPartOf: { "@type": "WebSite", name: SITE.name, url: SITE.url },
   };
 
   return (
